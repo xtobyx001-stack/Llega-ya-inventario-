@@ -464,7 +464,7 @@ white-space: nowrap !important; color: #e8e8f0 !important;
       <button class="btn btn-danger" id="btn-delete-record" onclick="deleteRecord()">🗑 Borrar registro</button>
     </div>
     <div style="margin-top:8px;" id="btn-delete-pkg-wrap">
-      <button class="btn btn-danger" style="background:rgba(240,64,96,.15);border:1px solid var(--danger);color:var(--danger);" onclick="deletePackage()">🗑 Borrar paquete completo</button>
+      <button class="btn btn-danger" style="background-color:rgba(240,64,96,.15) !important;border:1px solid #f04060 !important;color:#f04060 !important;" onclick="deletePackage()">🗑 Borrar paquete completo</button>
     </div>
   </div>
 </div>
@@ -576,17 +576,17 @@ function populateMappingSelects(cols) {
 
 function autoMap(cols) {
   const matches = {
-    'map-order':    ['orderno','order_no','order no','orderid','order','codigo','código','id'],
-    'map-customer': ['customer','cliente','shop','tienda','negocio'],
-    'map-receiver': ['receiver','destinatario','receptor','nombre','name'],
-    'map-phone':    ['phone','telefono','teléfono','tel','celular','movil','móvil','whatsapp'],
+    'map-order':    ['code','orderno','order_no','order no','orderid','order','codigo','código','id'],
+    'map-customer': ['customer name','customer','cliente','shop','tienda','negocio'],
+    'map-receiver': ['dropoff contact name','receiver','destinatario','receptor','nombre','name'],
+    'map-phone':    ['dropoff contact','phone','telefono','teléfono','tel','celular','movil','móvil','whatsapp'],
     'map-zone':     ['zone','zona','sector','area','área'],
     'map-cod':      ['cod','monto','amount','valor','precio','cobro'],
-    'map-note':     ['note','nota','notas','producto','descripcion','descripción','item'],
+    'map-note':     ['note','nota','notas','producto','descripcion','descripción','item','reference id'],
   };
   Object.entries(matches).forEach(([selId, keywords]) => {
     const sel = document.getElementById(selId);
-    const found = cols.find(c => keywords.some(k => c.toLowerCase().replace(/\s+/g,'').includes(k.replace(/\s+/g,''))));
+    const found = cols.find(c => keywords.some(k => c.toLowerCase().trim() === k.toLowerCase().trim()));
     if (found) sel.value = found;
   });
 }

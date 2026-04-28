@@ -216,6 +216,29 @@ font-family: ‘Syne’, sans-serif !important; font-size: 0.8rem !important;
 }
 .filter-select:focus { outline: none !important; border-color: #40c0f0 !important; }
 
+.filter-tabs {
+display: flex !important;
+border-bottom: 1px solid #2a2a3a !important;
+margin-bottom: 14px !important;
+}
+.ftab {
+flex: 1 !important;
+padding: 11px 4px !important;
+font-family: ‘Syne’, sans-serif !important;
+font-size: 0.65rem !important; font-weight: 700 !important;
+cursor: pointer !important;
+border: none !important;
+border-bottom: 2px solid transparent !important;
+background: none !important;
+color: #707085 !important;
+text-align: center !important;
+text-transform: uppercase !important;
+letter-spacing: 0.3px !important;
+transition: all .2s !important;
+line-height: 1.3 !important;
+}
+.ftab.active { color: #f0c040 !important; border-bottom-color: #f0c040 !important; }
+
 .record-item {
 background-color: #13131a !important;
 border: 1px solid #2a2a3a !important;
@@ -243,6 +266,13 @@ text-transform: uppercase !important; letter-spacing: 0.5px !important;
 .pill-entregado { background-color: rgba(64,240,160,.15) !important; color: #40f0a0 !important; }
 .pill-no-entregado { background-color: rgba(240,64,96,.15) !important; color: #f04060 !important; }
 .pill-pendiente { background-color: rgba(112,112,133,.2) !important; color: #909090 !important; }
+.pill-devolucion { background-color: rgba(255,140,0,.15) !important; color: #ff8c00 !important; }
+.status-btn.pendiente-prog { background-color: rgba(64,192,240,.1) !important; color: #40c0f0 !important; border-color: rgba(64,192,240,.3) !important; }
+.status-btn.pendiente-prog.active { background-color: #40c0f0 !important; color: #000000 !important; border-color: #40c0f0 !important; }
+.status-btn.devolucion { background-color: rgba(255,140,0,.1) !important; color: #ff8c00 !important; border-color: rgba(255,140,0,.3) !important; }
+.status-btn.devolucion.active { background-color: #ff8c00 !important; color: #000000 !important; border-color: #ff8c00 !important; }
+.extra-row { margin-bottom: 12px !important; display: none !important; }
+.extra-row.show { display: block !important; }
 .record-customer { font-size: 0.9rem !important; font-weight: 700 !important; color: #e8e8f0 !important; }
 .record-meta { font-size: 0.75rem !important; color: #707085 !important; margin-top: 4px !important; }
 
@@ -406,11 +436,14 @@ white-space: nowrap !important; color: #e8e8f0 !important;
       </div>
 
 ```
-  <div class="status-buttons">
+  <div class="status-buttons" style="flex-wrap:wrap !important; gap:8px !important;">
     <button class="status-btn entregado" id="btn-entregado" onclick="setStatus('entregado')">✅ Entregado</button>
     <button class="status-btn no-entregado" id="btn-no-entregado" onclick="setStatus('no-entregado')">❌ No entregado</button>
+    <button class="status-btn pendiente-prog" id="btn-pendiente-prog" onclick="setStatus('pendiente-prog')">🕐 Pendiente</button>
+    <button class="status-btn devolucion" id="btn-devolucion" onclick="setStatus('devolucion')">📦 Devolución</button>
   </div>
 
+  <!-- Motivo: No entregado -->
   <div class="motivo-row" id="motivo-row">
     <select class="motivo-select" id="motivo-select">
       <option value="">— Motivo —</option>
@@ -423,6 +456,35 @@ white-space: nowrap !important; color: #e8e8f0 !important;
       <option>Otro</option>
     </select>
     <textarea class="input-field" id="motivo-custom" placeholder="Nota adicional (opcional)..." rows="2"></textarea>
+  </div>
+
+  <!-- Pendiente programado -->
+  <div class="extra-row" id="pendiente-row">
+    <select class="motivo-select" id="pendiente-dia">
+      <option value="">— Día para reintentar —</option>
+      <option>Lunes</option>
+      <option>Martes</option>
+      <option>Miércoles</option>
+      <option>Jueves</option>
+      <option>Viernes</option>
+      <option>Sábado</option>
+      <option>Domingo</option>
+    </select>
+    <textarea class="input-field" id="pendiente-nota" placeholder="Indicación del cliente (opcional)..." rows="2"></textarea>
+  </div>
+
+  <!-- Devolución -->
+  <div class="extra-row" id="devolucion-row">
+    <select class="motivo-select" id="devolucion-motivo">
+      <option value="">— Razón de devolución —</option>
+      <option>No contestó y fuera de alcance</option>
+      <option>Cliente rechazó el paquete</option>
+      <option>Dirección no encontrada</option>
+      <option>Paquete dañado</option>
+      <option>Cliente fuera del país / zona</option>
+      <option>Otro</option>
+    </select>
+    <textarea class="input-field" id="devolucion-nota" placeholder="Nota adicional (opcional)..." rows="2"></textarea>
   </div>
 
   <button class="btn btn-primary" onclick="saveRecord()">💾 Guardar registro</button>
@@ -440,15 +502,33 @@ white-space: nowrap !important; color: #e8e8f0 !important;
 <!-- ══ TAB: REGISTROS ══ -->
 
 <div class="view" id="tab-registros">
-  <div class="search-row">
-    <input type="text" class="input-field" id="search-input" placeholder="Buscar OrderNo..." oninput="renderRecords()" inputmode="numeric" style="flex:1">
-    <select class="filter-select" id="filter-status" onchange="renderRecords()">
-      <option value="">Todos</option>
-      <option value="entregado">Entregados</option>
-      <option value="no-entregado">No entregados</option>
-      <option value="pendiente">Pendientes</option>
-    </select>
+  <input type="text" class="input-field" id="search-input" placeholder="Buscar OrderNo..." oninput="renderRecords()" inputmode="numeric" style="width:100% !important; margin-bottom:10px !important;">
+  <div class="filter-tabs" id="filter-tabs">
+    <button class="ftab active" data-val="no-entregado" onclick="setFilter(this,'no-entregado')">❌ No entregados</button>
+    <button class="ftab" data-val="pendiente-prog" onclick="setFilter(this,'pendiente-prog')">🕐 Pendientes</button>
+    <button class="ftab" data-val="devolucion" onclick="setFilter(this,'devolucion')">📦 Devoluciones</button>
+    <button class="ftab" data-val="entregado" onclick="setFilter(this,'entregado')">✅ Entregados</button>
   </div>
+  <!-- Escáner rápido de entregados -->
+  <div id="quick-scan-box" style="display:none !important; margin-bottom:14px !important;">
+    <div style="background-color:#13131a !important; border:1px solid #40f0a0 !important; border-radius:14px !important; padding:14px !important;">
+      <div style="font-size:0.75rem !important; font-weight:700 !important; color:#40f0a0 !important; text-transform:uppercase !important; letter-spacing:0.5px !important; margin-bottom:10px !important;">📷 Escanear como entregado</div>
+      <div style="display:flex !important; gap:8px !important;">
+        <input type="text" id="quick-scan-input" class="input-field" placeholder="OrderNo o escanear..." inputmode="numeric" style="flex:1 !important;">
+        <button class="btn-icon" style="background-color:#40f0a0 !important;" onclick="quickMarkEntregado(document.getElementById('quick-scan-input').value.trim())">✅</button>
+      </div>
+      <div style="margin-top:8px !important;">
+        <button class="btn btn-secondary" id="btn-quick-cam" onclick="toggleQuickCamera()" style="font-size:0.8rem !important; padding:10px !important;">📷 Activar cámara</button>
+      </div>
+      <div id="quick-cam-container" style="display:none !important; margin-top:10px !important; border-radius:12px !important; overflow:hidden !important; background:#000 !important; aspect-ratio:4/3 !important; position:relative !important;">
+        <div id="quick-quagga-viewport" style="position:absolute !important; inset:0 !important; width:100% !important; height:100% !important;"></div>
+        <div style="position:absolute !important; inset:0 !important; display:flex !important; align-items:center !important; justify-content:center !important; pointer-events:none !important;">
+          <div style="width:65% !important; aspect-ratio:3/1 !important; border:2px solid #40f0a0 !important; border-radius:8px !important; box-shadow:0 0 0 9999px rgba(0,0,0,.5) !important;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="records-list"></div>
 </div>
 
@@ -730,13 +810,22 @@ function processCode(code) {
   const existing = records[code];
   if (existing) {
     setStatus(existing.status, true);
-    document.getElementById('motivo-select').value = existing.motivo || '';
-    document.getElementById('motivo-custom').value  = existing.motivoCustom || '';
+    document.getElementById('motivo-select').value    = existing.motivo || '';
+    document.getElementById('motivo-custom').value    = existing.motivoCustom || '';
+    document.getElementById('pendiente-dia').value    = existing.pendienteDia || '';
+    document.getElementById('pendiente-nota').value   = existing.pendienteNota || '';
+    document.getElementById('devolucion-motivo').value = existing.devolucionMotivo || '';
+    document.getElementById('devolucion-nota').value  = existing.devolucionNota || '';
   } else {
     clearStatusButtons();
-    document.getElementById('motivo-row').classList.remove('show');
+    ['motivo-row','pendiente-row','devolucion-row'].forEach(id =>
+      document.getElementById(id).classList.remove('show'));
     document.getElementById('motivo-select').value = '';
     document.getElementById('motivo-custom').value = '';
+    document.getElementById('pendiente-dia').value = '';
+    document.getElementById('pendiente-nota').value = '';
+    document.getElementById('devolucion-motivo').value = '';
+    document.getElementById('devolucion-nota').value = '';
   }
 
   document.getElementById('pkg-form').style.display = 'block';
@@ -754,8 +843,8 @@ function populateForm(pkg) {
 }
 
 function clearStatusButtons() {
-  document.getElementById('btn-entregado').classList.remove('active');
-  document.getElementById('btn-no-entregado').classList.remove('active');
+  ['btn-entregado','btn-no-entregado','btn-pendiente-prog','btn-devolucion'].forEach(id =>
+    document.getElementById(id).classList.remove('active'));
   currentStatus = null;
 }
 
@@ -763,43 +852,75 @@ let currentStatus = null;
 
 function setStatus(st, silent) {
   currentStatus = st;
-  document.getElementById('btn-entregado').classList.toggle('active', st === 'entregado');
-  document.getElementById('btn-no-entregado').classList.toggle('active', st === 'no-entregado');
+  ['btn-entregado','btn-no-entregado','btn-pendiente-prog','btn-devolucion'].forEach(id =>
+    document.getElementById(id).classList.remove('active'));
+  const map = { 'entregado':'btn-entregado', 'no-entregado':'btn-no-entregado', 'pendiente-prog':'btn-pendiente-prog', 'devolucion':'btn-devolucion' };
+  if (map[st]) document.getElementById(map[st]).classList.add('active');
   document.getElementById('motivo-row').classList.toggle('show', st === 'no-entregado');
+  document.getElementById('pendiente-row').classList.toggle('show', st === 'pendiente-prog');
+  document.getElementById('devolucion-row').classList.toggle('show', st === 'devolucion');
 }
 
 function saveRecord() {
   if (!currentPkg) return;
   if (!currentStatus) { showToast('Selecciona un estado', 'error'); return; }
 
-  const motivo       = document.getElementById('motivo-select').value;
-  const motivoCustom = document.getElementById('motivo-custom').value.trim();
+  const motivo          = document.getElementById('motivo-select').value;
+  const motivoCustom    = document.getElementById('motivo-custom').value.trim();
+  const pendienteDia    = document.getElementById('pendiente-dia').value;
+  const pendienteNota   = document.getElementById('pendiente-nota').value.trim();
+  const devolucionMotivo = document.getElementById('devolucion-motivo').value;
+  const devolucionNota  = document.getElementById('devolucion-nota').value.trim();
 
   if (currentStatus === 'no-entregado' && !motivo) {
     showToast('Selecciona un motivo', 'error'); return;
+  }
+  if (currentStatus === 'pendiente-prog' && !pendienteDia) {
+    showToast('Selecciona el día de reintento', 'error'); return;
+  }
+  if (currentStatus === 'devolucion' && !devolucionMotivo) {
+    showToast('Selecciona la razón de devolución', 'error'); return;
   }
 
   records[currentPkg.orderNo] = {
     ...currentPkg,
     status: currentStatus,
     motivo, motivoCustom,
+    pendienteDia, pendienteNota,
+    devolucionMotivo, devolucionNota,
     ts: new Date().toLocaleString('es-DO'),
   };
 
   save();
   document.getElementById('pkg-form').style.display = 'none';
   document.getElementById('manual-code').value = '';
+
+  const savedStatus = currentStatus;
   currentPkg = null; currentStatus = null;
+
   showToast('Registro guardado 💾', 'success');
+
   renderRecords();
 }
 
 // ══════════════════════════════════════
 // RECORDS
 // ══════════════════════════════════════
+let currentFilter = 'no-entregado';
+
+function setFilter(el, val) {
+  currentFilter = val;
+  document.querySelectorAll('.ftab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const box = document.getElementById('quick-scan-box');
+  box.style.display = val === 'entregado' ? 'block' : 'none';
+  if (val !== 'entregado' && quickCamOn) stopQuickCamera();
+  renderRecords();
+}
+
 function renderRecords() {
   const search = document.getElementById('search-input').value.trim().toLowerCase();
-  const filter = document.getElementById('filter-status').value;
+  const filter = currentFilter;
   const list   = document.getElementById('records-list');
 
   // All scanned + all packages as pendiente
@@ -814,8 +935,8 @@ function renderRecords() {
   if (filter) items = items.filter(i => i.status === filter);
 
   items.sort((a,b) => {
-    const order = { 'no-entregado': 0, 'pendiente': 1, 'entregado': 2 };
-    return (order[a.status] ?? 3) - (order[b.status] ?? 3);
+    const order = { 'no-entregado': 0, 'devolucion': 1, 'pendiente-prog': 2, 'pendiente': 3, 'entregado': 4 };
+    return (order[a.status] ?? 5) - (order[b.status] ?? 5);
   });
 
   if (!items.length) {
@@ -828,7 +949,11 @@ function renderRecords() {
       ? `<span class="status-pill pill-entregado">Entregado</span>`
       : item.status === 'no-entregado'
       ? `<span class="status-pill pill-no-entregado">No entregado</span>`
-      : `<span class="status-pill pill-pendiente">Pendiente</span>`;
+      : item.status === 'pendiente-prog'
+      ? `<span class="status-pill" style="background-color:rgba(64,192,240,.15);color:#40c0f0;">🕐 Pendiente</span>`
+      : item.status === 'devolucion'
+      ? `<span class="status-pill pill-devolucion">📦 Devolución</span>`
+      : `<span class="status-pill pill-pendiente">Sin escanear</span>`;
 
     const meta = [item.zone, item.cod ? 'COD: ' + item.cod : ''].filter(Boolean).join(' · ');
     const hasRecord = !!records[item.orderNo];
@@ -845,7 +970,9 @@ function renderRecords() {
         </div>
       </div>
       ${meta ? `<div class="record-meta">${meta}</div>` : ''}
-      ${item.motivo ? `<div class="record-meta" style="color:var(--danger)">↳ ${item.motivo}</div>` : ''}
+      ${item.motivo ? `<div class="record-meta" style="color:#f04060 !important;">↳ ${item.motivo}</div>` : ''}
+      ${item.pendienteDia ? `<div class="record-meta" style="color:#40c0f0 !important;">↳ Reintentar el ${item.pendienteDia}</div>` : ''}
+      ${item.devolucionMotivo ? `<div class="record-meta" style="color:#ff8c00 !important;">↳ ${item.devolucionMotivo}</div>` : ''}
     </div>`;
   }).join('');
 }
@@ -865,9 +992,16 @@ function openModal(orderNo) {
     ['Zone', rec.zone],
     ['COD', rec.cod],
     ['Producto', rec.note],
-    ['Estado', rec.status === 'entregado' ? '✅ Entregado' : rec.status === 'no-entregado' ? '❌ No entregado' : '⏳ Pendiente'],
+    ['Estado', rec.status === 'entregado' ? '✅ Entregado' :
+               rec.status === 'no-entregado' ? '❌ No entregado' :
+               rec.status === 'pendiente-prog' ? '🕐 Pendiente programado' :
+               rec.status === 'devolucion' ? '📦 Devolución' : '⏳ Sin escanear'],
     ['Motivo', rec.motivo],
     ['Nota', rec.motivoCustom],
+    ['Reintentar el', rec.pendienteDia],
+    ['Indicación', rec.pendienteNota],
+    ['Razón devolución', rec.devolucionMotivo],
+    ['Nota devolución', rec.devolucionNota],
     ['Fecha/Hora', rec.ts],
   ].filter(([,v]) => v);
 
@@ -934,6 +1068,10 @@ function exportCSV() {
       Estado:   rec.status   || 'pendiente',
       Motivo:   rec.motivo   || '',
       Nota:     rec.motivoCustom || '',
+      PendienteDia: rec.pendienteDia || '',
+      PendienteNota: rec.pendienteNota || '',
+      DevolucionMotivo: rec.devolucionMotivo || '',
+      DevolucionNota: rec.devolucionNota || '',
       FechaHora: rec.ts      || '',
     };
   });
@@ -955,6 +1093,77 @@ function showToast(msg, type='info') {
   t.className = 'toast ' + type + ' show';
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ══════════════════════════════════════
+// QUICK MARK ENTREGADO
+// ══════════════════════════════════════
+let quickCamOn = false;
+
+function quickMarkEntregado(code) {
+  if (!code) { showToast('Escribe o escanea un OrderNo', 'error'); return; }
+  // Buscar en packages o records
+  const pkg = packages[code] || (records[code] ? records[code] : null);
+  if (!pkg) { showToast('OrderNo ' + code + ' no encontrado', 'error'); return; }
+
+  const prevStatus = records[code] ? records[code].status : 'sin escanear';
+
+  records[code] = {
+    ...(packages[code] || records[code]),
+    orderNo: code,
+    status: 'entregado',
+    motivo: '', motivoCustom: '',
+    pendienteDia: '', pendienteNota: '',
+    devolucionMotivo: '', devolucionNota: '',
+    ts: new Date().toLocaleString('es-DO'),
+  };
+
+  save();
+  document.getElementById('quick-scan-input').value = '';
+  navigator.vibrate && navigator.vibrate(80);
+  showToast('✅ #' + code + ' marcado como entregado', 'success');
+  renderRecords();
+}
+
+function toggleQuickCamera() {
+  if (quickCamOn) stopQuickCamera(); else startQuickCamera();
+}
+
+function startQuickCamera() {
+  const viewport = document.getElementById('quick-quagga-viewport');
+  viewport.innerHTML = '';
+  document.getElementById('quick-cam-container').style.display = 'block';
+
+  Quagga.init({
+    inputStream: {
+      name: 'QuickLive', type: 'LiveStream', target: viewport,
+      constraints: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+    },
+    decoder: { readers: ['code_128_reader','ean_reader','ean_8_reader','code_39_reader','upc_reader'] },
+    locate: true,
+  }, err => {
+    if (err) { showToast('No se pudo acceder a la cámara', 'error'); return; }
+    Quagga.start();
+    quickCamOn = true;
+    document.getElementById('btn-quick-cam').textContent = '⏹ Detener cámara';
+  });
+
+  let lastCode = ''; let lastTime = 0;
+  Quagga.onDetected(result => {
+    const code = result.codeResult.code;
+    const now = Date.now();
+    if (code === lastCode && now - lastTime < 2500) return;
+    lastCode = code; lastTime = now;
+    quickMarkEntregado(code);
+  });
+}
+
+function stopQuickCamera() {
+  try { Quagga.stop(); } catch(e) {}
+  quickCamOn = false;
+  document.getElementById('btn-quick-cam').textContent = '📷 Activar cámara';
+  document.getElementById('quick-cam-container').style.display = 'none';
+  document.getElementById('quick-quagga-viewport').innerHTML = '';
 }
 
 // ══════════════════════════════════════

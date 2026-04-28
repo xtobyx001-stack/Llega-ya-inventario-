@@ -792,6 +792,19 @@ function deletePackage() {
   save(); closeModalDirect(); renderRecords();
   showToast('Paquete #' + currentRecordId + ' borrado', 'info');
 }
+function toggleGroupMenu() {
+  var m = document.getElementById('group-menu');
+  m.style.display = m.style.display === 'none' ? 'block' : 'none';
+}
+
+document.addEventListener('click', function(e) {
+  var gear = document.getElementById('btn-gear');
+  var menu = document.getElementById('group-menu');
+  if (gear && menu && !gear.contains(e.target) && !menu.contains(e.target)) {
+    menu.style.display = 'none';
+  }
+});
+
 function clearCurrentGroup() {
   var labels = { 'pendiente':'Sin escanear', 'no-entregado':'No entregados', 'pendiente-prog':'Pendientes', 'devolucion':'Devoluciones', 'entregado':'Entregados' };
   var label = labels[currentFilter] || currentFilter;

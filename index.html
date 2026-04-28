@@ -6,11 +6,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Inventario · Llega Ya</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+<script>
+// Load Quagga async so it never blocks the app if CDN is slow or fails
+(function(){
+  var s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js';
+  s.async = true;
+  s.onerror = function(){ console.warn('Quagga no cargó — cámara deshabilitada'); };
+  document.head.appendChild(s);
+})();
+</script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap');
 
-- { margin: 0 !important; padding: 0 !important; box-sizing: border-box !important; -webkit-tap-highlight-color: transparent !important; }
+*, *::before, *::after { box-sizing: border-box !important; -webkit-tap-highlight-color: transparent !important; }
+html, body, div, span, header, nav, section, article, aside, footer, main,
+h1, h2, h3, h4, h5, h6, p, a, ul, ol, li, figure, figcaption {
+margin: 0 !important; padding: 0 !important;
+}
 
 body {
 font-family: ‘Syne’, sans-serif !important;
@@ -1021,7 +1034,8 @@ function renderRecords() {
             <div class="record-order">#${item.orderNo}</div>
             ${scannedBadge}
           </div>
-          <div class="record-customer">${item.customer || item.receiver || '—'}</div>
+          <div class="record-customer">${item.receiver || item.customer || '—'}</div>
+          ${item.phone ? `<div class="record-meta" style="color:#a0a0c0 !important;">📞 ${item.phone}</div>` : ''}
         </div>
         <div class="record-actions" onclick="event.stopPropagation()">
           ${pill}

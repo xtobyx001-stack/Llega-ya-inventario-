@@ -549,7 +549,19 @@ function handleFile(file) {
   reader.onload = e => {
     const wb = XLSX.read(e.target.result, { type: 'array' });
     const ws = wb.Sheets[wb.SheetNames[0]];
+
+    // Lectura inicial
     rawData = XLSX.utils.sheet_to_json(ws, { defval: '' });
+    if (!rawData.length) { showToast('El archivo está vacío', 'error'); return; }
+
+    // Detectar si la primera fila es un título (ej: "Order Report 2026-04-27")
+    const firstKey = Object.keys(rawData[0])[0] || '';
+    const looksLikeTitle = firstKey.toLowerCase().includes('report') ||
+                           firstKey.toLowerCase().includes('reporte') ||
+                           Object.keys(rawData[0]).length <= 2;
+    if (looksLikeTitle) {
+      rawData = XLSX.utils.sheet_to_json(ws, { defval: '', range: 1 });
+    }
 
     if (!rawData.length) { showToast('El archivo está vacío', 'error'); return; }
 

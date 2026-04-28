@@ -1101,7 +1101,28 @@ function deletePackage() {
   showToast('Paquete #' + currentRecordId + ' borrado', 'info');
 }
 
-function quickDelete(orderNo) {
+function quickChangeStatus(orderNo, newStatus) {
+  const pkg = packages[orderNo] || {};
+  const existing = records[orderNo] || {};
+  records[orderNo] = {
+    ...pkg,
+    ...existing,
+    orderNo,
+    status: newStatus,
+    // Clear sub-fields when moving to entregado or pendiente
+    motivo: newStatus === 'entregado' ? '' : (existing.motivo || ''),
+    motivoCustom: newStatus === 'entregado' ? '' : (existing.motivoCustom || ''),
+    pendienteDia: newStatus !== 'pendiente-prog' ? '' : (existing.pendienteDia || ''),
+    pendienteNota: newStatus !== 'pendiente-prog' ? '' : (existing.pendienteNota || ''),
+    devolucionMotivo: newStatus !== 'devolucion' ? '' : (existing.devolucionMotivo || ''),
+    devolucionNota: newStatus !== 'devolucion' ? '' : (existing.devolucionNota || ''),
+    ts: new Date().toLocaleString('es-DO'),
+  };
+  save();
+  renderRecords();
+  const labels = { 'entregado':'✅ Entregado', 'no-entregado':'❌ No entregado', 'pendiente-prog':'🕐 Pendiente', 'devolucion':'📦 Devolución' };
+  showToast('#' + orderNo + ' movido a ' + (labels[newStatus] || newStatus), 'success');
+}
   if (!confirm('¿Borrar #' + orderNo + '?')) return;
   delete records[orderNo];
   delete packages[orderNo];

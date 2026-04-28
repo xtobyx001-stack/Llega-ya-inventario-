@@ -665,7 +665,26 @@ function setFilter(el, val) {
   renderRecords();
 }
 
+function updateCounts() {
+  var allOrders = [];
+  var seen = {};
+  Object.keys(records).forEach(function(id){ if(!seen[id]){seen[id]=1;allOrders.push(id);} });
+  Object.keys(packages).forEach(function(id){ if(!seen[id]){seen[id]=1;allOrders.push(id);} });
+
+  var counts = { 'pendiente':0, 'no-entregado':0, 'pendiente-prog':0, 'devolucion':0, 'entregado':0 };
+  allOrders.forEach(function(id) {
+    var st = records[id] ? records[id].status : 'pendiente';
+    if (counts[st] !== undefined) counts[st]++;
+  });
+
+  Object.keys(counts).forEach(function(key) {
+    var el = document.getElementById('count-' + key);
+    if (el) el.textContent = counts[key];
+  });
+}
+
 function renderRecords() {
+  updateCounts();
   var search = document.getElementById('search-input').value.trim().toLowerCase();
   var filter = currentFilter;
   var list   = document.getElementById('records-list');

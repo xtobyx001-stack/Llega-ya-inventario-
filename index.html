@@ -83,15 +83,33 @@ textarea.input-field{width:100%;resize:none;height:70px;display:block;flex:none;
 .ftab{flex-shrink:0;padding:11px 10px;font-family:'Syne',sans-serif;font-size:0.65rem;font-weight:700;cursor:pointer;border:none;border-bottom:2px solid transparent;background:none;color:#707085;text-align:center;text-transform:uppercase;letter-spacing:0.3px;transition:all .2s;white-space:nowrap;}
 .ftab.active{color:#f0c040;border-bottom-color:#f0c040;}
 .ftab-count{display:inline-block;background:#2a2a3a;color:#e8e8f0;border-radius:20px;font-size:0.6rem;font-weight:700;padding:1px 6px;margin-left:3px;vertical-align:middle;}
-.record-item{background:#13131a;border:1px solid #2a2a3a;border-radius:12px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s;}
+
+/* ── NÚMERO DE POSICIÓN ── */
+.record-item{background:#13131a;border:1px solid #2a2a3a;border-radius:12px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s;position:relative;}
 .record-item:active{border-color:#40c0f0;}
 .record-item.scanned{border-left:3px solid #40f0a0;}
+
+.record-position{
+position:absolute;
+top:10px;
+right:12px;
+font-family:‘DM Mono’,monospace;
+font-size:0.68rem;
+font-weight:500;
+color:#3a3a50;
+letter-spacing:0.5px;
+line-height:1;
+pointer-events:none;
+user-select:none;
+}
+/* ───────────────────────── */
+
 .scanned-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(64,240,160,.15);border:1px solid rgba(64,240,160,.35);border-radius:20px;padding:2px 8px;font-size:0.62rem;font-weight:700;color:#40f0a0;letter-spacing:0.4px;text-transform:uppercase;white-space:nowrap;}
 .record-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
 .record-actions{display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;}
 .btn-quick-del{background:rgba(240,64,96,.12);color:#f04060;border:1px solid rgba(240,64,96,.35);border-radius:8px;font-size:0.75rem;font-weight:700;padding:4px 10px;cursor:pointer;white-space:nowrap;}
 .btn-quick-del:active{background:#f04060;color:#fff;}
-.record-order{font-family:'DM Mono',monospace;font-size:0.88rem;color:#f0c040;}
+.record-order{font-family:‘DM Mono’,monospace;font-size:0.88rem;color:#f0c040;}
 .status-pill{font-size:0.68rem;font-weight:700;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;}
 .pill-entregado{background:rgba(64,240,160,.15);color:#40f0a0;}
 .pill-no-entregado{background:rgba(240,64,96,.15);color:#f04060;}
@@ -100,11 +118,11 @@ textarea.input-field{width:100%;resize:none;height:70px;display:block;flex:none;
 .record-customer{font-size:0.9rem;font-weight:700;color:#e8e8f0;}
 .record-meta{font-size:0.75rem;color:#707085;margin-top:4px;}
 .quick-move-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid #2a2a3a;}
-.btn-move{background:#1c1c27;border:1px solid #2a2a3a;color:#b0b0c0;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:700;padding:5px 10px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn-move{background:#1c1c27;border:1px solid #2a2a3a;color:#b0b0c0;border-radius:8px;font-family:‘Syne’,sans-serif;font-size:0.72rem;font-weight:700;padding:5px 10px;cursor:pointer;transition:all .15s;white-space:nowrap;}
 .btn-move:active{background:#2a2a3a;color:#f0c040;border-color:#f0c040;}
 .stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px;}
 .stat-card{background:#13131a;border:1px solid #2a2a3a;border-radius:12px;padding:14px 12px;text-align:center;}
-.stat-num{font-size:1.6rem;font-weight:800;font-family:'DM Mono',monospace;}
+.stat-num{font-size:1.6rem;font-weight:800;font-family:‘DM Mono’,monospace;}
 .stat-label{font-size:0.68rem;color:#707085;text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;}
 .num-total{color:#40c0f0;}
 .num-ok{color:#40f0a0;}
@@ -133,6 +151,7 @@ textarea.input-field{width:100%;resize:none;height:70px;display:block;flex:none;
 #quagga-viewport video{width:100%;height:100%;object-fit:cover;}
 #quagga-viewport canvas{display:none;}
 </style>
+
 </head>
 <body>
 
@@ -715,14 +734,17 @@ function renderRecords() {
   }
 
   var html = '';
-  items.forEach(function(item) {
+  items.forEach(function(item, idx) {
+    var position = idx + 1;
+    var total    = items.length;
+
     var hasRecord = !!records[item.orderNo];
     var pillTxt, pillClass;
-    if (item.status === 'entregado')       { pillTxt = 'Entregado';    pillClass = 'pill-entregado'; }
-    else if (item.status === 'no-entregado'){ pillTxt = 'No entregado'; pillClass = 'pill-no-entregado'; }
-    else if (item.status === 'pendiente-prog'){ pillTxt = 'Pendiente'; pillClass = ''; }
-    else if (item.status === 'devolucion') { pillTxt = 'Devolucion';   pillClass = 'pill-devolucion'; }
-    else                                   { pillTxt = 'Sin escanear'; pillClass = 'pill-pendiente'; }
+    if (item.status === 'entregado')         { pillTxt = 'Entregado';    pillClass = 'pill-entregado'; }
+    else if (item.status === 'no-entregado') { pillTxt = 'No entregado'; pillClass = 'pill-no-entregado'; }
+    else if (item.status === 'pendiente-prog'){ pillTxt = 'Pendiente';   pillClass = ''; }
+    else if (item.status === 'devolucion')   { pillTxt = 'Devolucion';   pillClass = 'pill-devolucion'; }
+    else                                     { pillTxt = 'Sin escanear'; pillClass = 'pill-pendiente'; }
 
     var pillStyle = item.status === 'pendiente-prog' ? ' style="background:rgba(64,192,240,.15);color:#40c0f0;"' : '';
     var pill = '<span class="status-pill ' + pillClass + '"' + pillStyle + '>' + pillTxt + '</span>';
@@ -741,8 +763,12 @@ function renderRecords() {
     }).join('');
 
     html += '<div class="record-item' + (hasRecord ? ' scanned' : '') + '" onclick="openModal(\'' + item.orderNo + '\')">';
+
+    /* ── número de posición ── */
+    html += '<div class="record-position">' + position + ' / ' + total + '</div>';
+
     html += '<div class="record-top">';
-    html += '<div style="flex:1;min-width:0;">';
+    html += '<div style="flex:1;min-width:0;padding-right:52px;">';
     html += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:2px;">';
     html += '<div class="record-order">#' + item.orderNo + '</div>' + badge;
     html += '</div>';
@@ -809,17 +835,10 @@ function deletePackage() {
   save(); closeModalDirect(); renderRecords();
   showToast('Paquete #' + currentRecordId + ' borrado', 'info');
 }
-function toggleGroupMenu() {
-  var m = document.getElementById('group-menu');
-  m.style.display = m.style.display === 'none' ? 'block' : 'none';
-}
 
 document.addEventListener('click', function(e) {
   var gear = document.getElementById('btn-gear');
-  var menu = document.getElementById('group-menu');
-  if (gear && menu && !gear.contains(e.target) && !menu.contains(e.target)) {
-    menu.style.display = 'none';
-  }
+  if (gear && !gear.contains(e.target)) { /* no menu to close */ }
 });
 
 function clearCurrentGroup() {
@@ -828,12 +847,10 @@ function clearCurrentGroup() {
   if (!confirm('Borrar todos los registros de: ' + label + '?')) return;
 
   if (currentFilter === 'pendiente') {
-    // Sin escanear = packages without a record — remove those packages
     Object.keys(packages).forEach(function(id) {
       if (!records[id]) delete packages[id];
     });
   } else {
-    // For all other statuses, delete matching records (and their packages)
     Object.keys(records).forEach(function(id) {
       if (records[id].status === currentFilter) {
         delete records[id];
@@ -853,6 +870,7 @@ function quickDelete(orderNo) {
   save(); renderRecords();
   showToast('Paquete #' + orderNo + ' borrado', 'info');
 }
+
 function quickChangeStatus(orderNo, newStatus) {
   var pkg = packages[orderNo] || {};
   var existing = records[orderNo] || {};

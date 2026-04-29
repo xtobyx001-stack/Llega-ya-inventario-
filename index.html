@@ -84,25 +84,23 @@ textarea.input-field{width:100%;resize:none;height:70px;display:block;flex:none;
 .ftab.active{color:#f0c040;border-bottom-color:#f0c040;}
 .ftab-count{display:inline-block;background:#2a2a3a;color:#e8e8f0;border-radius:20px;font-size:0.6rem;font-weight:700;padding:1px 6px;margin-left:3px;vertical-align:middle;}
 
-/* ── NÚMERO DE POSICIÓN ── */
-.record-item{background:#13131a;border:1px solid #2a2a3a;border-radius:12px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s;position:relative;}
+.record-item{background:#13131a;border:1px solid #2a2a3a;border-radius:12px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s;}
 .record-item:active{border-color:#40c0f0;}
 .record-item.scanned{border-left:3px solid #40f0a0;}
-
-.record-position{
-position:absolute;
-top:10px;
-right:12px;
+.record-position-badge{
+display:inline-block;
 font-family:‘DM Mono’,monospace;
-font-size:0.68rem;
-font-weight:500;
-color:#3a3a50;
-letter-spacing:0.5px;
-line-height:1;
-pointer-events:none;
-user-select:none;
+font-size:0.7rem;
+font-weight:700;
+color:#3a3a55;
+background:#1a1a28;
+border:1px solid #2a2a3a;
+border-radius:6px;
+padding:1px 7px;
+letter-spacing:0.3px;
+vertical-align:middle;
+flex-shrink:0;
 }
-/* ───────────────────────── */
 
 .scanned-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(64,240,160,.15);border:1px solid rgba(64,240,160,.35);border-radius:20px;padding:2px 8px;font-size:0.62rem;font-weight:700;color:#40f0a0;letter-spacing:0.4px;text-transform:uppercase;white-space:nowrap;}
 .record-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
@@ -764,13 +762,11 @@ function renderRecords() {
 
     html += '<div class="record-item' + (hasRecord ? ' scanned' : '') + '" onclick="openModal(\'' + item.orderNo + '\')">';
 
-    /* ── número de posición ── */
-    html += '<div class="record-position">' + position + ' / ' + total + '</div>';
-
     html += '<div class="record-top">';
-    html += '<div style="flex:1;min-width:0;padding-right:52px;">';
+    html += '<div style="flex:1;min-width:0;">';
     html += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:2px;">';
-    html += '<div class="record-order">#' + item.orderNo + '</div>' + badge;
+    html += '<span class="record-position-badge">#' + position + '</span>';
+    html += '<div class="record-order">' + item.orderNo + '</div>' + badge;
     html += '</div>';
     html += '<div class="record-customer">' + (item.receiver || item.customer || '-') + '</div>';
     if (item.phone) html += '<div class="record-meta" style="color:#a0a0c0;">Tel: ' + item.phone + '</div>';

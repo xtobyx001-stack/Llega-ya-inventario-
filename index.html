@@ -12,7 +12,6 @@
         :root {
             --orange: #FF6B00;
             --orange-dark: #E55A00;
-            --orange-light: #FF8C33;
             --navy: #0D1B4A;
             --navy-light: #1A237E;
             --red: #E53935;
@@ -28,193 +27,55 @@
             --gray-700: #333333;
         }
 
-        body {
-            font-family: 'Poppins', 'Segoe UI', Tahoma, sans-serif;
-            background: var(--gray-100);
-            min-height: 100vh;
-            display: flex;
-        }
+        body { font-family: 'Poppins', 'Segoe UI', Tahoma, sans-serif; background: var(--gray-100); min-height: 100vh; display: flex; }
 
-        /* ============ LOGIN SCREEN ============ */
-        .login-screen {
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 900;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
+        .login-screen { position: fixed; inset: 0; background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%); display: flex; justify-content: center; align-items: center; z-index: 900; padding: 20px; overflow-y: auto; }
         .login-screen.hidden { display: none; }
-
-        .login-container {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 40px 30px;
-            max-width: 450px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            text-align: center;
-            margin: auto;
-        }
-
-        .login-logo {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 20px;
-            background: var(--white);
-            border-radius: 20px;
-            padding: 8px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
-
-        .login-container h1 {
-            color: var(--navy);
-            font-size: 2em;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .login-container .login-subtitle {
-            color: var(--gray-500);
-            margin-bottom: 25px;
-            font-size: 0.95em;
-        }
-
-        .login-options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .login-btn {
-            padding: 18px;
-            border-radius: 12px;
-            border: 2px solid var(--gray-200);
-            background: var(--white);
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            text-align: left;
-            font-family: inherit;
-            width: 100%;
-        }
-
+        .login-container { background: var(--white); border-radius: 20px; padding: 40px 30px; max-width: 450px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center; margin: auto; }
+        .login-logo { width: 100px; height: 100px; margin: 0 auto 20px; background: var(--white); border-radius: 20px; padding: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+        .login-container h1 { color: var(--navy); font-size: 2em; font-weight: 800; margin-bottom: 8px; }
+        .login-container .login-subtitle { color: var(--gray-500); margin-bottom: 25px; font-size: 0.95em; }
+        .login-options { display: flex; flex-direction: column; gap: 12px; }
+        .login-btn { padding: 18px; border-radius: 12px; border: 2px solid var(--gray-200); background: var(--white); cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 15px; text-align: left; font-family: inherit; width: 100%; }
         .login-btn:active { transform: scale(0.97); }
-
-        .login-btn .lb-icon {
-            font-size: 2em;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 12px;
-            flex-shrink: 0;
-        }
-
+        .login-btn .lb-icon { font-size: 2em; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 12px; flex-shrink: 0; }
         .login-btn.admin .lb-icon { background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%); }
         .login-btn.viewer .lb-icon { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); }
-
         .login-btn .lb-info { flex: 1; }
         .login-btn .lb-title { font-weight: 700; color: var(--navy); font-size: 1.05em; }
         .login-btn .lb-desc { font-size: 0.8em; color: var(--gray-500); margin-top: 2px; }
-
         .login-btn.admin { border-color: var(--orange); }
         .login-btn.viewer { border-color: var(--navy); }
 
-        /* ============ SIDEBAR ============ */
-        .sidebar {
-            width: 280px;
-            background: linear-gradient(180deg, var(--orange) 0%, var(--orange-dark) 100%);
-            min-height: 100vh;
-            max-height: 100vh;
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 4px 0 25px rgba(255, 107, 0, 0.3);
-            z-index: 100;
-            transition: transform 0.3s ease;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-
+        .sidebar { width: 280px; background: linear-gradient(180deg, var(--orange) 0%, var(--orange-dark) 100%); min-height: 100vh; max-height: 100vh; position: fixed; left: 0; top: 0; bottom: 0; display: flex; flex-direction: column; box-shadow: 4px 0 25px rgba(255,107,0,0.3); z-index: 100; transition: transform 0.3s ease; overflow-y: auto; overflow-x: hidden; }
         .sidebar::-webkit-scrollbar { width: 6px; }
-        .sidebar::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); }
         .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 3px; }
-
-        .sidebar-header {
-            padding: 25px 20px;
-            border-bottom: 2px solid rgba(255,255,255,0.2);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-shrink: 0;
-        }
-
-        .logo {
-            width: 60px;
-            height: 60px;
-            flex-shrink: 0;
-            background: var(--white);
-            border-radius: 14px;
-            padding: 4px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            object-fit: cover;
-        }
-
-        .brand h1 {
-            color: var(--white);
-            font-size: 1.6em;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
-        }
-
+        .sidebar-header { padding: 25px 20px; border-bottom: 2px solid rgba(255,255,255,0.2); display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+        .logo { width: 60px; height: 60px; flex-shrink: 0; background: var(--white); border-radius: 14px; padding: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); object-fit: cover; }
+        .brand h1 { color: var(--white); font-size: 1.6em; font-weight: 800; text-shadow: 2px 2px 0 rgba(0,0,0,0.1); }
         .brand .subtitle { color: rgba(255,255,255,0.9); font-size: 0.72em; margin-top: 2px; font-weight: 500; }
-
-        .mode-indicator {
-            padding: 8px 15px;
-            margin: 10px 15px 0;
-            border-radius: 8px;
-            font-size: 0.75em;
-            font-weight: 700;
-            text-align: center;
-            flex-shrink: 0;
-        }
-
+        .mode-indicator { padding: 8px 15px; margin: 10px 15px 0; border-radius: 8px; font-size: 0.75em; font-weight: 700; text-align: center; flex-shrink: 0; }
         .mode-indicator.admin { background: rgba(255,255,255,0.2); color: var(--white); border: 1px solid rgba(255,255,255,0.3); }
         .mode-indicator.viewer { background: rgba(13,27,74,0.3); color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
-
         .nav-menu { flex: 1; padding: 20px 15px; display: flex; flex-direction: column; gap: 6px; }
         .nav-label { color: rgba(255,255,255,0.7); font-size: 0.68em; text-transform: uppercase; letter-spacing: 2px; padding: 12px 15px 6px; font-weight: 700; }
-        .nav-btn { background: transparent; border: none; color: rgba(255,255,255,0.9); padding: 14px 18px; border-radius: 12px; cursor: pointer; transition: all 0.25s; text-align: left; display: flex; align-items: center; gap: 14px; font-size: 0.95em; font-weight: 500; position: relative; width: 100%; font-family: inherit; flex-shrink: 0; }
+        .nav-btn { background: transparent; border: none; color: rgba(255,255,255,0.9); padding: 14px 18px; border-radius: 12px; cursor: pointer; transition: all 0.25s; text-align: left; display: flex; align-items: center; gap: 14px; font-size: 0.95em; font-weight: 500; width: 100%; font-family: inherit; flex-shrink: 0; }
         .nav-btn:hover { background: rgba(255,255,255,0.15); color: var(--white); transform: translateX(4px); }
-        .nav-btn.active { background: var(--navy); color: var(--white); box-shadow: 0 4px 15px rgba(13, 27, 74, 0.4); }
-        .nav-btn.danger { background: rgba(229, 57, 53, 0.2); border: 1px solid rgba(229, 57, 53, 0.4); }
-        .nav-btn.danger:hover { background: rgba(229, 57, 53, 0.35); }
+        .nav-btn.active { background: var(--navy); color: var(--white); box-shadow: 0 4px 15px rgba(13,27,74,0.4); }
+        .nav-btn.danger { background: rgba(229,57,53,0.2); border: 1px solid rgba(229,57,53,0.4); }
         .nav-btn.danger.active { background: var(--red); }
         .nav-btn .nav-icon { font-size: 1.4em; width: 28px; text-align: center; flex-shrink: 0; }
         .nav-btn .nav-text { flex: 1; display: flex; flex-direction: column; }
         .nav-btn .nav-title { font-weight: 700; font-size: 0.95em; }
         .nav-btn .nav-subtitle { font-size: 0.7em; opacity: 0.75; margin-top: 2px; }
         .nav-badge { background: var(--yellow); color: var(--navy); padding: 3px 10px; border-radius: 12px; font-size: 0.75em; font-weight: 800; min-width: 28px; text-align: center; }
-        .nav-btn.active .nav-badge { background: var(--yellow-light); }
-        .sidebar-footer { padding: 15px 20px; border-top: 2px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); font-size: 0.72em; text-align: center; font-weight: 500; flex-shrink: 0; }
-        .logout-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: var(--white); padding: 10px; border-radius: 8px; cursor: pointer; font-family: inherit; font-weight: 600; font-size: 0.85em; margin-top: 10px; width: 100%; transition: all 0.2s; }
-        .logout-btn:hover { background: rgba(255,255,255,0.25); }
+        .sidebar-footer { padding: 15px 20px; border-top: 2px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); font-size: 0.72em; text-align: center; flex-shrink: 0; }
+        .logout-btn { background: rgba(229,57,53,0.3); border: 1px solid rgba(229,57,53,0.5); color: var(--white); padding: 10px; border-radius: 8px; cursor: pointer; font-family: inherit; font-weight: 700; font-size: 0.85em; margin-top: 10px; width: 100%; transition: all 0.2s; }
+        .logout-btn:hover { background: rgba(229,57,53,0.5); }
 
         .main-content { flex: 1; margin-left: 280px; min-height: 100vh; padding: 25px; }
         .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
-        .topbar h2 { color: var(--navy); font-size: 1.8em; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .topbar h2 { color: var(--navy); font-size: 1.8em; font-weight: 800; }
         .topbar .date-info { color: var(--gray-500); font-size: 0.88em; font-weight: 500; }
         .menu-toggle { display: none; background: var(--orange); color: var(--white); border: none; width: 44px; height: 44px; border-radius: 10px; font-size: 1.3em; cursor: pointer; }
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; }
@@ -222,19 +83,17 @@
 
         .view { display: none; animation: fadeIn 0.3s ease; }
         .view.active { display: block; }
-
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .card { background: var(--white); padding: 25px; border-radius: 15px; box-shadow: 0 2px 12px rgba(13, 27, 74, 0.08); margin-bottom: 20px; border-top: 4px solid var(--orange); }
+        .card { background: var(--white); padding: 25px; border-radius: 15px; box-shadow: 0 2px 12px rgba(13,27,74,0.08); margin-bottom: 20px; border-top: 4px solid var(--orange); }
         .card h3 { color: var(--navy); margin-bottom: 15px; font-size: 1.2em; font-weight: 700; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
         .two-cols { display: grid; grid-template-columns: 1fr 1.3fr; gap: 20px; }
         .form-group { margin-bottom: 14px; }
         label { display: block; margin-bottom: 5px; color: var(--gray-700); font-weight: 600; font-size: 0.85em; }
         input, textarea, select { width: 100%; padding: 10px 12px; border: 2px solid var(--gray-200); border-radius: 8px; font-size: 0.95em; transition: all 0.3s; font-family: inherit; background: var(--white); }
-        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1); }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 0 3px rgba(255,107,0,0.1); }
         textarea { resize: vertical; min-height: 65px; }
         button { background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%); color: var(--white); padding: 10px 18px; border: none; border-radius: 8px; font-size: 0.9em; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: inherit; }
-        button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255,107,0,0.4); }
         button:active { transform: translateY(0); }
         .btn-full { width: 100%; }
         .btn-deliver { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
@@ -242,17 +101,16 @@
         .btn-cancel { background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%); }
         .btn-secondary { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); }
         .btn-ghost { background: var(--gray-100); color: var(--gray-700); }
-        .btn-ghost:hover { background: var(--gray-200); box-shadow: none; }
         .btn-danger { background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%); }
 
         .welcome-banner { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); color: var(--white); padding: 30px; border-radius: 15px; margin-bottom: 25px; position: relative; overflow: hidden; }
         .welcome-banner::before { content: '🏍️'; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 5em; opacity: 0.15; }
-        .welcome-banner h2 { font-size: 1.8em; font-weight: 800; margin-bottom: 8px; color: var(--white); }
-        .welcome-banner p { opacity: 0.9; font-size: 1em; }
+        .welcome-banner h2 { font-size: 1.8em; font-weight: 800; margin-bottom: 8px; }
+        .welcome-banner p { opacity: 0.9; }
         .welcome-banner .greeting { font-size: 0.9em; opacity: 0.8; margin-bottom: 5px; }
 
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: var(--white); padding: 22px; border-radius: 15px; box-shadow: 0 2px 12px rgba(13, 27, 74, 0.08); border-left: 5px solid var(--orange); position: relative; overflow: hidden; cursor: default; }
+        .stat-card { background: var(--white); padding: 22px; border-radius: 15px; box-shadow: 0 2px 12px rgba(13,27,74,0.08); border-left: 5px solid var(--orange); position: relative; }
         .stat-card .stat-icon { font-size: 2.5em; margin-bottom: 8px; display: block; }
         .stat-card .stat-number { font-size: 2.8em; font-weight: 800; color: var(--navy); line-height: 1; }
         .stat-card .stat-label { color: var(--gray-500); font-size: 0.9em; margin-top: 8px; font-weight: 600; }
@@ -263,17 +121,15 @@
         .stat-card.cod { border-left-color: var(--navy); }
         .stat-card .stat-tag { position: absolute; top: 15px; right: 15px; background: var(--gray-100); padding: 4px 12px; border-radius: 12px; font-size: 0.78em; font-weight: 700; color: var(--gray-700); }
 
-        .quick-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 25px; }
+        .quick-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
         .quick-action-btn { background: var(--white); border: 2px solid var(--gray-200); padding: 18px; border-radius: 12px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 12px; text-align: left; font-family: inherit; }
-        .quick-action-btn:hover { border-color: var(--orange); background: #FFF5EB; transform: translateY(-3px); }
+        .quick-action-btn:hover { border-color: var(--orange); background: #FFF5EB; }
         .quick-action-btn .qa-icon { font-size: 1.8em; }
-        .quick-action-btn .qa-text { flex: 1; }
-        .quick-action-btn .qa-title { font-weight: 700; color: var(--navy); font-size: 0.95em; }
-        .quick-action-btn .qa-desc { font-size: 0.75em; color: var(--gray-500); margin-top: 2px; }
+        .quick-action-btn .qa-title { font-weight: 700; color: var(--navy); font-size: 0.95em; display: block; }
+        .quick-action-btn .qa-desc { font-size: 0.75em; color: var(--gray-500); margin-top: 2px; display: block; }
 
         .recent-list { max-height: 400px; overflow-y: auto; }
-        .recent-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 10px; margin-bottom: 8px; background: var(--gray-50); transition: all 0.2s; }
-        .recent-item:hover { background: #FFF5EB; }
+        .recent-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 10px; margin-bottom: 8px; background: var(--gray-50); }
         .recent-item .ri-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2em; flex-shrink: 0; }
         .recent-item .ri-icon.new { background: #FFF5EB; }
         .recent-item .ri-icon.delivered { background: #E8F5E9; }
@@ -286,7 +142,6 @@
         .package-list { max-height: 700px; overflow-y: auto; padding-right: 5px; }
         .package-item { background: var(--gray-50); padding: 14px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--orange); transition: all 0.2s; }
         .package-item.postponed { border-left-color: var(--yellow); background: #FFFDF5; }
-        .package-item:hover { transform: translateX(3px); background: #FFF5EB; }
         .pkg-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px; }
         .pkg-code { font-weight: 800; color: var(--navy); font-size: 1em; }
         .pkg-store { background: var(--orange); color: var(--white); padding: 2px 10px; border-radius: 15px; font-size: 0.72em; font-weight: 700; }
@@ -295,7 +150,7 @@
         .pkg-actions { display: flex; gap: 6px; flex-wrap: wrap; }
         .pkg-actions button { padding: 6px 12px; font-size: 0.8em; flex: 1; min-width: 80px; }
 
-        .date-group { background: var(--white); border-radius: 12px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(13, 27, 74, 0.08); overflow: hidden; border: 2px solid var(--gray-200); }
+        .date-group { background: var(--white); border-radius: 12px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(13,27,74,0.08); overflow: hidden; border: 2px solid var(--gray-200); }
         .date-group-header { padding: 14px 18px; background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%); color: var(--white); cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
         .date-group.cancelled .date-group-header { background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%); }
         .date-group-header h3 { font-size: 1em; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; color: var(--white); margin: 0; font-weight: 700; }
@@ -305,13 +160,12 @@
         .date-group-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
         .date-group.open .date-group-body { max-height: 5000px; }
         .date-group-content { padding: 14px; }
-        .delivered-item { background: #E8F5E9; padding: 12px 14px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #11998e; cursor: pointer; transition: all 0.2s; }
-        .delivered-item:hover { background: #C8E6C9; transform: translateX(3px); }
+        .delivered-item { background: #E8F5E9; padding: 12px 14px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #11998e; cursor: pointer; }
         .delivered-item.cancelled-item { background: #FFEBEE; border-left-color: var(--red); }
-        .delivered-item.cancelled-item:hover { background: #FFCDD2; }
         .badge { display: inline-block; padding: 3px 10px; border-radius: 15px; font-size: 0.72em; font-weight: 700; margin-top: 5px; }
         .badge-delivered { background: #11998e; color: var(--white); }
         .badge-cancelled { background: var(--red); color: var(--white); }
+        .group-edit-btn { background: rgba(255,255,255,0.25); padding: 5px 12px; font-size: 0.82em; color: var(--white); border-radius: 6px; }
 
         .search-box { position: relative; margin-bottom: 12px; }
         .search-box input { padding-left: 38px; }
@@ -320,11 +174,10 @@
         .empty-state { text-align: center; padding: 50px 20px; color: var(--gray-500); }
         .empty-state .icon { font-size: 3em; margin-bottom: 15px; opacity: 0.5; }
 
-        .import-section { background: var(--white); padding: 25px; border-radius: 15px; box-shadow: 0 2px 12px rgba(13, 27, 74, 0.08); margin-bottom: 20px; border-top: 4px solid var(--orange); }
+        .import-section { background: var(--white); padding: 25px; border-radius: 15px; box-shadow: 0 2px 12px rgba(13,27,74,0.08); margin-bottom: 20px; border-top: 4px solid var(--orange); }
         .file-input-wrapper { position: relative; display: block; width: 100%; }
         .file-input-wrapper input[type="file"] { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
-        .file-input-label { display: block; padding: 25px; border: 3px dashed var(--orange); border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.3s; background: #FFF5EB; }
-        .file-input-label:hover { background: #FFE8D6; border-color: var(--orange-dark); }
+        .file-input-label { display: block; padding: 25px; border: 3px dashed var(--orange); border-radius: 12px; text-align: center; cursor: pointer; background: #FFF5EB; }
         .file-input-label .icon { font-size: 2.5em; margin-bottom: 10px; }
         .file-name { margin-top: 10px; font-weight: 700; color: var(--orange); }
         .mapping-section { margin-top: 18px; padding: 18px; background: var(--gray-50); border-radius: 10px; }
@@ -339,20 +192,15 @@
         .draft-section { background: #FFF8E1; border: 2px dashed var(--yellow); padding: 18px; border-radius: 12px; margin-bottom: 18px; }
         .draft-section h3 { color: #F57C00; margin-bottom: 10px; }
         .draft-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
-        .group-edit-btn { background: rgba(255,255,255,0.25); padding: 5px 12px; font-size: 0.82em; color: var(--white); border-radius: 6px; }
-        .group-edit-btn:hover { background: rgba(255,255,255,0.4); }
         .add-to-group-form { background: var(--gray-50); padding: 14px; border-radius: 10px; margin-top: 12px; border: 1px solid var(--gray-200); }
         .saved-date-label { background: rgba(255,255,255,0.25); padding: 3px 10px; border-radius: 12px; font-size: 0.78em; }
 
-        /* ============ MODALES (z-index ALTO para estar sobre el login) ============ */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.show { display: flex; }
-        .modal { background: var(--white); border-radius: 15px; max-width: 580px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal { background: var(--white); border-radius: 15px; max-width: 580px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
         .modal-header { background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%); color: var(--white); padding: 18px 22px; border-radius: 15px 15px 0 0; display: flex; justify-content: space-between; align-items: center; }
         .modal-header h2 { font-size: 1.15em; font-weight: 700; }
         .modal-close { background: rgba(255,255,255,0.2); color: var(--white); width: 32px; height: 32px; border-radius: 50%; padding: 0; font-size: 1.1em; border: none; cursor: pointer; }
-        .modal-close:hover { background: rgba(255,255,255,0.3); transform: none; }
         .modal-body { padding: 22px; }
         .detail-row { display: flex; padding: 9px 0; border-bottom: 1px solid #eee; gap: 10px; }
         .detail-label { font-weight: 700; color: var(--orange); min-width: 110px; font-size: 0.88em; }
@@ -360,8 +208,7 @@
         .detail-value a { color: var(--orange); text-decoration: none; font-weight: 700; }
         .cod-badge { display: inline-block; background: linear-gradient(135deg, var(--yellow) 0%, var(--yellow-light) 100%); color: var(--navy); padding: 4px 12px; border-radius: 15px; font-weight: 800; }
 
-        .notification { position: fixed; top: 20px; right: 20px; background: #11998e; color: var(--white); padding: 14px 22px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: none; animation: slideIn 0.3s ease; z-index: 11000; max-width: 380px; font-weight: 600; }
-        @keyframes slideIn { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .notification { position: fixed; top: 20px; right: 20px; background: #11998e; color: var(--white); padding: 14px 22px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: none; z-index: 11000; max-width: 380px; font-weight: 600; }
         .notification.show { display: block; }
         .notification.error { background: var(--red); }
         .notification.warning { background: var(--yellow); color: var(--navy); }
@@ -372,32 +219,26 @@
         .viewer-banner .vb-title { font-weight: 700; }
         .viewer-banner .vb-desc { font-size: 0.85em; opacity: 0.9; }
 
-        .delete-warning { background: #FFEBEE; border: 2px solid var(--red); border-radius: 12px; padding: 20px; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 15px; }
-        .delete-warning .warn-icon { font-size: 2.5em; flex-shrink: 0; }
-        .delete-warning h3 { color: var(--red); margin-bottom: 5px; font-size: 1.1em; }
-        .delete-warning p { color: var(--gray-700); font-size: 0.9em; line-height: 1.5; }
-
+        .delete-warning { background: #FFEBEE; border: 2px solid var(--red); border-radius: 12px; padding: 20px; margin-bottom: 20px; display: flex; gap: 15px; }
+        .delete-warning .warn-icon { font-size: 2.5em; }
+        .delete-warning h3 { color: var(--red); margin-bottom: 5px; }
+        .delete-warning p { color: var(--gray-700); font-size: 0.9em; }
         .delete-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; margin-bottom: 20px; }
-        .delete-option { background: var(--white); border: 2px solid var(--gray-200); border-radius: 12px; padding: 18px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px; position: relative; }
-        .delete-option:hover { border-color: var(--red); background: #FFF5F5; }
-        .delete-option.selected { border-color: var(--red); background: #FFEBEE; box-shadow: 0 4px 12px rgba(229, 57, 53, 0.2); }
-        .delete-option input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--red); flex-shrink: 0; }
-        .delete-option .do-icon { font-size: 1.8em; flex-shrink: 0; }
-        .delete-option .do-info { flex: 1; }
+        .delete-option { background: var(--white); border: 2px solid var(--gray-200); border-radius: 12px; padding: 18px; cursor: pointer; display: flex; align-items: center; gap: 12px; }
+        .delete-option.selected { border-color: var(--red); background: #FFEBEE; }
+        .delete-option input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--red); }
+        .delete-option .do-icon { font-size: 1.8em; }
         .delete-option .do-title { font-weight: 700; color: var(--navy); font-size: 0.95em; }
-        .delete-option .do-desc { font-size: 0.78em; color: var(--gray-500); margin-top: 2px; }
-        .delete-option .do-count { background: var(--gray-100); padding: 4px 10px; border-radius: 12px; font-size: 0.8em; font-weight: 700; color: var(--gray-700); }
-        .delete-option.selected .do-count { background: var(--red); color: var(--white); }
+        .delete-option .do-desc { font-size: 0.78em; color: var(--gray-500); }
+        .delete-option .do-count { background: var(--gray-100); padding: 4px 10px; border-radius: 12px; font-size: 0.8em; font-weight: 700; color: var(--gray-700); margin-left: auto; }
         .delete-summary { background: var(--gray-50); padding: 18px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--red); }
-        .delete-summary h4 { color: var(--red); margin-bottom: 10px; font-size: 1em; }
-        .delete-summary ul { list-style: none; padding: 0; }
-        .delete-summary li { padding: 6px 0; color: var(--gray-700); font-size: 0.9em; display: flex; align-items: center; gap: 8px; }
-        .delete-summary li::before { content: '⚠️'; }
+        .delete-summary h4 { color: var(--red); margin-bottom: 10px; }
+        .delete-summary ul { list-style: none; }
+        .delete-summary li { padding: 6px 0; color: var(--gray-700); font-size: 0.9em; }
 
         .password-input-wrapper { position: relative; margin-top: 15px; }
         .password-input-wrapper input { padding-right: 45px; font-size: 1em; letter-spacing: 2px; }
         .toggle-password { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--gray-500); cursor: pointer; padding: 5px; font-size: 1.2em; }
-        .toggle-password:hover { color: var(--orange); transform: translateY(-50%); box-shadow: none; }
         .password-error { color: var(--red); font-size: 0.85em; margin-top: 8px; font-weight: 600; display: none; }
         .password-error.show { display: block; }
 
@@ -414,7 +255,7 @@
     </style>
 </head>
 <body>
-    <!-- ============ LOGIN SCREEN ============ -->
+    <!-- LOGIN -->
     <div class="login-screen" id="loginScreen">
         <div class="login-container">
             <img src="https://image.qwenlm.ai/public_source/4a79ba76-7aca-46f1-ae9f-35cf48a90006/1927b28b2-443b-456c-9d01-b5f4ed5a3572.png" alt="Llega Ya Logo" class="login-logo">
@@ -440,7 +281,7 @@
         </div>
     </div>
 
-    <!-- ============ SIDEBAR ============ -->
+    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <img src="https://image.qwenlm.ai/public_source/4a79ba76-7aca-46f1-ae9f-35cf48a90006/1927b28b2-443b-456c-9d01-b5f4ed5a3572.png" alt="Llega Ya Logo" class="logo">
@@ -456,67 +297,53 @@
             <div class="nav-label">Principal</div>
             <button class="nav-btn active" onclick="switchView('home', event)">
                 <span class="nav-icon">🏠</span>
-                <span class="nav-text">
-                    <span class="nav-title">Inicio</span>
-                    <span class="nav-subtitle">Panel de control</span>
-                </span>
+                <span class="nav-text"><span class="nav-title">Inicio</span><span class="nav-subtitle">Panel de control</span></span>
             </button>
             <button class="nav-btn" onclick="switchView('unclassified', event)">
                 <span class="nav-icon">📥</span>
-                <span class="nav-text">
-                    <span class="nav-title">Sin Clasificar</span>
-                    <span class="nav-subtitle">Paquetes nuevos</span>
-                </span>
+                <span class="nav-text"><span class="nav-title">Sin Clasificar</span><span class="nav-subtitle">Paquetes nuevos</span></span>
                 <span class="nav-badge" id="badgeUnclassified">0</span>
             </button>
             <button class="nav-btn" onclick="switchView('postponed', event)">
                 <span class="nav-icon">⏸️</span>
-                <span class="nav-text">
-                    <span class="nav-title">Pospuestos</span>
-                    <span class="nav-subtitle">Para otro día</span>
-                </span>
+                <span class="nav-text"><span class="nav-title">Pospuestos</span><span class="nav-subtitle">Para otro día</span></span>
                 <span class="nav-badge" id="badgePostponed">0</span>
             </button>
 
             <div class="nav-label">Historial</div>
             <button class="nav-btn" onclick="switchView('delivered', event)">
                 <span class="nav-icon">✅</span>
-                <span class="nav-text">
-                    <span class="nav-title">Entregados</span>
-                    <span class="nav-subtitle">Por fecha</span>
-                </span>
+                <span class="nav-text"><span class="nav-title">Entregados</span><span class="nav-subtitle">Por fecha</span></span>
                 <span class="nav-badge" id="badgeDelivered">0</span>
             </button>
             <button class="nav-btn" onclick="switchView('cancelled', event)">
                 <span class="nav-icon">↩️</span>
-                <span class="nav-text">
-                    <span class="nav-title">Devoluciones</span>
-                    <span class="nav-subtitle">Grupos guardados</span>
-                </span>
+                <span class="nav-text"><span class="nav-title">Devoluciones</span><span class="nav-subtitle">Grupos guardados</span></span>
                 <span class="nav-badge" id="badgeCancelled">0</span>
             </button>
 
             <div class="nav-label admin-only">Sistema</div>
+            <button class="nav-btn admin-only" onclick="switchView('backup', event)">
+                <span class="nav-icon">💾</span>
+                <span class="nav-text"><span class="nav-title">Respaldo</span><span class="nav-subtitle">Copiar a otro dispositivo</span></span>
+            </button>
             <button class="nav-btn danger admin-only" onclick="requestDeleteAccess(event)">
                 <span class="nav-icon">🗑️</span>
-                <span class="nav-text">
-                    <span class="nav-title">Borrar Datos</span>
-                    <span class="nav-subtitle">Requiere contraseña</span>
-                </span>
+                <span class="nav-text"><span class="nav-title">Borrar Datos</span><span class="nav-subtitle">Requiere contraseña</span></span>
                 <span class="nav-badge" style="background:var(--red);color:white;">🔒</span>
             </button>
         </nav>
 
         <div class="sidebar-footer">
             🏍️ Llega Ya © 2026<br>
-            <span style="font-size:0.9em;opacity:0.7;">v3.2</span>
-            <button class="logout-btn" onclick="logout()">🚪 Cerrar Sesión</button>
+            <span style="font-size:0.9em;opacity:0.7;">v5.0 Final</span>
+            <button class="logout-btn" onclick="askLogout()">🚪 Salir</button>
         </div>
     </aside>
 
     <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-    <!-- ============ MAIN CONTENT ============ -->
+    <!-- MAIN -->
     <main class="main-content">
         <div class="topbar">
             <div style="display:flex;align-items:center;gap:12px;">
@@ -536,7 +363,7 @@
             </div>
         </div>
 
-        <!-- ============ VIEW: INICIO ============ -->
+        <!-- INICIO -->
         <div id="view-home" class="view active">
             <div class="welcome-banner">
                 <div class="greeting" id="greetingText">Buenos días</div>
@@ -545,84 +372,30 @@
             </div>
 
             <div class="stats-grid">
-                <div class="stat-card pending">
-                    <span class="stat-tag">Sin clasificar</span>
-                    <span class="stat-icon">📥</span>
-                    <div class="stat-number" id="statPending">0</div>
-                    <div class="stat-label">Paquetes Pendientes</div>
-                </div>
-                <div class="stat-card postponed">
-                    <span class="stat-tag">Para otro día</span>
-                    <span class="stat-icon">⏸️</span>
-                    <div class="stat-number" id="statPostponed">0</div>
-                    <div class="stat-label">Pospuestos</div>
-                </div>
-                <div class="stat-card delivered">
-                    <span class="stat-tag">Hoy</span>
-                    <span class="stat-icon">✅</span>
-                    <div class="stat-number" id="statTodayDelivered">0</div>
-                    <div class="stat-label">Entregados Hoy</div>
-                </div>
-                <div class="stat-card cancelled">
-                    <span class="stat-tag">Total</span>
-                    <span class="stat-icon">↩️</span>
-                    <div class="stat-number" id="statCancelled">0</div>
-                    <div class="stat-label">Devoluciones</div>
-                </div>
-                <div class="stat-card cod">
-                    <span class="stat-tag">Por cobrar</span>
-                    <span class="stat-icon">💵</span>
-                    <div class="stat-number" id="statCOD">$0</div>
-                    <div class="stat-label">COD Pendiente</div>
-                </div>
+                <div class="stat-card pending"><span class="stat-tag">Sin clasificar</span><span class="stat-icon">📥</span><div class="stat-number" id="statPending">0</div><div class="stat-label">Paquetes Pendientes</div></div>
+                <div class="stat-card postponed"><span class="stat-tag">Para otro día</span><span class="stat-icon">⏸️</span><div class="stat-number" id="statPostponed">0</div><div class="stat-label">Pospuestos</div></div>
+                <div class="stat-card delivered"><span class="stat-tag">Hoy</span><span class="stat-icon">✅</span><div class="stat-number" id="statTodayDelivered">0</div><div class="stat-label">Entregados Hoy</div></div>
+                <div class="stat-card cancelled"><span class="stat-tag">Total</span><span class="stat-icon">↩️</span><div class="stat-number" id="statCancelled">0</div><div class="stat-label">Devoluciones</div></div>
+                <div class="stat-card cod"><span class="stat-tag">Por cobrar</span><span class="stat-icon">💵</span><div class="stat-number" id="statCOD">$0</div><div class="stat-label">COD Pendiente</div></div>
             </div>
 
             <div class="card admin-only">
                 <h3>⚡ Acciones Rápidas</h3>
                 <div class="quick-actions">
-                    <button class="quick-action-btn" onclick="switchView('unclassified', {currentTarget: document.querySelectorAll('.nav-btn')[1]})">
-                        <span class="qa-icon">📊</span>
-                        <span class="qa-text">
-                            <span class="qa-title">Importar Excel</span>
-                            <span class="qa-desc">Cargar archivo de paquetes</span>
-                        </span>
-                    </button>
-                    <button class="quick-action-btn" onclick="switchView('unclassified', {currentTarget: document.querySelectorAll('.nav-btn')[1]})">
-                        <span class="qa-icon">➕</span>
-                        <span class="qa-text">
-                            <span class="qa-title">Nuevo Paquete</span>
-                            <span class="qa-desc">Registrar manualmente</span>
-                        </span>
-                    </button>
-                    <button class="quick-action-btn" onclick="switchView('delivered', {currentTarget: document.querySelectorAll('.nav-btn')[3]})">
-                        <span class="qa-icon">✅</span>
-                        <span class="qa-text">
-                            <span class="qa-title">Ver Entregados</span>
-                            <span class="qa-desc">Historial por fecha</span>
-                        </span>
-                    </button>
-                    <button class="quick-action-btn" onclick="switchView('cancelled', {currentTarget: document.querySelectorAll('.nav-btn')[4]})">
-                        <span class="qa-icon">↩️</span>
-                        <span class="qa-text">
-                            <span class="qa-title">Devoluciones</span>
-                            <span class="qa-desc">Gestionar grupos</span>
-                        </span>
-                    </button>
+                    <button class="quick-action-btn" onclick="switchView('unclassified', {currentTarget: document.querySelectorAll('.nav-btn')[1]})"><span class="qa-icon">📊</span><span><span class="qa-title">Importar Excel</span><span class="qa-desc">Cargar archivo de paquetes</span></span></button>
+                    <button class="quick-action-btn" onclick="switchView('unclassified', {currentTarget: document.querySelectorAll('.nav-btn')[1]})"><span class="qa-icon">➕</span><span><span class="qa-title">Nuevo Paquete</span><span class="qa-desc">Registrar manualmente</span></span></button>
+                    <button class="quick-action-btn" onclick="switchView('delivered', {currentTarget: document.querySelectorAll('.nav-btn')[3]})"><span class="qa-icon">✅</span><span><span class="qa-title">Ver Entregados</span><span class="qa-desc">Historial por fecha</span></span></button>
+                    <button class="quick-action-btn" onclick="switchView('cancelled', {currentTarget: document.querySelectorAll('.nav-btn')[4]})"><span class="qa-icon">↩️</span><span><span class="qa-title">Devoluciones</span><span class="qa-desc">Gestionar grupos</span></span></button>
                 </div>
             </div>
 
             <div class="card">
                 <h3>🕐 Actividad Reciente</h3>
-                <div class="recent-list" id="recentList">
-                    <div class="empty-state">
-                        <div class="icon">📋</div>
-                        <p>Aún no hay actividad.</p>
-                    </div>
-                </div>
+                <div class="recent-list" id="recentList"></div>
             </div>
         </div>
 
-        <!-- ============ VIEW: SIN CLASIFICAR ============ -->
+        <!-- SIN CLASIFICAR -->
         <div id="view-unclassified" class="view">
             <div class="import-section admin-only">
                 <h3>📥 Importar desde Excel</h3>
@@ -634,7 +407,7 @@
                         <div class="file-name" id="fileName"></div>
                     </label>
                 </div>
-                <div id="mappingSection" style="display: none;">
+                <div id="mappingSection" style="display:none;">
                     <div class="mapping-section">
                         <h4 style="margin-bottom:10px;">🔗 Mapeo de Columnas</h4>
                         <div class="mapping-grid">
@@ -648,9 +421,7 @@
                             <div class="form-group"><label>Zona</label><select id="mapZone"></select></div>
                         </div>
                     </div>
-                    <div class="preview-container">
-                        <table class="preview-table" id="previewTable"></table>
-                    </div>
+                    <div class="preview-container"><table class="preview-table" id="previewTable"></table></div>
                     <div class="import-actions">
                         <button class="btn-deliver" onclick="importData()">✓ Importar Paquetes</button>
                         <button class="btn-ghost" onclick="cancelImport()">✗ Cancelar</button>
@@ -685,11 +456,10 @@
             </div>
         </div>
 
-        <!-- ============ VIEW: POSPUESTOS ============ -->
+        <!-- POSPUESTOS -->
         <div id="view-postponed" class="view">
             <div class="card">
                 <h3>⏸️ Paquetes Pospuestos <span id="postponedCount" style="background:var(--yellow);color:var(--navy);padding:2px 10px;border-radius:12px;font-size:0.8em;margin-left:auto;">0</span></h3>
-                <p style="color:var(--gray-500);margin-bottom:12px;font-size:0.88em;">Paquetes pospuestos para entregar otro día.</p>
                 <div class="search-box">
                     <span class="search-icon">🔍</span>
                     <input type="text" id="searchPostponed" placeholder="Buscar..." oninput="renderPostponed()">
@@ -698,7 +468,7 @@
             </div>
         </div>
 
-        <!-- ============ VIEW: ENTREGADOS ============ -->
+        <!-- ENTREGADOS -->
         <div id="view-delivered" class="view">
             <div class="card">
                 <h3>✅ Entregados por Fecha</h3>
@@ -706,18 +476,18 @@
                     <span class="search-icon">🔍</span>
                     <input type="text" id="searchDelivered" placeholder="Buscar por código, teléfono o últimos 4 dígitos..." oninput="renderDelivered()">
                 </div>
-                <div class="search-hint">💡 Tip: Escribe los últimos 4 números del código o teléfono para búsqueda rápida</div>
+                <div class="search-hint">💡 Toca ✏️ Fecha en un grupo para cambiarle el día · Toca una entrega para moverla de fecha</div>
                 <div id="deliveredGroups"></div>
             </div>
         </div>
 
-        <!-- ============ VIEW: DEVOLUCIONES ============ -->
+        <!-- DEVOLUCIONES -->
         <div id="view-cancelled" class="view">
             <div class="card">
                 <h3>↩️ Devoluciones</h3>
 
                 <div class="draft-section admin-only">
-                    <h3 style="color:#F57C00;">📝 Borrador <span id="draftCount" style="background:var(--yellow);color:var(--navy);padding:2px 10px;border-radius:12px;font-size:0.8em;margin-left:8px;">0</span></h3>
+                    <h3>📝 Borrador <span id="draftCount" style="background:var(--yellow);color:var(--navy);padding:2px 10px;border-radius:12px;font-size:0.8em;margin-left:8px;">0</span></h3>
                     <p style="color:var(--gray-500);font-size:0.85em;margin-bottom:10px;">Devoluciones del día. Guárdalas cuando termines el lote.</p>
                     <div id="draftList"></div>
                     <div class="draft-actions">
@@ -735,94 +505,53 @@
             </div>
         </div>
 
-        <!-- ============ VIEW: BORRAR DATOS ============ -->
+        <!-- RESPALDO -->
+        <div id="view-backup" class="view admin-only">
+            <div class="card">
+                <h3>💾 Respaldo de Datos</h3>
+                <p style="color:var(--gray-500);font-size:0.9em;margin-bottom:15px;">Los datos se guardan SOLO en este navegador. Para verlos en otro dispositivo, descarga el respaldo y cárgalo allá.</p>
+                <div class="draft-actions">
+                    <button class="btn-deliver" onclick="exportBackup()">⬇️ Descargar Respaldo</button>
+                </div>
+                <div class="file-input-wrapper" style="margin-top:15px;">
+                    <input type="file" id="backupFile" accept=".json">
+                    <label for="backupFile" class="file-input-label">
+                        <div class="icon">📂</div>
+                        <div>Toca aquí y elige el archivo de respaldo (.json)</div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- BORRAR -->
         <div id="view-delete" class="view admin-only">
             <div class="delete-warning">
                 <div class="warn-icon">⚠️</div>
                 <div>
                     <h3>Zona de Peligro</h3>
-                    <p>Esta sección permite eliminar datos de la aplicación. Las acciones son <strong>irreversibles</strong>.</p>
+                    <p>Esta sección elimina datos de la aplicación. Las acciones son irreversibles.</p>
                 </div>
             </div>
 
             <div class="card">
                 <h3>🗑️ Selecciona qué deseas borrar</h3>
-                <p style="color:var(--gray-500);margin-bottom:15px;font-size:0.9em;">Marca las casillas de los datos que quieres eliminar.</p>
-
                 <div class="delete-options" id="deleteOptions">
-                    <label class="delete-option" data-target="unclassified">
-                        <input type="checkbox" onchange="updateDeleteSelection()">
-                        <span class="do-icon">📥</span>
-                        <div class="do-info">
-                            <div class="do-title">Sin Clasificar</div>
-                            <div class="do-desc">Todos los paquetes pendientes</div>
-                        </div>
-                        <span class="do-count" id="delCountUnclassified">0</span>
-                    </label>
-
-                    <label class="delete-option" data-target="postponed">
-                        <input type="checkbox" onchange="updateDeleteSelection()">
-                        <span class="do-icon">⏸️</span>
-                        <div class="do-info">
-                            <div class="do-title">Pospuestos</div>
-                            <div class="do-desc">Paquetes para otro día</div>
-                        </div>
-                        <span class="do-count" id="delCountPostponed">0</span>
-                    </label>
-
-                    <label class="delete-option" data-target="delivered">
-                        <input type="checkbox" onchange="updateDeleteSelection()">
-                        <span class="do-icon">✅</span>
-                        <div class="do-info">
-                            <div class="do-title">Entregados</div>
-                            <div class="do-desc">Historial completo de entregas</div>
-                        </div>
-                        <span class="do-count" id="delCountDelivered">0</span>
-                    </label>
-
-                    <label class="delete-option" data-target="cancelled">
-                        <input type="checkbox" onchange="updateDeleteSelection()">
-                        <span class="do-icon">↩️</span>
-                        <div class="do-info">
-                            <div class="do-title">Devoluciones</div>
-                            <div class="do-desc">Grupos y borrador de devoluciones</div>
-                        </div>
-                        <span class="do-count" id="delCountCancelled">0</span>
-                    </label>
-
-                    <label class="delete-option" data-target="activity">
-                        <input type="checkbox" onchange="updateDeleteSelection()">
-                        <span class="do-icon">🕐</span>
-                        <div class="do-info">
-                            <div class="do-title">Actividad Reciente</div>
-                            <div class="do-desc">Historial de acciones</div>
-                        </div>
-                        <span class="do-count" id="delCountActivity">0</span>
-                    </label>
-
-                    <label class="delete-option" data-target="all">
-                        <input type="checkbox" onchange="toggleSelectAll(this)">
-                        <span class="do-icon">💣</span>
-                        <div class="do-info">
-                            <div class="do-title">BORRAR TODO</div>
-                            <div class="do-desc">Eliminar todos los datos de la app</div>
-                        </div>
-                        <span class="do-count" style="background:var(--red);color:white;">TOTAL</span>
-                    </label>
+                    <label class="delete-option" data-target="unclassified"><input type="checkbox" onchange="updateDeleteSelection()"><span class="do-icon">📥</span><span><span class="do-title">Sin Clasificar</span><br><span class="do-desc">Paquetes pendientes</span></span><span class="do-count" id="delCountUnclassified">0</span></label>
+                    <label class="delete-option" data-target="postponed"><input type="checkbox" onchange="updateDeleteSelection()"><span class="do-icon">⏸️</span><span><span class="do-title">Pospuestos</span><br><span class="do-desc">Paquetes para otro día</span></span><span class="do-count" id="delCountPostponed">0</span></label>
+                    <label class="delete-option" data-target="delivered"><input type="checkbox" onchange="updateDeleteSelection()"><span class="do-icon">✅</span><span><span class="do-title">Entregados</span><br><span class="do-desc">Historial completo</span></span><span class="do-count" id="delCountDelivered">0</span></label>
+                    <label class="delete-option" data-target="cancelled"><input type="checkbox" onchange="updateDeleteSelection()"><span class="do-icon">↩️</span><span><span class="do-title">Devoluciones</span><br><span class="do-desc">Grupos y borrador</span></span><span class="do-count" id="delCountCancelled">0</span></label>
+                    <label class="delete-option" data-target="activity"><input type="checkbox" onchange="updateDeleteSelection()"><span class="do-icon">🕐</span><span><span class="do-title">Actividad</span><br><span class="do-desc">Historial de acciones</span></span><span class="do-count" id="delCountActivity">0</span></label>
+                    <label class="delete-option" data-target="all"><input type="checkbox" onchange="toggleSelectAll(this)"><span class="do-icon">💣</span><span><span class="do-title">BORRAR TODO</span><br><span class="do-desc">Todos los datos</span></span><span class="do-count" style="background:var(--red);color:white;">TOTAL</span></label>
                 </div>
 
                 <div class="delete-summary" id="deleteSummary" style="display:none;">
-                    <h4>⚠️ Resumen de eliminación</h4>
+                    <h4>⚠️ Se eliminará:</h4>
                     <ul id="deleteSummaryList"></ul>
                 </div>
 
                 <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                    <button class="btn-danger btn-full" onclick="confirmDeleteAction()" id="btnDeleteAction" disabled style="opacity:0.5;">
-                        🗑️ Eliminar Seleccionados
-                    </button>
-                    <button class="btn-ghost btn-full" onclick="clearDeleteSelection()">
-                        Limpiar Selección
-                    </button>
+                    <button class="btn-danger btn-full" onclick="confirmDeleteAction()" id="btnDeleteAction" disabled style="opacity:0.5;">🗑️ Eliminar Seleccionados</button>
+                    <button class="btn-ghost btn-full" onclick="clearDeleteSelection()">Limpiar Selección</button>
                 </div>
             </div>
         </div>
@@ -831,27 +560,32 @@
     <!-- MODAL FICHA -->
     <div class="modal-overlay" id="clientModal">
         <div class="modal">
-            <div class="modal-header">
-                <h2 id="modalTitle">📋 Ficha del Cliente</h2>
-                <button class="modal-close" onclick="closeModal()">✕</button>
-            </div>
+            <div class="modal-header"><h2 id="modalTitle">📋 Ficha</h2><button class="modal-close" onclick="closeModal()">✕</button></div>
             <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- MODAL CAMBIAR FECHA -->
+    <div class="modal-overlay" id="editDateModal">
+        <div class="modal">
+            <div class="modal-header"><h2>📅 Cambiar Fecha</h2><button class="modal-close" onclick="closeEditDateModal()">✕</button></div>
+            <div class="modal-body">
+                <p id="editDateDesc" style="color:var(--gray-500);margin-bottom:12px;"></p>
+                <div class="form-group"><label>Nueva fecha *</label><input type="date" id="editDateInput"></div>
+                <div style="display:flex;gap:10px;">
+                    <button class="btn-deliver btn-full" onclick="confirmDateChange()">✓ Guardar</button>
+                    <button class="btn-ghost btn-full" onclick="closeEditDateModal()">Cancelar</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- MODAL GUARDAR GRUPO -->
     <div class="modal-overlay" id="saveGroupModal">
         <div class="modal">
-            <div class="modal-header" style="background:linear-gradient(135deg,var(--red) 0%,var(--red-dark) 100%);">
-                <h2>💾 Guardar Grupo</h2>
-                <button class="modal-close" onclick="closeSaveGroupModal()">✕</button>
-            </div>
+            <div class="modal-header" style="background:linear-gradient(135deg,var(--red) 0%,var(--red-dark) 100%);"><h2>💾 Guardar Grupo</h2><button class="modal-close" onclick="closeSaveGroupModal()">✕</button></div>
             <div class="modal-body">
-                <p style="color:var(--gray-500);margin-bottom:12px;">Selecciona la fecha del grupo:</p>
-                <div class="form-group">
-                    <label>Fecha *</label>
-                    <input type="date" id="groupDate" required>
-                </div>
+                <div class="form-group"><label>Fecha *</label><input type="date" id="groupDate"></div>
                 <p style="color:var(--gray-500);font-size:0.85em;margin-bottom:12px;">Se guardarán <strong id="groupCountPreview">0</strong> paquetes.</p>
                 <div style="display:flex;gap:10px;">
                     <button class="btn-deliver btn-full" onclick="confirmSaveGroup()">✓ Confirmar</button>
@@ -864,26 +598,19 @@
     <!-- MODAL EDITAR GRUPO -->
     <div class="modal-overlay" id="editGroupModal">
         <div class="modal">
-            <div class="modal-header" style="background:linear-gradient(135deg,var(--red) 0%,var(--red-dark) 100%);">
-                <h2>✏️ Editar Grupo</h2>
-                <button class="modal-close" onclick="closeEditGroupModal()">✕</button>
-            </div>
+            <div class="modal-header" style="background:linear-gradient(135deg,var(--red) 0%,var(--red-dark) 100%);"><h2>✏️ Editar Grupo</h2><button class="modal-close" onclick="closeEditGroupModal()">✕</button></div>
             <div class="modal-body" id="editGroupBody"></div>
         </div>
     </div>
 
-    <!-- MODAL CONTRASEÑA (ACCESO ADMIN) -->
+    <!-- MODAL CONTRASEÑA ADMIN -->
     <div class="modal-overlay" id="passwordAccessModal">
         <div class="modal">
-            <div class="modal-header" style="background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 100%);">
-                <h2>🔒 Acceso Administrador</h2>
-                <button class="modal-close" onclick="closePasswordAccessModal()">✕</button>
-            </div>
+            <div class="modal-header"><h2>🔒 Acceso Administrador</h2><button class="modal-close" onclick="closePasswordAccessModal()">✕</button></div>
             <div class="modal-body">
                 <div style="text-align:center;margin-bottom:15px;">
                     <div style="font-size:3em;">🔐</div>
                     <p style="color:var(--gray-700);font-weight:600;">Ingresa la contraseña de administrador</p>
-                    <p style="color:var(--gray-500);font-size:0.85em;">Solo el administrador puede acceder a esta sección</p>
                 </div>
                 <div class="form-group">
                     <label>Contraseña</label>
@@ -901,22 +628,10 @@
     <!-- MODAL CONFIRMAR BORRADO -->
     <div class="modal-overlay" id="confirmDeleteModal">
         <div class="modal">
-            <div class="modal-header" style="background:linear-gradient(135deg,var(--red) 0%,var(--red-dark) 100%);">
-                <h2>⚠️ Confirmar Eliminación</h2>
-                <button class="modal-close" onclick="closeConfirmDeleteModal()">✕</button>
-            </div>
+            <div class="modal-header" style="background:linear-gradient(135deg,var(--red) 0%,var(--red-dark) 100%);"><h2>⚠️ Confirmar</h2><button class="modal-close" onclick="closeConfirmDeleteModal()">✕</button></div>
             <div class="modal-body">
-                <div style="text-align:center;margin-bottom:15px;">
-                    <div style="font-size:3em;">🚨</div>
-                    <p style="color:var(--red);font-weight:700;font-size:1.1em;">¿Estás completamente seguro?</p>
-                    <p style="color:var(--gray-700);font-size:0.9em;">Esta acción NO se puede deshacer</p>
-                </div>
-
-                <div class="delete-summary" style="display:block;">
-                    <h4>Se eliminará:</h4>
-                    <ul id="confirmDeleteList"></ul>
-                </div>
-
+                <p style="color:var(--red);font-weight:700;text-align:center;margin-bottom:10px;">¿Estás completamente seguro?</p>
+                <div class="delete-summary" style="display:block;"><ul id="confirmDeleteList"></ul></div>
                 <div class="form-group" style="margin-top:15px;">
                     <label>🔒 Ingresa la contraseña para confirmar</label>
                     <div class="password-input-wrapper">
@@ -925,7 +640,6 @@
                     </div>
                     <div class="password-error" id="confirmPasswordError">❌ Contraseña incorrecta</div>
                 </div>
-
                 <div style="display:flex;gap:10px;margin-top:15px;">
                     <button class="btn-danger btn-full" onclick="executeDelete()">🗑️ SÍ, ELIMINAR</button>
                     <button class="btn-ghost btn-full" onclick="closeConfirmDeleteModal()">Cancelar</button>
@@ -934,32 +648,56 @@
         </div>
     </div>
 
+    <!-- MODAL SALIR -->
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal">
+            <div class="modal-header" style="background:linear-gradient(135deg,var(--red) 0%,var(--red-dark) 100%);"><h2>🚪 Salir</h2><button class="modal-close" onclick="cancelLogout()">✕</button></div>
+            <div class="modal-body">
+                <p style="text-align:center;color:var(--gray-700);font-weight:600;margin-bottom:15px;">¿Quieres salir de la sesión actual?</p>
+                <div style="display:flex;gap:10px;">
+                    <button class="btn-danger btn-full" onclick="confirmLogout()">Sí, salir</button>
+                    <button class="btn-ghost btn-full" onclick="cancelLogout()">No, quedarme</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="notification" id="notification"></div>
 
     <script>
-        // ===== CONFIG =====
         var ADMIN_PASSWORD = '250411Mia';
         var userMode = null;
         var deleteAccessGranted = false;
 
-        // ===== DATA =====
-        var packages = JSON.parse(localStorage.getItem('ly_packages')) || [];
-        var deliveredGroups = JSON.parse(localStorage.getItem('ly_delivered')) || {};
-        var cancelledDraft = JSON.parse(localStorage.getItem('ly_cancelledDraft')) || [];
-        var cancelledGroups = JSON.parse(localStorage.getItem('ly_cancelledGroups')) || [];
-        var recentActivity = JSON.parse(localStorage.getItem('ly_activity')) || [];
+        function lsGet(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+        function lsSet(key, val) { try { localStorage.setItem(key, val); } catch (e) {} }
+        function lsDel(key) { try { localStorage.removeItem(key); } catch (e) {} }
+
+        var packages = JSON.parse(lsGet('ly_packages') || '[]') || [];
+        var deliveredGroups = JSON.parse(lsGet('ly_delivered') || '{}') || {};
+        var cancelledDraft = JSON.parse(lsGet('ly_cancelledDraft') || '[]') || [];
+        var cancelledGroups = JSON.parse(lsGet('ly_cancelledGroups') || '[]') || [];
+        var recentActivity = JSON.parse(lsGet('ly_activity') || '[]') || [];
         var excelData = [];
         var excelHeaders = [];
         var selectedDeleteTargets = [];
+        var editDateMode = null;
+        var editDateTarget = null;
 
         function isAdmin() { return userMode === 'admin'; }
 
+        function localDateKey(d) {
+            var m = d.getMonth() + 1;
+            var day = d.getDate();
+            return d.getFullYear() + '-' + (m < 10 ? '0' + m : m) + '-' + (day < 10 ? '0' + day : day);
+        }
+
         function save() {
-            localStorage.setItem('ly_packages', JSON.stringify(packages));
-            localStorage.setItem('ly_delivered', JSON.stringify(deliveredGroups));
-            localStorage.setItem('ly_cancelledDraft', JSON.stringify(cancelledDraft));
-            localStorage.setItem('ly_cancelledGroups', JSON.stringify(cancelledGroups));
-            localStorage.setItem('ly_activity', JSON.stringify(recentActivity.slice(0, 20)));
+            lsSet('ly_packages', JSON.stringify(packages));
+            lsSet('ly_delivered', JSON.stringify(deliveredGroups));
+            lsSet('ly_cancelledDraft', JSON.stringify(cancelledDraft));
+            lsSet('ly_cancelledGroups', JSON.stringify(cancelledGroups));
+            lsSet('ly_activity', JSON.stringify(recentActivity.slice(0, 20)));
         }
 
         function addActivity(type, title, desc) {
@@ -975,7 +713,7 @@
             setTimeout(function() { n.className = 'notification'; }, 3000);
         }
 
-        // ===== LOGIN (con listeners directos, más confiable en móvil) =====
+        // ===== LOGIN =====
         document.getElementById('btnAdmin').addEventListener('click', function() {
             document.getElementById('accessPassword').value = '';
             document.getElementById('accessPasswordError').classList.remove('show');
@@ -985,26 +723,21 @@
 
         document.getElementById('btnViewer').addEventListener('click', function() {
             userMode = 'viewer';
-            deleteAccessGranted = false;
+            lsSet('ly_session', 'viewer');
             enterApp();
             notify('👁️ Modo visualizador activado', 'warning');
         });
 
         document.getElementById('btnUnlock').addEventListener('click', checkAccessPassword);
-
-        document.getElementById('accessPassword').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') checkAccessPassword();
-        });
-
-        document.getElementById('confirmPassword').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') executeDelete();
-        });
+        document.getElementById('accessPassword').addEventListener('keypress', function(e) { if (e.key === 'Enter') checkAccessPassword(); });
+        document.getElementById('confirmPassword').addEventListener('keypress', function(e) { if (e.key === 'Enter') executeDelete(); });
 
         function checkAccessPassword() {
             var pwd = document.getElementById('accessPassword').value;
             if (pwd === ADMIN_PASSWORD) {
                 userMode = 'admin';
                 deleteAccessGranted = true;
+                lsSet('ly_session', 'admin');
                 closePasswordAccessModal();
                 enterApp();
                 notify('🔑 Acceso de administrador concedido');
@@ -1015,9 +748,7 @@
             }
         }
 
-        function closePasswordAccessModal() {
-            document.getElementById('passwordAccessModal').classList.remove('show');
-        }
+        function closePasswordAccessModal() { document.getElementById('passwordAccessModal').classList.remove('show'); }
 
         function toggleAccessPasswordVisibility() {
             var input = document.getElementById('accessPassword');
@@ -1027,19 +758,12 @@
         function enterApp() {
             document.getElementById('loginScreen').classList.add('hidden');
             applyModeUI();
-            updateCounts();
-            updateDashboardStats();
-            renderUnclassified();
-            renderPostponed();
-            renderDraft();
-            renderCancelledGroups();
-            renderRecentActivity();
+            refreshAll();
         }
 
         function applyModeUI() {
             var indicator = document.getElementById('modeIndicator');
             var viewerBanner = document.querySelector('.viewer-banner');
-
             if (userMode === 'admin') {
                 indicator.className = 'mode-indicator admin';
                 indicator.innerHTML = '🔑 Modo Administrador';
@@ -1053,55 +777,52 @@
             }
         }
 
-        function logout() {
-            if (!confirm('¿Cerrar sesión?')) return;
+        // ===== SALIR =====
+        function askLogout() { document.getElementById('logoutModal').classList.add('show'); }
+        function cancelLogout() { document.getElementById('logoutModal').classList.remove('show'); }
+        function confirmLogout() {
+            lsDel('ly_session');
             userMode = null;
             deleteAccessGranted = false;
+            document.getElementById('logoutModal').classList.remove('show');
             document.getElementById('loginScreen').classList.remove('hidden');
             document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
             document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('active'); });
             document.querySelector('.nav-btn').classList.add('active');
             document.getElementById('view-home').classList.add('active');
-            document.getElementById('viewTitle').textContent = '🏠 Inicio';
+            document.getElementById('viewTitle').textContent = viewTitles.home;
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('open');
+                document.getElementById('overlay').classList.remove('show');
+            }
         }
 
-        // ===== SIDEBAR =====
+        // ===== NAV =====
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
             document.getElementById('overlay').classList.toggle('show');
         }
 
-        var viewTitles = {
-            home: '🏠 Inicio',
-            unclassified: '📥 Sin Clasificar',
-            postponed: '⏸️ Pospuestos',
-            delivered: '✅ Entregados',
-            cancelled: '↩️ Devoluciones',
-            delete: '🗑️ Borrar Datos'
-        };
+        var viewTitles = { home: '🏠 Inicio', unclassified: '📥 Sin Clasificar', postponed: '⏸️ Pospuestos', delivered: '✅ Entregados', cancelled: '↩️ Devoluciones', backup: '💾 Respaldo', delete: '🗑️ Borrar Datos' };
 
         function switchView(view, event) {
-            if (view === 'delete' && !isAdmin()) {
+            if ((view === 'delete' || view === 'backup') && !isAdmin()) {
                 notify('🔒 Solo el administrador puede acceder', 'error');
                 return;
             }
-
             document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
             document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('active'); });
             event.currentTarget.classList.add('active');
             document.getElementById('view-' + view).classList.add('active');
             document.getElementById('viewTitle').textContent = viewTitles[view];
 
-            if (view === 'home') { renderRecentActivity(); updateDashboardStats(); }
             if (view === 'delivered') renderDelivered();
             if (view === 'cancelled') renderCancelledGroups();
             if (view === 'unclassified') renderUnclassified();
             if (view === 'postponed') renderPostponed();
+            if (view === 'home') { renderRecentActivity(); updateDashboardStats(); }
             if (view === 'delete') {
-                if (!deleteAccessGranted) {
-                    requestDeleteAccess(event);
-                    return;
-                }
+                if (!deleteAccessGranted) { requestDeleteAccess(event); return; }
                 updateDeleteCounts();
             }
 
@@ -1112,140 +833,181 @@
         }
 
         function requestDeleteAccess(event) {
-            if (!isAdmin()) {
-                notify('🔒 Solo el administrador puede acceder', 'error');
-                return;
-            }
-            if (deleteAccessGranted) {
-                document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
-                document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('active'); });
-                event.currentTarget.classList.add('active');
-                document.getElementById('view-delete').classList.add('active');
-                document.getElementById('viewTitle').textContent = viewTitles.delete;
-                updateDeleteCounts();
-                return;
-            }
-
             document.getElementById('accessPassword').value = '';
             document.getElementById('accessPasswordError').classList.remove('show');
             document.getElementById('passwordAccessModal').classList.add('show');
             setTimeout(function() { document.getElementById('accessPassword').focus(); }, 150);
         }
 
-        // ===== DELETE SELECTION =====
-        function updateDeleteCounts() {
-            var unclassified = packages.filter(function(p) { return p.status === 'pending' || !p.status; });
-            var postponed = packages.filter(function(p) { return p.status === 'postponed'; });
-            var deliveredTotal = Object.values(deliveredGroups).reduce(function(s, a) { return s + a.length; }, 0);
-            var cancelledTotal = cancelledDraft.length + cancelledGroups.reduce(function(s, g) { return s + g.items.length; }, 0);
+        // ===== CAMBIO DE FECHA =====
+        function openGroupDateEdit(key) {
+            editDateMode = 'group';
+            editDateTarget = key;
+            document.getElementById('editDateInput').value = key;
+            document.getElementById('editDateDesc').textContent = 'Cambiar la fecha del grupo completo (' + (deliveredGroups[key] ? deliveredGroups[key].length : 0) + ' paquetes).';
+            document.getElementById('editDateModal').classList.add('show');
+        }
 
-            document.getElementById('delCountUnclassified').textContent = unclassified.length;
-            document.getElementById('delCountPostponed').textContent = postponed.length;
-            document.getElementById('delCountDelivered').textContent = deliveredTotal;
-            document.getElementById('delCountCancelled').textContent = cancelledTotal;
+        function openSingleDateEdit(id) {
+            editDateMode = 'single';
+            editDateTarget = id;
+            var cur = '';
+            for (var key in deliveredGroups) {
+                var f = deliveredGroups[key].find(function(p) { return p.id === id; });
+                if (f) { cur = key; break; }
+            }
+            document.getElementById('editDateInput').value = cur;
+            document.getElementById('editDateDesc').textContent = 'Cambiar la fecha de esta entrega individual.';
+            closeModal();
+            document.getElementById('editDateModal').classList.add('show');
+        }
+
+        function closeEditDateModal() {
+            document.getElementById('editDateModal').classList.remove('show');
+            editDateMode = null;
+            editDateTarget = null;
+        }
+
+        function confirmDateChange() {
+            var newDate = document.getElementById('editDateInput').value;
+            if (!newDate) { notify('Selecciona una fecha', 'error'); return; }
+
+            if (editDateMode === 'group') {
+                var oldKey = editDateTarget;
+                if (newDate !== oldKey) {
+                    var items = deliveredGroups[oldKey] || [];
+                    items.forEach(function(p) { p.deliveryDate = newDate; });
+                    if (deliveredGroups[newDate]) deliveredGroups[newDate] = deliveredGroups[newDate].concat(items);
+                    else deliveredGroups[newDate] = items;
+                    delete deliveredGroups[oldKey];
+                }
+            } else if (editDateMode === 'single') {
+                var pkg = null;
+                for (var k in deliveredGroups) {
+                    var idx = deliveredGroups[k].findIndex(function(p) { return p.id === editDateTarget; });
+                    if (idx !== -1) {
+                        pkg = deliveredGroups[k][idx];
+                        deliveredGroups[k].splice(idx, 1);
+                        if (deliveredGroups[k].length === 0) delete deliveredGroups[k];
+                        break;
+                    }
+                }
+                if (pkg) {
+                    pkg.deliveryDate = newDate;
+                    if (!deliveredGroups[newDate]) deliveredGroups[newDate] = [];
+                    deliveredGroups[newDate].push(pkg);
+                }
+            }
+
+            save();
+            closeEditDateModal();
+            renderDelivered();
+            updateCounts();
+            updateDashboardStats();
+            notify('📅 Fecha actualizada');
+        }
+
+        // ===== RESPALDO =====
+        function exportBackup() {
+            var data = { packages: packages, deliveredGroups: deliveredGroups, cancelledDraft: cancelledDraft, cancelledGroups: cancelledGroups, recentActivity: recentActivity, exportDate: new Date().toISOString() };
+            var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'llega-ya-respaldo.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            notify('💾 Respaldo descargado');
+        }
+
+        document.getElementById('backupFile').addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            if (!file) return;
+            if (!confirm('Esto reemplazará los datos actuales con los del respaldo. ¿Continuar?')) { e.target.value = ''; return; }
+            var reader = new FileReader();
+            reader.onload = function(ev) {
+                try {
+                    var data = JSON.parse(ev.target.result);
+                    if (data.packages) packages = data.packages;
+                    if (data.deliveredGroups) deliveredGroups = data.deliveredGroups;
+                    if (data.cancelledDraft) cancelledDraft = data.cancelledDraft;
+                    if (data.cancelledGroups) cancelledGroups = data.cancelledGroups;
+                    if (data.recentActivity) recentActivity = data.recentActivity;
+                    save();
+                    refreshAll();
+                    notify('📂 Respaldo cargado correctamente');
+                } catch (err) { notify('Archivo de respaldo inválido', 'error'); }
+            };
+            reader.readAsText(file);
+            e.target.value = '';
+        });
+
+        // ===== BORRADO =====
+        function updateDeleteCounts() {
+            var un = packages.filter(function(p) { return p.status === 'pending' || !p.status; }).length;
+            var po = packages.filter(function(p) { return p.status === 'postponed'; }).length;
+            var de = Object.values(deliveredGroups).reduce(function(s, a) { return s + a.length; }, 0);
+            var ca = cancelledDraft.length + cancelledGroups.reduce(function(s, g) { return s + g.items.length; }, 0);
+            document.getElementById('delCountUnclassified').textContent = un;
+            document.getElementById('delCountPostponed').textContent = po;
+            document.getElementById('delCountDelivered').textContent = de;
+            document.getElementById('delCountCancelled').textContent = ca;
             document.getElementById('delCountActivity').textContent = recentActivity.length;
         }
 
         function updateDeleteSelection() {
             var checkboxes = document.querySelectorAll('#deleteOptions input[type="checkbox"]');
             selectedDeleteTargets = [];
-
             checkboxes.forEach(function(cb) {
                 var option = cb.closest('.delete-option');
-                if (cb.checked) {
-                    option.classList.add('selected');
-                    selectedDeleteTargets.push(option.dataset.target);
-                } else {
-                    option.classList.remove('selected');
-                }
+                if (cb.checked) { option.classList.add('selected'); selectedDeleteTargets.push(option.dataset.target); }
+                else option.classList.remove('selected');
             });
-
             if (selectedDeleteTargets.indexOf('all') !== -1) {
-                checkboxes.forEach(function(cb) {
-                    cb.checked = true;
-                    cb.closest('.delete-option').classList.add('selected');
-                });
+                checkboxes.forEach(function(cb) { cb.checked = true; cb.closest('.delete-option').classList.add('selected'); });
                 selectedDeleteTargets = ['unclassified', 'postponed', 'delivered', 'cancelled', 'activity'];
             }
-
-            var allCheckbox = document.querySelector('[data-target="all"] input');
-            var allTargets = ['unclassified', 'postponed', 'delivered', 'cancelled', 'activity'];
-            var allSelected = allTargets.every(function(t) { return selectedDeleteTargets.indexOf(t) !== -1; });
-            allCheckbox.checked = allSelected;
-
+            var allCb = document.querySelector('[data-target="all"] input');
+            var allT = ['unclassified', 'postponed', 'delivered', 'cancelled', 'activity'];
+            allCb.checked = allT.every(function(t) { return selectedDeleteTargets.indexOf(t) !== -1; });
             updateDeleteSummary();
         }
 
         function toggleSelectAll(checkbox) {
-            var allCheckboxes = document.querySelectorAll('#deleteOptions input[type="checkbox"]');
-            allCheckboxes.forEach(function(cb) {
+            document.querySelectorAll('#deleteOptions input[type="checkbox"]').forEach(function(cb) {
                 cb.checked = checkbox.checked;
-                var option = cb.closest('.delete-option');
-                if (checkbox.checked) option.classList.add('selected');
-                else option.classList.remove('selected');
+                cb.closest('.delete-option').classList[checkbox.checked ? 'add' : 'remove']('selected');
             });
-
             selectedDeleteTargets = checkbox.checked ? ['unclassified', 'postponed', 'delivered', 'cancelled', 'activity'] : [];
             updateDeleteSummary();
         }
 
         function updateDeleteSummary() {
             var summary = document.getElementById('deleteSummary');
-            var list = document.getElementById('deleteSummaryList');
             var btn = document.getElementById('btnDeleteAction');
-
-            if (selectedDeleteTargets.length === 0) {
-                summary.style.display = 'none';
-                btn.disabled = true;
-                btn.style.opacity = '0.5';
-                return;
-            }
-
-            var labels = {
-                unclassified: '📥 Paquetes Sin Clasificar',
-                postponed: '⏸️ Paquetes Pospuestos',
-                delivered: '✅ Historial de Entregados',
-                cancelled: '↩️ Devoluciones (grupos y borrador)',
-                activity: '🕐 Actividad Reciente'
-            };
-
-            list.innerHTML = selectedDeleteTargets.map(function(t) { return '<li>' + labels[t] + '</li>'; }).join('');
+            if (selectedDeleteTargets.length === 0) { summary.style.display = 'none'; btn.disabled = true; btn.style.opacity = '0.5'; return; }
+            var labels = { unclassified: '📥 Sin Clasificar', postponed: '⏸️ Pospuestos', delivered: '✅ Entregados', cancelled: '↩️ Devoluciones', activity: '🕐 Actividad' };
+            document.getElementById('deleteSummaryList').innerHTML = selectedDeleteTargets.map(function(t) { return '<li>' + labels[t] + '</li>'; }).join('');
             summary.style.display = 'block';
             btn.disabled = false;
             btn.style.opacity = '1';
         }
 
         function clearDeleteSelection() {
-            var checkboxes = document.querySelectorAll('#deleteOptions input[type="checkbox"]');
-            checkboxes.forEach(function(cb) {
-                cb.checked = false;
-                cb.closest('.delete-option').classList.remove('selected');
-            });
+            document.querySelectorAll('#deleteOptions input[type="checkbox"]').forEach(function(cb) { cb.checked = false; cb.closest('.delete-option').classList.remove('selected'); });
             selectedDeleteTargets = [];
             updateDeleteSummary();
         }
 
         function confirmDeleteAction() {
-            if (selectedDeleteTargets.length === 0) {
-                notify('Selecciona al menos una opción', 'warning');
-                return;
-            }
-
-            var labels = {
-                unclassified: '📥 Paquetes Sin Clasificar',
-                postponed: '⏸️ Paquetes Pospuestos',
-                delivered: '✅ Historial de Entregados',
-                cancelled: '↩️ Devoluciones (grupos y borrador)',
-                activity: '🕐 Actividad Reciente'
-            };
-
-            var list = document.getElementById('confirmDeleteList');
-            list.innerHTML = selectedDeleteTargets.map(function(t) { return '<li>' + labels[t] + '</li>'; }).join('');
-
+            if (selectedDeleteTargets.length === 0) { notify('Selecciona una opción', 'warning'); return; }
+            var labels = { unclassified: '📥 Sin Clasificar', postponed: '⏸️ Pospuestos', delivered: '✅ Entregados', cancelled: '↩️ Devoluciones', activity: '🕐 Actividad' };
+            document.getElementById('confirmDeleteList').innerHTML = selectedDeleteTargets.map(function(t) { return '<li>' + labels[t] + '</li>'; }).join('');
             document.getElementById('confirmPassword').value = '';
             document.getElementById('confirmPasswordError').classList.remove('show');
             document.getElementById('confirmDeleteModal').classList.add('show');
-            setTimeout(function() { document.getElementById('confirmPassword').focus(); }, 150);
         }
 
         function executeDelete() {
@@ -1253,86 +1015,59 @@
             if (pwd !== ADMIN_PASSWORD) {
                 document.getElementById('confirmPasswordError').classList.add('show');
                 document.getElementById('confirmPassword').value = '';
-                document.getElementById('confirmPassword').focus();
                 return;
             }
-
-            var labels = {
-                unclassified: 'Sin Clasificar',
-                postponed: 'Pospuestos',
-                delivered: 'Entregados',
-                cancelled: 'Devoluciones',
-                activity: 'Actividad Reciente'
-            };
-
             if (selectedDeleteTargets.indexOf('unclassified') !== -1) packages = packages.filter(function(p) { return p.status !== 'pending' && p.status; });
             if (selectedDeleteTargets.indexOf('postponed') !== -1) packages = packages.filter(function(p) { return p.status !== 'postponed'; });
             if (selectedDeleteTargets.indexOf('delivered') !== -1) deliveredGroups = {};
             if (selectedDeleteTargets.indexOf('cancelled') !== -1) { cancelledDraft = []; cancelledGroups = []; }
             if (selectedDeleteTargets.indexOf('activity') !== -1) recentActivity = [];
-
             save();
             closeConfirmDeleteModal();
             clearDeleteSelection();
-            updateCounts();
-            updateDashboardStats();
-            updateDeleteCounts();
-            renderUnclassified();
-            renderPostponed();
-            renderDraft();
-            renderCancelledGroups();
-            renderRecentActivity();
-
-            var deletedNames = selectedDeleteTargets.map(function(t) { return labels[t]; }).join(', ');
-            notify('🗑️ Eliminados: ' + deletedNames);
+            refreshAll();
+            notify('🗑️ Datos eliminados');
         }
 
-        function closeConfirmDeleteModal() {
-            document.getElementById('confirmDeleteModal').classList.remove('show');
-        }
-
+        function closeConfirmDeleteModal() { document.getElementById('confirmDeleteModal').classList.remove('show'); }
         function toggleConfirmPasswordVisibility() {
             var input = document.getElementById('confirmPassword');
             input.type = input.type === 'password' ? 'text' : 'password';
         }
 
-        // ===== COUNTS =====
+        // ===== CONTADORES =====
         function updateCounts() {
-            var unclassified = packages.filter(function(p) { return p.status === 'pending' || !p.status; });
-            var postponed = packages.filter(function(p) { return p.status === 'postponed'; });
-            var deliveredTotal = Object.values(deliveredGroups).reduce(function(s, a) { return s + a.length; }, 0);
-            var cancelledTotal = cancelledDraft.length + cancelledGroups.reduce(function(s, g) { return s + g.items.length; }, 0);
-
-            document.getElementById('badgeUnclassified').textContent = unclassified.length;
-            document.getElementById('unclassifiedCount').textContent = unclassified.length;
-            document.getElementById('badgePostponed').textContent = postponed.length;
-            document.getElementById('postponedCount').textContent = postponed.length;
-            document.getElementById('badgeDelivered').textContent = deliveredTotal;
-            document.getElementById('badgeCancelled').textContent = cancelledTotal;
+            var un = packages.filter(function(p) { return p.status === 'pending' || !p.status; }).length;
+            var po = packages.filter(function(p) { return p.status === 'postponed'; }).length;
+            var de = Object.values(deliveredGroups).reduce(function(s, a) { return s + a.length; }, 0);
+            var ca = cancelledDraft.length + cancelledGroups.reduce(function(s, g) { return s + g.items.length; }, 0);
+            document.getElementById('badgeUnclassified').textContent = un;
+            document.getElementById('unclassifiedCount').textContent = un;
+            document.getElementById('badgePostponed').textContent = po;
+            document.getElementById('postponedCount').textContent = po;
+            document.getElementById('badgeDelivered').textContent = de;
+            document.getElementById('badgeCancelled').textContent = ca;
             document.getElementById('draftCount').textContent = cancelledDraft.length;
         }
 
         function updateDashboardStats() {
-            var unclassified = packages.filter(function(p) { return p.status === 'pending' || !p.status; });
-            var postponed = packages.filter(function(p) { return p.status === 'postponed'; });
-            var today = new Date().toISOString().split('T')[0];
-            var todayDelivered = deliveredGroups[today] ? deliveredGroups[today].length : 0;
-            var cancelledTotal = cancelledDraft.length + cancelledGroups.reduce(function(s, g) { return s + g.items.length; }, 0);
-            var codPending = unclassified.reduce(function(sum, p) { return sum + (parseFloat(p.cod) || 0); }, 0);
-
-            document.getElementById('statPending').textContent = unclassified.length;
-            document.getElementById('statPostponed').textContent = postponed.length;
-            document.getElementById('statTodayDelivered').textContent = todayDelivered;
-            document.getElementById('statCancelled').textContent = cancelledTotal;
-            document.getElementById('statCOD').textContent = '$' + codPending.toLocaleString('es-DO', {maximumFractionDigits: 0});
+            var un = packages.filter(function(p) { return p.status === 'pending' || !p.status; });
+            var po = packages.filter(function(p) { return p.status === 'postponed'; }).length;
+            var today = localDateKey(new Date());
+            var td = deliveredGroups[today] ? deliveredGroups[today].length : 0;
+            var ca = cancelledDraft.length + cancelledGroups.reduce(function(s, g) { return s + g.items.length; }, 0);
+            var cod = un.reduce(function(s, p) { return s + (parseFloat(p.cod) || 0); }, 0);
+            document.getElementById('statPending').textContent = un.length;
+            document.getElementById('statPostponed').textContent = po;
+            document.getElementById('statTodayDelivered').textContent = td;
+            document.getElementById('statCancelled').textContent = ca;
+            document.getElementById('statCOD').textContent = '$' + cod.toLocaleString('es-DO', { maximumFractionDigits: 0 });
         }
 
         function updateGreeting() {
-            var hour = new Date().getHours();
-            var greeting = 'Buenos días';
-            if (hour >= 12 && hour < 18) greeting = 'Buenas tardes';
-            else if (hour >= 18) greeting = 'Buenas noches';
-            document.getElementById('greetingText').textContent = greeting + ' 👋';
+            var h = new Date().getHours();
+            var g = h >= 12 && h < 18 ? 'Buenas tardes' : (h >= 18 ? 'Buenas noches' : 'Buenos días');
+            document.getElementById('greetingText').textContent = g + ' 👋';
         }
 
         function matchesSearch(pkg, term) {
@@ -1343,9 +1078,7 @@
             var name = (pkg.clientName || '').toLowerCase();
             var store = (pkg.store || '').toLowerCase();
             var product = (pkg.productInfo || '').toLowerCase();
-
             if (code.indexOf(t) !== -1 || phone.indexOf(t) !== -1 || name.indexOf(t) !== -1 || store.indexOf(t) !== -1 || product.indexOf(t) !== -1) return true;
-
             if (t.length <= 4 && /^\d+$/.test(t)) {
                 if (code.replace(/\D/g, '').slice(-4).indexOf(t) !== -1) return true;
                 if (phone.replace(/\D/g, '').slice(-4).indexOf(t) !== -1) return true;
@@ -1355,23 +1088,12 @@
 
         function renderRecentActivity() {
             var list = document.getElementById('recentList');
-            if (recentActivity.length === 0) {
-                list.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>Aún no hay actividad.</p></div>';
-                return;
-            }
-
+            if (recentActivity.length === 0) { list.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>Aún no hay actividad.</p></div>'; return; }
             list.innerHTML = recentActivity.slice(0, 8).map(function(a) {
                 var time = new Date(a.time);
-                var timeStr = time.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-                var dateStr = time.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
-                var iconClass = a.type === 'new' ? 'new' : a.type === 'delivered' ? 'delivered' : 'cancelled';
-                var icon = a.type === 'new' ? '📥' : a.type === 'delivered' ? '✅' : '↩️';
-
-                return '<div class="recent-item">' +
-                    '<div class="ri-icon ' + iconClass + '">' + icon + '</div>' +
-                    '<div class="ri-info"><div class="ri-title">' + a.title + '</div><div class="ri-desc">' + a.desc + '</div></div>' +
-                    '<div class="ri-time">' + dateStr + '<br>' + timeStr + '</div>' +
-                    '</div>';
+                var icon = a.type === 'new' ? '📥' : (a.type === 'delivered' ? '✅' : '↩️');
+                var cls = a.type === 'new' ? 'new' : (a.type === 'delivered' ? 'delivered' : 'cancelled');
+                return '<div class="recent-item"><div class="ri-icon ' + cls + '">' + icon + '</div><div class="ri-info"><div class="ri-title">' + a.title + '</div><div class="ri-desc">' + a.desc + '</div></div><div class="ri-time">' + time.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }) + '<br>' + time.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) + '</div></div>';
             }).join('');
         }
 
@@ -1382,50 +1104,28 @@
                     actions.push('<button class="btn-deliver" onclick="markDelivered(\'' + pkg.id + '\')">✓ Entregar</button>');
                     actions.push('<button class="btn-postpone" onclick="markPostponed(\'' + pkg.id + '\')">⏸ Pospner</button>');
                     actions.push('<button class="btn-cancel" onclick="markCancelled(\'' + pkg.id + '\')">↩ Devolución</button>');
-                } else if (context === 'postponed') {
+                } else {
                     actions.push('<button class="btn-secondary" onclick="moveToUnclassified(\'' + pkg.id + '\')">↩ Reactivar</button>');
                     actions.push('<button class="btn-deliver" onclick="markDelivered(\'' + pkg.id + '\')">✓ Entregar</button>');
                     actions.push('<button class="btn-cancel" onclick="markCancelled(\'' + pkg.id + '\')">↩ Devolución</button>');
                 }
             }
-
-            var fichaBtn = '<button class="btn-ghost" onclick="event.stopPropagation();showDetails(\'' + pkg.id + '\',\'' + context + '\')">📋 Ficha</button>';
-
-            return '<div class="package-item ' + context + '">' +
-                '<div class="pkg-header"><span class="pkg-code">#' + pkg.code + '</span>' +
-                (pkg.store ? '<span class="pkg-store">' + pkg.store + '</span>' : '') + '</div>' +
-                '<div class="pkg-info"><strong>👤</strong> ' + pkg.clientName + '<br>' +
-                '<strong>📞</strong> ' + pkg.clientPhone + '<br>' +
-                '<strong>📦</strong> ' + pkg.productInfo +
-                (pkg.cod ? '<br><strong>💵</strong> $' + parseFloat(pkg.cod).toLocaleString('es-DO') : '') +
-                (pkg.zone ? '<br><strong>📍</strong> ' + pkg.zone : '') + '</div>' +
-                '<div class="pkg-actions">' + fichaBtn + actions.join('') + '</div>' +
-                '</div>';
+            return '<div class="package-item ' + context + '"><div class="pkg-header"><span class="pkg-code">#' + pkg.code + '</span>' + (pkg.store ? '<span class="pkg-store">' + pkg.store + '</span>' : '') + '</div><div class="pkg-info"><strong>👤</strong> ' + pkg.clientName + '<br><strong>📞</strong> ' + pkg.clientPhone + '<br><strong>📦</strong> ' + pkg.productInfo + (pkg.cod ? '<br><strong>💵</strong> $' + parseFloat(pkg.cod).toLocaleString('es-DO') : '') + (pkg.zone ? '<br><strong>📍</strong> ' + pkg.zone : '') + '</div><div class="pkg-actions"><button class="btn-ghost" onclick="showDetails(\'' + pkg.id + '\',\'' + context + '\')">📋 Ficha</button>' + actions.join('') + '</div></div>';
         }
 
         function renderUnclassified() {
-            var list = document.getElementById('unclassList');
             var term = document.getElementById('searchUnclassified').value;
             var items = packages.filter(function(p) { return p.status === 'pending' || !p.status; }).filter(function(p) { return matchesSearch(p, term); });
-
-            if (items.length === 0) {
-                var empty = packages.filter(function(p) { return !p.status || p.status === 'pending'; }).length === 0 ? 'No hay paquetes.' : 'Sin resultados';
-                list.innerHTML = '<div class="empty-state"><div class="icon">📥</div><p>' + empty + '</p></div>';
-                return;
-            }
+            var list = document.getElementById('unclassList');
+            if (items.length === 0) { list.innerHTML = '<div class="empty-state"><div class="icon">📥</div><p>' + (packages.filter(function(p) { return !p.status || p.status === 'pending'; }).length === 0 ? 'No hay paquetes.' : 'Sin resultados') + '</p></div>'; return; }
             list.innerHTML = items.map(function(p) { return renderPackageCard(p, 'unclassified'); }).join('');
         }
 
         function renderPostponed() {
-            var list = document.getElementById('postponedList');
             var term = document.getElementById('searchPostponed').value;
             var items = packages.filter(function(p) { return p.status === 'postponed'; }).filter(function(p) { return matchesSearch(p, term); });
-
-            if (items.length === 0) {
-                var empty = packages.filter(function(p) { return p.status === 'postponed'; }).length === 0 ? 'No hay paquetes pospuestos' : 'Sin resultados';
-                list.innerHTML = '<div class="empty-state"><div class="icon">⏸️</div><p>' + empty + '</p></div>';
-                return;
-            }
+            var list = document.getElementById('postponedList');
+            if (items.length === 0) { list.innerHTML = '<div class="empty-state"><div class="icon">⏸️</div><p>No hay paquetes pospuestos</p></div>'; return; }
             list.innerHTML = items.map(function(p) { return renderPackageCard(p, 'postponed'); }).join('');
         }
 
@@ -1435,18 +1135,14 @@
             if (idx === -1) return;
             var pkg = packages[idx];
             var now = new Date();
-            var dateKey = now.toISOString().split('T')[0];
+            var dateKey = localDateKey(now);
             var delivery = Object.assign({}, pkg, { status: 'delivered', deliveryDate: dateKey, deliveryTime: now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) });
             if (!deliveredGroups[dateKey]) deliveredGroups[dateKey] = [];
             deliveredGroups[dateKey].push(delivery);
             packages.splice(idx, 1);
             addActivity('delivered', 'Entregado #' + pkg.code, 'Cliente: ' + pkg.clientName);
             save();
-            renderUnclassified();
-            renderPostponed();
-            renderRecentActivity();
-            updateCounts();
-            updateDashboardStats();
+            refreshAll();
             notify('✓ Paquete #' + pkg.code + ' entregado');
         }
 
@@ -1455,12 +1151,8 @@
             var pkg = packages.find(function(p) { return p.id === id; });
             if (!pkg) return;
             pkg.status = 'postponed';
-            pkg.postponedDate = new Date().toISOString();
             save();
-            renderUnclassified();
-            renderPostponed();
-            updateCounts();
-            updateDashboardStats();
+            refreshAll();
             notify('⏸ Paquete #' + pkg.code + ' pospuesto', 'warning');
         }
 
@@ -1469,12 +1161,8 @@
             var pkg = packages.find(function(p) { return p.id === id; });
             if (!pkg) return;
             pkg.status = 'pending';
-            delete pkg.postponedDate;
             save();
-            renderUnclassified();
-            renderPostponed();
-            updateCounts();
-            updateDashboardStats();
+            refreshAll();
             notify('↩ Paquete reactivado');
         }
 
@@ -1487,54 +1175,30 @@
             packages.splice(idx, 1);
             addActivity('cancelled', 'Devolución #' + pkg.code, 'Cliente: ' + pkg.clientName);
             save();
-            renderUnclassified();
-            renderPostponed();
-            renderDraft();
-            renderRecentActivity();
-            updateCounts();
-            updateDashboardStats();
-            notify('↩ Paquete #' + pkg.code + ' movido a devoluciones', 'warning');
+            refreshAll();
+            notify('↩ Paquete #' + pkg.code + ' a devoluciones', 'warning');
         }
 
         function renderDelivered() {
             var container = document.getElementById('deliveredGroups');
             var term = document.getElementById('searchDelivered').value;
             var dates = Object.keys(deliveredGroups).sort(function(a, b) { return b.localeCompare(a); });
-
-            if (dates.length === 0) {
-                container.innerHTML = '<div class="empty-state"><div class="icon">✅</div><p>No hay entregas registradas</p></div>';
-                return;
-            }
+            if (dates.length === 0) { container.innerHTML = '<div class="empty-state"><div class="icon">✅</div><p>No hay entregas registradas</p></div>'; return; }
 
             var html = '';
             dates.forEach(function(date) {
                 var items = deliveredGroups[date];
                 if (term) items = items.filter(function(p) { return matchesSearch(p, term); });
                 if (items.length === 0) return;
-
-                var dateObj = new Date(date + 'T12:00:00');
-                var formatted = dateObj.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                var formatted = new Date(date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
                 var total = items.reduce(function(s, i) { return s + (parseFloat(i.cod) || 0); }, 0);
 
-                html += '<div class="date-group" id="dg-' + date + '">' +
-                    '<div class="date-group-header" onclick="toggleGroup(\'dg-' + date + '\')">' +
-                    '<h3><span>📅 ' + formatted + '</span>' +
-                    '<span class="count-pill">' + items.length + ' paquetes</span>' +
-                    '<span class="count-pill">💵 $' + total.toLocaleString('es-DO') + '</span></h3>' +
-                    '<span class="chevron">▼</span></div>' +
-                    '<div class="date-group-body"><div class="date-group-content">' +
+                html += '<div class="date-group" id="dg-' + date + '"><div class="date-group-header" onclick="toggleGroup(\'dg-' + date + '\')"><h3><span>📅 ' + formatted + '</span><span class="count-pill">' + items.length + ' paquetes</span><span class="count-pill">💵 $' + total.toLocaleString('es-DO') + '</span></h3><div style="display:flex;gap:8px;align-items:center;"><button class="group-edit-btn" onclick="event.stopPropagation();openGroupDateEdit(\'' + date + '\')">✏️ Fecha</button><span class="chevron">▼</span></div></div><div class="date-group-body"><div class="date-group-content">' +
                     items.map(function(p) {
-                        return '<div class="delivered-item" onclick="showDetails(\'' + p.id + '\',\'delivered\')">' +
-                            '<div class="pkg-header"><span class="pkg-code">#' + p.code + '</span>' +
-                            (p.store ? '<span class="pkg-store">' + p.store + '</span>' : '') + '</div>' +
-                            '<div class="pkg-info"><strong>👤</strong> ' + p.clientName + ' · <strong>📞</strong> ' + p.clientPhone + '<br>' +
-                            '<strong>📦</strong> ' + p.productInfo +
-                            (p.cod ? '<br><strong>💵</strong> $' + parseFloat(p.cod).toLocaleString('es-DO') : '') + '</div>' +
-                            '<span class="badge badge-delivered">✓ Entregado · ' + p.deliveryTime + '</span></div>';
+                        return '<div class="delivered-item" onclick="showDetails(\'' + p.id + '\',\'delivered\')"><div class="pkg-header"><span class="pkg-code">#' + p.code + '</span>' + (p.store ? '<span class="pkg-store">' + p.store + '</span>' : '') + '</div><div class="pkg-info"><strong>👤</strong> ' + p.clientName + ' · <strong>📞</strong> ' + p.clientPhone + '<br><strong>📦</strong> ' + p.productInfo + (p.cod ? '<br><strong>💵</strong> $' + parseFloat(p.cod).toLocaleString('es-DO') : '') + '</div><span class="badge badge-delivered">✓ Entregado · ' + p.deliveryTime + '</span></div>';
                     }).join('') +
                     '</div></div></div>';
             });
-
             container.innerHTML = html || '<div class="empty-state"><div class="icon">🔍</div><p>Sin resultados</p></div>';
         }
 
@@ -1542,44 +1206,25 @@
 
         function renderDraft() {
             var list = document.getElementById('draftList');
-            if (cancelledDraft.length === 0) {
-                list.innerHTML = '<p style="color:var(--gray-500);font-style:italic;text-align:center;padding:15px;">No hay devoluciones en el borrador</p>';
-                return;
-            }
+            if (cancelledDraft.length === 0) { list.innerHTML = '<p style="color:var(--gray-500);font-style:italic;text-align:center;padding:15px;">No hay devoluciones en el borrador</p>'; return; }
             list.innerHTML = cancelledDraft.map(function(p, idx) {
-                return '<div class="package-item" style="border-left-color:var(--red);background:#FFF5F5;">' +
-                    '<div class="pkg-header"><span class="pkg-code" style="color:var(--red);">#' + p.code + '</span>' +
-                    (p.store ? '<span class="pkg-store">' + p.store + '</span>' : '') + '</div>' +
-                    '<div class="pkg-info"><strong>👤</strong> ' + p.clientName + ' · <strong>📞</strong> ' + p.clientPhone + '<br>' +
-                    '<strong>📦</strong> ' + p.productInfo + '</div>' +
-                    '<div class="pkg-actions">' +
-                    '<button class="btn-ghost" onclick="showDetailsDraft(' + idx + ')">📋 Ficha</button>' +
-                    '<button class="btn-cancel" onclick="removeFromDraft(' + idx + ')">🗑 Quitar</button>' +
-                    '</div></div>';
+                return '<div class="package-item" style="border-left-color:var(--red);background:#FFF5F5;"><div class="pkg-header"><span class="pkg-code" style="color:var(--red);">#' + p.code + '</span>' + (p.store ? '<span class="pkg-store">' + p.store + '</span>' : '') + '</div><div class="pkg-info"><strong>👤</strong> ' + p.clientName + ' · <strong>📞</strong> ' + p.clientPhone + '<br><strong>📦</strong> ' + p.productInfo + '</div><div class="pkg-actions"><button class="btn-ghost" onclick="showDetailsDraft(' + idx + ')">📋 Ficha</button><button class="btn-cancel" onclick="removeFromDraft(' + idx + ')">🗑 Quitar</button></div></div>';
             }).join('');
         }
 
         function removeFromDraft(idx) {
             if (!isAdmin()) { notify('🔒 Solo el administrador', 'error'); return; }
-            var p = cancelledDraft[idx];
-            if (!confirm('¿Quitar #' + p.code + ' del borrador?')) return;
+            if (!confirm('¿Quitar #' + cancelledDraft[idx].code + ' del borrador?')) return;
             cancelledDraft.splice(idx, 1);
-            save();
-            renderDraft();
-            updateCounts();
-            updateDashboardStats();
-            notify('Paquete quitado del borrador');
+            save(); renderDraft(); updateCounts(); updateDashboardStats();
+            notify('Paquete quitado');
         }
 
         function clearDraft() {
             if (!isAdmin()) { notify('🔒 Solo el administrador', 'error'); return; }
-            if (cancelledDraft.length === 0) return;
-            if (!confirm('¿Vaciar todo el borrador?')) return;
+            if (cancelledDraft.length === 0 || !confirm('¿Vaciar el borrador?')) return;
             cancelledDraft = [];
-            save();
-            renderDraft();
-            updateCounts();
-            updateDashboardStats();
+            save(); renderDraft(); updateCounts(); updateDashboardStats();
             notify('Borrador vaciado');
         }
 
@@ -1588,7 +1233,7 @@
         function openSaveGroupModal() {
             if (!isAdmin()) { notify('🔒 Solo el administrador', 'error'); return; }
             if (cancelledDraft.length === 0) { notify('No hay devoluciones en el borrador', 'warning'); return; }
-            document.getElementById('groupDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('groupDate').value = localDateKey(new Date());
             document.getElementById('groupCountPreview').textContent = cancelledDraft.length;
             document.getElementById('saveGroupModal').classList.add('show');
         }
@@ -1599,59 +1244,33 @@
             if (!isAdmin()) { notify('🔒 Solo el administrador', 'error'); return; }
             var date = document.getElementById('groupDate').value;
             if (!date) { notify('Selecciona una fecha', 'error'); return; }
-            var group = { id: 'g' + Date.now(), savedDate: date, createdAt: new Date().toISOString(), items: cancelledDraft.map(function(p) { return Object.assign({}, p); }) };
-            cancelledGroups.unshift(group);
-            addActivity('cancelled', 'Grupo de devoluciones guardado (' + group.items.length + ')', 'Fecha: ' + date);
+            cancelledGroups.unshift({ id: 'g' + Date.now(), savedDate: date, createdAt: new Date().toISOString(), items: cancelledDraft.map(function(p) { return Object.assign({}, p); }) });
+            addActivity('cancelled', 'Grupo guardado (' + cancelledDraft.length + ')', 'Fecha: ' + date);
             cancelledDraft = [];
             save();
             closeSaveGroupModal();
-            renderDraft();
-            renderCancelledGroups();
-            renderRecentActivity();
-            updateCounts();
-            updateDashboardStats();
-            notify('💾 Grupo guardado con ' + group.items.length + ' devoluciones');
+            refreshAll();
+            notify('💾 Grupo guardado');
         }
 
         function renderCancelledGroups() {
             var container = document.getElementById('cancelledGroups');
-            var term = document.getElementById('searchCancelled') ? document.getElementById('searchCancelled').value : '';
-
-            if (cancelledGroups.length === 0) {
-                container.innerHTML = '<div class="empty-state"><div class="icon">📚</div><p>No hay grupos de devoluciones guardados</p></div>';
-                renderDraft();
-                return;
-            }
+            var term = document.getElementById('searchCancelled').value;
+            if (cancelledGroups.length === 0) { container.innerHTML = '<div class="empty-state"><div class="icon">📚</div><p>No hay grupos guardados</p></div>'; renderDraft(); return; }
 
             var html = '';
             cancelledGroups.forEach(function(group, gIdx) {
                 var items = group.items;
                 if (term) items = items.filter(function(p) { return matchesSearch(p, term); });
                 if (items.length === 0 && term) return;
-
-                var dateObj = new Date(group.savedDate + 'T12:00:00');
-                var formatted = dateObj.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-
+                var formatted = new Date(group.savedDate + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
                 var editBtn = isAdmin() ? '<button class="group-edit-btn" onclick="event.stopPropagation();openEditGroup(' + gIdx + ')">✏️ Editar</button>' : '';
-
-                html += '<div class="date-group cancelled" id="cg-' + group.id + '">' +
-                    '<div class="date-group-header" onclick="toggleGroup(\'cg-' + group.id + '\')">' +
-                    '<h3><span>↩️ ' + formatted + '</span>' +
-                    '<span class="count-pill">' + group.items.length + ' devoluciones</span>' +
-                    '<span class="saved-date-label">Guardado: ' + new Date(group.createdAt).toLocaleDateString('es-ES') + '</span></h3>' +
-                    '<div style="display:flex;gap:8px;align-items:center;">' + editBtn + '<span class="chevron">▼</span></div></div>' +
-                    '<div class="date-group-body"><div class="date-group-content">' +
+                html += '<div class="date-group cancelled" id="cg-' + group.id + '"><div class="date-group-header" onclick="toggleGroup(\'cg-' + group.id + '\')"><h3><span>↩️ ' + formatted + '</span><span class="count-pill">' + group.items.length + ' devoluciones</span><span class="saved-date-label">Guardado: ' + new Date(group.createdAt).toLocaleDateString('es-ES') + '</span></h3><div style="display:flex;gap:8px;align-items:center;">' + editBtn + '<span class="chevron">▼</span></div></div><div class="date-group-body"><div class="date-group-content">' +
                     items.map(function(p) {
-                        return '<div class="delivered-item cancelled-item" onclick="showDetailsGroup(' + gIdx + ',\'' + p.id + '\')">' +
-                            '<div class="pkg-header"><span class="pkg-code" style="color:var(--red);">#' + p.code + '</span>' +
-                            (p.store ? '<span class="pkg-store">' + p.store + '</span>' : '') + '</div>' +
-                            '<div class="pkg-info"><strong>👤</strong> ' + p.clientName + ' · <strong>📞</strong> ' + p.clientPhone + '<br>' +
-                            '<strong>📦</strong> ' + p.productInfo + '</div>' +
-                            '<span class="badge badge-cancelled">↩️ Devolución</span></div>';
+                        return '<div class="delivered-item cancelled-item" onclick="showDetailsGroup(' + gIdx + ',\'' + p.id + '\')"><div class="pkg-header"><span class="pkg-code" style="color:var(--red);">#' + p.code + '</span>' + (p.store ? '<span class="pkg-store">' + p.store + '</span>' : '') + '</div><div class="pkg-info"><strong>👤</strong> ' + p.clientName + ' · <strong>📞</strong> ' + p.clientPhone + '<br><strong>📦</strong> ' + p.productInfo + '</div><span class="badge badge-cancelled">↩️ Devolución</span></div>';
                     }).join('') +
                     '</div></div></div>';
             });
-
             container.innerHTML = html || '<div class="empty-state"><div class="icon">🔍</div><p>Sin resultados</p></div>';
             renderDraft();
         }
@@ -1667,65 +1286,36 @@
             if (!isAdmin()) { notify('🔒 Solo el administrador', 'error'); return; }
             currentEditGroupIdx = gIdx;
             var group = cancelledGroups[gIdx];
-            var body = document.getElementById('editGroupBody');
-
-            body.innerHTML = '<p style="color:var(--gray-500);margin-bottom:12px;">Agrega un paquete de devolución al grupo:</p>' +
-                '<div class="add-to-group-form">' +
-                '<div class="form-group"><label>Código *</label><input type="text" id="editAddCode"></div>' +
-                '<div class="form-group"><label>Cliente *</label><input type="text" id="editAddName"></div>' +
-                '<div class="form-group"><label>Teléfono *</label><input type="tel" id="editAddPhone"></div>' +
-                '<div class="form-group"><label>Producto *</label><textarea id="editAddProduct"></textarea></div>' +
-                '<button class="btn-deliver btn-full" onclick="addToGroup()">➕ Agregar al Grupo</button>' +
-                '</div>' +
-                '<h4 style="margin-top:20px;margin-bottom:10px;">📦 En este grupo (' + group.items.length + ')</h4>' +
-                '<div style="max-height:280px;overflow-y:auto;">' +
+            document.getElementById('editGroupBody').innerHTML = '<p style="color:var(--gray-500);margin-bottom:12px;">Agrega una devolución al grupo:</p><div class="add-to-group-form"><div class="form-group"><label>Código *</label><input type="text" id="editAddCode"></div><div class="form-group"><label>Cliente *</label><input type="text" id="editAddName"></div><div class="form-group"><label>Teléfono *</label><input type="tel" id="editAddPhone"></div><div class="form-group"><label>Producto *</label><textarea id="editAddProduct"></textarea></div><button class="btn-deliver btn-full" onclick="addToGroup()">➕ Agregar</button></div><h4 style="margin:20px 0 10px;">📦 En este grupo (' + group.items.length + ')</h4><div style="max-height:280px;overflow-y:auto;">' +
                 group.items.map(function(p, idx) {
-                    return '<div style="background:#FFEBEE;padding:10px;border-radius:8px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;gap:10px;">' +
-                        '<div style="flex:1;"><strong style="color:var(--red);">#' + p.code + '</strong> · ' + p.clientName + '</div>' +
-                        '<button class="btn-cancel" style="padding:5px 12px;font-size:0.8em;" onclick="removeFromGroup(' + idx + ')">🗑</button></div>';
+                    return '<div style="background:#FFEBEE;padding:10px;border-radius:8px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;gap:10px;"><div style="flex:1;"><strong style="color:var(--red);">#' + p.code + '</strong> · ' + p.clientName + '</div><button class="btn-cancel" style="padding:5px 12px;font-size:0.8em;" onclick="removeFromGroup(' + idx + ')">🗑</button></div>';
                 }).join('') +
-                '</div>' +
-                '<div style="margin-top:18px;"><button class="btn-ghost btn-full" onclick="closeEditGroupModal()">Cerrar</button></div>';
-
+                '</div><div style="margin-top:18px;"><button class="btn-ghost btn-full" onclick="closeEditGroupModal()">Cerrar</button></div>';
             document.getElementById('editGroupModal').classList.add('show');
         }
 
-        function closeEditGroupModal() {
-            document.getElementById('editGroupModal').classList.remove('show');
-            currentEditGroupIdx = null;
-        }
+        function closeEditGroupModal() { document.getElementById('editGroupModal').classList.remove('show'); currentEditGroupIdx = null; }
 
         function addToGroup() {
-            if (!isAdmin()) { notify('🔒 Solo el administrador', 'error'); return; }
-            if (currentEditGroupIdx === null) return;
+            if (!isAdmin() || currentEditGroupIdx === null) return;
             var code = document.getElementById('editAddCode').value.trim();
             var name = document.getElementById('editAddName').value.trim();
             var phone = document.getElementById('editAddPhone').value.trim();
             var product = document.getElementById('editAddProduct').value.trim();
-
             if (!code || !name || !phone || !product) { notify('Completa todos los campos', 'error'); return; }
-
             cancelledGroups[currentEditGroupIdx].items.push({ id: 'e' + Date.now(), code: code, clientName: name, clientPhone: phone, productInfo: product, status: 'cancelled', cancelledAt: new Date().toISOString() });
             save();
-            renderCancelledGroups();
-            updateCounts();
-            updateDashboardStats();
+            renderCancelledGroups(); updateCounts(); updateDashboardStats();
             openEditGroup(currentEditGroupIdx);
-            notify('✓ Paquete agregado al grupo');
+            notify('✓ Agregado al grupo');
         }
 
         function removeFromGroup(idx) {
-            if (!isAdmin()) { notify('🔒 Solo el administrador', 'error'); return; }
-            if (currentEditGroupIdx === null) return;
-            if (!confirm('¿Quitar este paquete del grupo?')) return;
+            if (!isAdmin() || currentEditGroupIdx === null || !confirm('¿Quitar este paquete?')) return;
             cancelledGroups[currentEditGroupIdx].items.splice(idx, 1);
-            if (cancelledGroups[currentEditGroupIdx].items.length === 0) {
-                if (confirm('El grupo quedó vacío. ¿Eliminar el grupo?')) cancelledGroups.splice(currentEditGroupIdx, 1);
-            }
+            if (cancelledGroups[currentEditGroupIdx].items.length === 0 && confirm('Grupo vacío. ¿Eliminarlo?')) cancelledGroups.splice(currentEditGroupIdx, 1);
             save();
-            renderCancelledGroups();
-            updateCounts();
-            updateDashboardStats();
+            renderCancelledGroups(); updateCounts(); updateDashboardStats();
             if (cancelledGroups[currentEditGroupIdx]) openEditGroup(currentEditGroupIdx);
             else closeEditGroupModal();
         }
@@ -1733,60 +1323,35 @@
         function showDetails(id, context) {
             var pkg;
             if (context === 'delivered') {
-                for (var key in deliveredGroups) {
-                    pkg = deliveredGroups[key].find(function(p) { return p.id === id; });
-                    if (pkg) break;
-                }
-            } else {
-                pkg = packages.find(function(p) { return p.id === id; });
-            }
+                for (var key in deliveredGroups) { pkg = deliveredGroups[key].find(function(p) { return p.id === id; }); if (pkg) break; }
+            } else pkg = packages.find(function(p) { return p.id === id; });
             if (!pkg) return;
             openDetailsModal(pkg, context);
         }
 
         function openDetailsModal(pkg, context) {
             document.getElementById('modalTitle').innerHTML = '📋 Ficha · #' + pkg.code;
-            var body = document.getElementById('modalBody');
-
             var actionButtons = '';
             if (isAdmin() && (context === 'pending' || context === 'postponed')) {
-                actionButtons = '<div style="display:flex;gap:10px;flex-wrap:wrap;">' +
-                    '<button class="btn-deliver" style="flex:1;" onclick="markDelivered(\'' + pkg.id + '\');closeModal();">✓ Entregar</button>' +
-                    '<a href="tel:' + pkg.clientPhone + '" class="btn-secondary" style="flex:1;text-align:center;text-decoration:none;display:block;">📞 Llamar</a>' +
-                    (pkg.address ? '<a href="https://www.google.com/maps/search/' + encodeURIComponent(pkg.address) + '" target="_blank" class="btn-cancel" style="flex:1;text-align:center;text-decoration:none;display:block;">🗺️ Mapa</a>' : '') +
-                    '</div>';
+                actionButtons = '<div style="display:flex;gap:10px;flex-wrap:wrap;"><button class="btn-deliver" style="flex:1;" onclick="markDelivered(\'' + pkg.id + '\');closeModal();">✓ Entregar</button><a href="tel:' + pkg.clientPhone + '" class="btn-secondary" style="flex:1;text-align:center;text-decoration:none;display:block;">📞 Llamar</a>' + (pkg.address ? '<a href="https://www.google.com/maps/search/' + encodeURIComponent(pkg.address) + '" target="_blank" class="btn-cancel" style="flex:1;text-align:center;text-decoration:none;display:block;">🗺️ Mapa</a>' : '') + '</div>';
             } else if (context === 'pending' || context === 'postponed') {
-                actionButtons = '<div style="display:flex;gap:10px;flex-wrap:wrap;">' +
-                    '<a href="tel:' + pkg.clientPhone + '" class="btn-secondary" style="flex:1;text-align:center;text-decoration:none;display:block;">📞 Llamar</a>' +
-                    (pkg.address ? '<a href="https://www.google.com/maps/search/' + encodeURIComponent(pkg.address) + '" target="_blank" class="btn-ghost" style="flex:1;text-align:center;text-decoration:none;display:block;">🗺️ Ver Mapa</a>' : '') +
-                    '</div>';
+                actionButtons = '<div style="display:flex;gap:10px;flex-wrap:wrap;"><a href="tel:' + pkg.clientPhone + '" class="btn-secondary" style="flex:1;text-align:center;text-decoration:none;display:block;">📞 Llamar</a>' + (pkg.address ? '<a href="https://www.google.com/maps/search/' + encodeURIComponent(pkg.address) + '" target="_blank" class="btn-ghost" style="flex:1;text-align:center;text-decoration:none;display:block;">🗺️ Ver Mapa</a>' : '') + '</div>';
+            } else if (context === 'delivered') {
+                actionButtons = '<div style="display:flex;gap:10px;"><button class="btn-secondary" style="flex:1;" onclick="openSingleDateEdit(\'' + pkg.id + '\')">📅 Cambiar Fecha</button></div>';
             }
-
-            body.innerHTML = '<div style="background:linear-gradient(135deg,#FFF5EB 0%,#FFE8D6 100%);padding:18px;border-radius:12px;margin-bottom:12px;">' +
-                '<h3 style="color:var(--navy);margin-bottom:10px;">👤 ' + pkg.clientName + '</h3>' +
-                '<div class="detail-row"><span class="detail-label">📞 Teléfono:</span><span class="detail-value"><a href="tel:' + pkg.clientPhone + '">' + pkg.clientPhone + '</a></span></div>' +
-                '<div class="detail-row"><span class="detail-label">📦 Código:</span><span class="detail-value"><strong>' + pkg.code + '</strong></span></div>' +
-                '<div class="detail-row"><span class="detail-label">🛍️ Producto:</span><span class="detail-value">' + (pkg.productInfo || '-') + '</span></div>' +
-                (pkg.store ? '<div class="detail-row"><span class="detail-label">🏪 Tienda:</span><span class="detail-value">' + pkg.store + '</span></div>' : '') +
-                (pkg.zone ? '<div class="detail-row"><span class="detail-label">📍 Zona:</span><span class="detail-value">' + pkg.zone + '</span></div>' : '') +
-                (pkg.address ? '<div class="detail-row"><span class="detail-label">🏠 Dirección:</span><span class="detail-value">' + pkg.address + '</span></div>' : '') +
-                (pkg.cod ? '<div class="detail-row"><span class="detail-label">💵 COD:</span><span class="detail-value"><span class="cod-badge">$' + parseFloat(pkg.cod).toLocaleString('es-DO', {minimumFractionDigits: 2}) + '</span></span></div>' : '') +
-                (pkg.deliveryDate ? '<div class="detail-row"><span class="detail-label">📅 Fecha:</span><span class="detail-value">' + new Date(pkg.deliveryDate + 'T12:00:00').toLocaleDateString('es-ES', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'}) + ' · ' + pkg.deliveryTime + '</span></div>' : '') +
-                '</div>' + actionButtons;
-
+            document.getElementById('modalBody').innerHTML = '<div style="background:linear-gradient(135deg,#FFF5EB 0%,#FFE8D6 100%);padding:18px;border-radius:12px;margin-bottom:12px;"><h3 style="color:var(--navy);margin-bottom:10px;">👤 ' + pkg.clientName + '</h3><div class="detail-row"><span class="detail-label">📞 Teléfono:</span><span class="detail-value"><a href="tel:' + pkg.clientPhone + '">' + pkg.clientPhone + '</a></span></div><div class="detail-row"><span class="detail-label">📦 Código:</span><span class="detail-value"><strong>' + pkg.code + '</strong></span></div><div class="detail-row"><span class="detail-label">🛍️ Producto:</span><span class="detail-value">' + (pkg.productInfo || '-') + '</span></div>' + (pkg.store ? '<div class="detail-row"><span class="detail-label">🏪 Tienda:</span><span class="detail-value">' + pkg.store + '</span></div>' : '') + (pkg.zone ? '<div class="detail-row"><span class="detail-label">📍 Zona:</span><span class="detail-value">' + pkg.zone + '</span></div>' : '') + (pkg.address ? '<div class="detail-row"><span class="detail-label">🏠 Dirección:</span><span class="detail-value">' + pkg.address + '</span></div>' : '') + (pkg.cod ? '<div class="detail-row"><span class="detail-label">💵 COD:</span><span class="detail-value"><span class="cod-badge">$' + parseFloat(pkg.cod).toLocaleString('es-DO', { minimumFractionDigits: 2 }) + '</span></span></div>' : '') + (pkg.deliveryDate ? '<div class="detail-row"><span class="detail-label">📅 Fecha:</span><span class="detail-value">' + new Date(pkg.deliveryDate + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + ' · ' + pkg.deliveryTime + '</span></div>' : '') + '</div>' + actionButtons;
             document.getElementById('clientModal').classList.add('show');
         }
 
         function closeModal() { document.getElementById('clientModal').classList.remove('show'); }
         document.getElementById('clientModal').addEventListener('click', function(e) { if (e.target.id === 'clientModal') closeModal(); });
 
-        // ===== EXCEL IMPORT =====
+        // ===== EXCEL =====
         document.getElementById('excelFile').addEventListener('change', function(e) {
             if (!isAdmin()) { notify('🔒 Solo el administrador', 'error'); return; }
             var file = e.target.files[0];
             if (!file) return;
             document.getElementById('fileName').textContent = file.name;
-
             var reader = new FileReader();
             reader.onload = function(e) {
                 try {
@@ -1794,26 +1359,18 @@
                     var workbook = XLSX.read(data, { type: 'array' });
                     var firstSheet = workbook.Sheets[workbook.SheetNames[0]];
                     var jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: '' });
-
                     var headerRowIndex = -1;
                     for (var i = 0; i < Math.min(20, jsonData.length); i++) {
                         var row = jsonData[i];
-                        if (row && row.some(function(cell) {
-                            var val = String(cell).toLowerCase().trim();
-                            return val === 'code' || val === 'customer name' || val === 'dropoff contact';
-                        })) { headerRowIndex = i; break; }
+                        if (row && row.some(function(cell) { var v = String(cell).toLowerCase().trim(); return v === 'code' || v === 'customer name' || v === 'dropoff contact'; })) { headerRowIndex = i; break; }
                     }
-
-                    if (headerRowIndex === -1) { notify('No se detectaron los encabezados', 'error'); return; }
-
+                    if (headerRowIndex === -1) { notify('No se detectaron encabezados', 'error'); return; }
                     excelHeaders = jsonData[headerRowIndex].map(function(h) { return String(h || '').trim(); });
                     excelData = jsonData.slice(headerRowIndex + 1).filter(function(row) {
                         var codeIdx = excelHeaders.findIndex(function(h) { return h.toLowerCase() === 'code'; });
                         return codeIdx !== -1 && row[codeIdx] && String(row[codeIdx]).trim() !== '';
                     });
-
                     if (excelData.length === 0) { notify('Sin datos válidos', 'error'); return; }
-
                     populateMappingSelects();
                     showPreview();
                     document.getElementById('mappingSection').style.display = 'block';
@@ -1835,83 +1392,48 @@
                 { id: 'mapZone', keywords: ['zone', 'zona'] }
             ];
             var headersLower = excelHeaders.map(function(h) { return h.toLowerCase(); });
-
             fields.forEach(function(f) {
                 var sel = document.getElementById(f.id);
                 sel.innerHTML = '<option value="">-- No asignar --</option>';
-                excelHeaders.forEach(function(h, i) {
-                    var o = document.createElement('option');
-                    o.value = i; o.textContent = h || ('Col ' + (i + 1));
-                    sel.appendChild(o);
-                });
+                excelHeaders.forEach(function(h, i) { var o = document.createElement('option'); o.value = i; o.textContent = h || ('Col ' + (i + 1)); sel.appendChild(o); });
                 for (var k = 0; k < f.keywords.length; k++) {
                     var idx = headersLower.findIndex(function(h) { return h === f.keywords[k] || h.indexOf(f.keywords[k]) !== -1; });
                     if (idx !== -1) { sel.value = idx; break; }
                 }
             });
-
             var phoneIdx = headersLower.findIndex(function(h) { return h === 'dropoff contact'; });
             if (phoneIdx !== -1) document.getElementById('mapPhone').value = phoneIdx;
         }
 
         function showPreview() {
             var t = document.getElementById('previewTable');
-            var preview = excelData.slice(0, 5);
             var html = '<thead><tr>' + excelHeaders.map(function(h) { return '<th>' + (h || '-') + '</th>'; }).join('') + '</tr></thead><tbody>';
-            preview.forEach(function(row) {
+            excelData.slice(0, 5).forEach(function(row) {
                 html += '<tr>' + excelHeaders.map(function(_, i) { return '<td>' + (row[i] !== undefined ? row[i] : '') + '</td>'; }).join('') + '</tr>';
             });
-            html += '</tbody>';
-            t.innerHTML = html;
+            t.innerHTML = html + '</tbody>';
         }
 
         function importData() {
             if (!isAdmin()) { notify('🔒 Solo el administrador', 'error'); return; }
-            var ci = document.getElementById('mapCode').value;
-            var ni = document.getElementById('mapName').value;
-            var pi = document.getElementById('mapPhone').value;
-            var pri = document.getElementById('mapProduct').value;
-            var si = document.getElementById('mapStore').value;
-            var ai = document.getElementById('mapAddress').value;
-            var coi = document.getElementById('mapCOD').value;
-            var zi = document.getElementById('mapZone').value;
-
-            if (!ci || !ni || !pi || !pri) { notify('Asigna: Código, Cliente, Teléfono y Producto', 'error'); return; }
-
+            var ci = document.getElementById('mapCode').value, ni = document.getElementById('mapName').value, pi = document.getElementById('mapPhone').value, pri = document.getElementById('mapProduct').value;
+            var si = document.getElementById('mapStore').value, ai = document.getElementById('mapAddress').value, coi = document.getElementById('mapCOD').value, zi = document.getElementById('mapZone').value;
+            if (!ci || !ni || !pi || !pri) { notify('Asigna Código, Cliente, Teléfono y Producto', 'error'); return; }
             var imported = 0, dup = 0;
             excelData.forEach(function(row) {
-                var code = String(row[ci] || '').trim();
-                var name = String(row[ni] || '').trim();
-                var phone = String(row[pi] || '').trim();
-                var product = String(row[pri] || '').trim();
+                var code = String(row[ci] || '').trim(), name = String(row[ni] || '').trim(), phone = String(row[pi] || '').trim(), product = String(row[pri] || '').trim();
                 if (!code || !name || !phone || !product) return;
                 if (packages.some(function(p) { return p.code === code; })) { dup++; return; }
-
-                packages.push({
-                    id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-                    code: code, clientName: name, clientPhone: phone, productInfo: product,
-                    store: si ? String(row[si] || '').trim() : '',
-                    address: ai ? String(row[ai] || '').trim() : '',
-                    cod: coi ? String(row[coi] || '').trim() : '',
-                    zone: zi ? String(row[zi] || '').trim() : '',
-                    status: 'pending',
-                    createdAt: new Date().toISOString()
-                });
+                packages.push({ id: Date.now().toString() + Math.random().toString(36).substr(2, 9), code: code, clientName: name, clientPhone: phone, productInfo: product, store: si ? String(row[si] || '').trim() : '', address: ai ? String(row[ai] || '').trim() : '', cod: coi ? String(row[coi] || '').trim() : '', zone: zi ? String(row[zi] || '').trim() : '', status: 'pending', createdAt: new Date().toISOString() });
                 imported++;
             });
-
             if (imported > 0) {
                 addActivity('new', imported + ' paquetes importados', 'Desde archivo Excel');
                 save();
-                renderUnclassified();
-                renderRecentActivity();
-                updateCounts();
-                updateDashboardStats();
-                var msg = '✓ ' + imported + ' importados';
-                if (dup) msg += ' · ' + dup + ' duplicados';
-                notify(msg);
+                refreshAll();
+                notify('✓ ' + imported + ' importados' + (dup ? ' · ' + dup + ' duplicados' : ''));
                 cancelImport();
-            } else { notify('No se importaron paquetes', 'error'); }
+            } else notify('No se importaron paquetes', 'error');
         }
 
         function cancelImport() {
@@ -1925,34 +1447,38 @@
             e.preventDefault();
             if (!isAdmin()) { notify('🔒 Solo el administrador', 'error'); return; }
             var code = document.getElementById('packageCode').value.trim();
-            var clientName = document.getElementById('clientName').value.trim();
-            packages.push({
-                id: Date.now().toString(),
-                code: code,
-                clientName: clientName,
-                clientPhone: document.getElementById('clientPhone').value.trim(),
-                productInfo: document.getElementById('productInfo').value.trim(),
-                store: document.getElementById('storeName').value.trim(),
-                address: document.getElementById('deliveryAddress').value.trim(),
-                cod: document.getElementById('codAmount').value,
-                zone: document.getElementById('zone').value.trim(),
-                status: 'pending',
-                createdAt: new Date().toISOString()
-            });
-            addActivity('new', 'Nuevo paquete #' + code, 'Cliente: ' + clientName);
+            packages.push({ id: Date.now().toString(), code: code, clientName: document.getElementById('clientName').value.trim(), clientPhone: document.getElementById('clientPhone').value.trim(), productInfo: document.getElementById('productInfo').value.trim(), store: document.getElementById('storeName').value.trim(), address: document.getElementById('deliveryAddress').value.trim(), cod: document.getElementById('codAmount').value, zone: document.getElementById('zone').value.trim(), status: 'pending', createdAt: new Date().toISOString() });
+            addActivity('new', 'Nuevo paquete #' + code, 'Cliente: ' + document.getElementById('clientName').value.trim());
             save();
-            renderUnclassified();
-            renderRecentActivity();
-            updateCounts();
-            updateDashboardStats();
+            refreshAll();
             this.reset();
             notify('✓ Paquete agregado');
         });
 
+        function refreshAll() {
+            renderUnclassified();
+            renderPostponed();
+            renderDraft();
+            renderCancelledGroups();
+            renderRecentActivity();
+            renderDelivered();
+            updateCounts();
+            updateDashboardStats();
+            updateDeleteCounts();
+        }
+
         // ===== INIT =====
-        var today = new Date();
-        document.getElementById('dateInfo').textContent = today.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('dateInfo').textContent = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         updateGreeting();
+
+        // SESIÓN PERSISTENTE: si ya había sesión guardada, entra directo
+        var savedSession = lsGet('ly_session');
+        if (savedSession === 'admin' || savedSession === 'viewer') {
+            userMode = savedSession;
+            enterApp();
+        } else {
+            refreshAll();
+        }
     </script>
 </body>
 </html>

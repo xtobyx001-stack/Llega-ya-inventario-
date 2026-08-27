@@ -157,8 +157,9 @@
         .count-pill { background: rgba(255,255,255,0.25); padding: 3px 10px; border-radius: 15px; font-size: 0.82em; font-weight: 700; }
         .chevron { transition: transform 0.3s; font-size: 1.2em; }
         .date-group.open .chevron { transform: rotate(180deg); }
-        .date-group-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
-        .date-group.open .date-group-body { max-height: 5000px; }
+        /* CORREGIDO: sin límite de altura que cortaba las fichas */
+        .date-group-body { display: none; }
+        .date-group.open .date-group-body { display: block; }
         .date-group-content { padding: 14px; }
         .delivered-item { background: #E8F5E9; padding: 12px 14px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #11998e; cursor: pointer; }
         .delivered-item.cancelled-item { background: #FFEBEE; border-left-color: var(--red); }
@@ -336,7 +337,7 @@
 
         <div class="sidebar-footer">
             🏍️ Llega Ya © 2026<br>
-            <span style="font-size:0.9em;opacity:0.7;">v5.0 Final</span>
+            <span style="font-size:0.9em;opacity:0.7;">v5.1</span>
             <button class="logout-btn" onclick="askLogout()">🚪 Salir</button>
         </div>
     </aside>
@@ -1471,7 +1472,6 @@
         document.getElementById('dateInfo').textContent = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         updateGreeting();
 
-        // SESIÓN PERSISTENTE: si ya había sesión guardada, entra directo
         var savedSession = lsGet('ly_session');
         if (savedSession === 'admin' || savedSession === 'viewer') {
             userMode = savedSession;

@@ -208,7 +208,6 @@
         .toggle-password { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--gray-500); cursor: pointer; padding: 5px; font-size: 1.2em; }
         .password-error { color: var(--red); font-size: 0.85em; margin-top: 8px; font-weight: 600; display: none; }
         .password-error.show { display: block; }
-        @media (max-width: 1024px) { }
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); width: 260px; }
             .sidebar.open { transform: translateX(0); }
@@ -230,11 +229,14 @@
         .btn-route-green { background:#e8f5e9; border-color:#81c784; color:#2e7d32; }
         .btn-route-purple { background:#ede7f6; border-color:#b39ddb; color:#5e35b1; }
         .btn-route-scan { background:#fef3c7; border-color:#f59e0b; color:#92400e; }
+        #mapWrapRoute { display:none; margin:10px 0; border-radius:18px; overflow:hidden; position:relative; box-shadow:0 2px 10px rgba(15,23,42,.1); background:#e8f4f8; }
+        #mcRoute { width:100%; display:block; }
         .route-card { background:#fff; border-radius:20px; margin-bottom:14px; border:1px solid #e8edf4; box-shadow:0 2px 10px rgba(15,23,42,.06); padding:16px; position:relative; }
         .route-card.nogps { border-color:#fde68a!important; }
         .route-actions { display:grid; grid-template-columns:repeat(2,1fr); gap:9px; margin-top:12px; }
         .abtn-route { padding:12px 6px; border-radius:16px; font-weight:700; font-size:.78rem; cursor:pointer; border:1.5px solid; text-align:center; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:4px; }
         .abtn-map { background:#e3f0ff; border-color:#90bbf5; color:#1a56c4; }
+        .abtn-loc { background:#e0f2fe; border-color:#7dd3fc; color:#0369a1; }
         .abtn-wa { background:#e8f5e9; border-color:#81c784; color:#2e7d32; }
         .abtn-exp { background:#fff3e0; border-color:#ffb74d; color:#e65100; }
         .abtn-ok { background:#e8f5e9; border-color:#81c784; color:#2e7d32; }
@@ -288,7 +290,7 @@
             <button class="nav-btn admin-only" onclick="switchView('backup', event)"><span class="nav-icon">💾</span><span class="nav-text"><span class="nav-title">Respaldo</span><span class="nav-subtitle">Importar / Exportar datos</span></span></button>
             <button class="nav-btn danger admin-only" onclick="requestDeleteAccess(event)"><span class="nav-icon">🗑️</span><span class="nav-text"><span class="nav-title">Borrar Datos</span><span class="nav-subtitle">Requiere contraseña</span></span><span class="nav-badge" style="background:var(--red);color:white;">🔒</span></button>
         </nav>
-        <div class="sidebar-footer">🏍️ Llega Ya © 2026<br><span style="font-size:0.9em;opacity:0.7;">v5.4 (Cloud)</span><button class="logout-btn" onclick="askLogout()">🚪 Salir</button></div>
+        <div class="sidebar-footer">🏍️ Llega Ya © 2026<br><span style="font-size:0.9em;opacity:0.7;">v5.5 (Rutas GPS)</span><button class="logout-btn" onclick="askLogout()">🚪 Salir</button></div>
     </aside>
 
     <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
@@ -382,6 +384,12 @@
             </div>
             <input type="file" id="fxRoute" accept=".xlsx,.xls" style="display:none" onchange="loadXLRoute(event)">
             <input type="file" id="fjRoute" accept=".json" style="display:none" onchange="loadJSONRoute(event)">
+
+            <div id="mapWrapRoute">
+                <canvas id="mcRoute"></canvas>
+                <div style="position:absolute;bottom:10px;right:10px;"><button onclick="openMapsRoute()" style="background:#2563eb;color:#fff;border:none;border-radius:14px;padding:10px 16px;font-size:.78rem;font-weight:700;cursor:pointer;">🌍 Abrir en Maps</button></div>
+                <div style="position:absolute;top:10px;left:10px;background:rgba(255,255,255,.92);border-radius:10px;padding:5px 10px;font-size:.7rem;font-weight:700;color:#0f172a;" id="miRoute"></div>
+            </div>
 
             <div style="padding:10px 0;">
                 <div class="search-box">
@@ -522,6 +530,19 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="mLocRoute">
+        <div class="modal" style="max-width:420px;">
+            <div class="modal-header" style="background:linear-gradient(135deg,#2563eb 0%,#1a56c4 100%);"><h2>📍 Editar ubicación</h2><button class="modal-close" onclick="closeLocRoute()">✕</button></div>
+            <div class="modal-body">
+                <p style="color:var(--gray-500);font-size:0.85em;margin-bottom:12px;">Pega las coordenadas del cliente (lat, lng). Al guardar, la ficha pasa a la pestaña RUTAS y entra en el mapa y en la optimización de ruta.</p>
+                <div class="form-group"><label>Coordenadas *</label><input type="text" id="locCoords" placeholder="Ej: 19.2917, -70.2558"></div>
+                <div class="form-group"><label>Dirección de referencia (opcional)</label><textarea id="locAddress" placeholder="Calle, sector, punto de referencia..."></textarea></div>
+                <div class="password-error" id="locError"></div>
+                <div style="display:flex;gap:10px;margin-top:15px;"><button class="btn-deliver btn-full" onclick="saveLocRoute()">💾 Guardar ubicación</button><button class="btn-ghost btn-full" onclick="closeLocRoute()">Cancelar</button></div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="confirmDeleteModal"><div class="modal"><div class="modal-header" style="background:linear-gradient(135deg,var(--red) 0%,var(--red-dark) 100%);"><h2>⚠️ Confirmar</h2><button class="modal-close" onclick="closeConfirmDeleteModal()">✕</button></div><div class="modal-body"><p style="color:var(--red);font-weight:700;text-align:center;margin-bottom:10px;">¿Estás completamente seguro?</p><div class="delete-summary" style="display:block;"><ul id="confirmDeleteList"></ul></div><div style="display:flex;gap:10px;margin-top:15px;"><button class="btn-danger btn-full" onclick="executeDelete()">🗑️ SÍ, ELIMINAR</button><button class="btn-ghost btn-full" onclick="closeConfirmDeleteModal()">Cancelar</button></div></div></div></div>
     <div class="modal-overlay" id="logoutModal"><div class="modal"><div class="modal-header" style="background:linear-gradient(135deg,var(--red) 0%,var(--red-dark) 100%);"><h2>🚪 Salir</h2><button class="modal-close" onclick="cancelLogout()">✕</button></div><div class="modal-body"><p style="text-align:center;color:var(--gray-700);font-weight:600;margin-bottom:15px;">¿Quieres salir de la sesión actual?</p><div style="display:flex;gap:10px;"><button class="btn-danger btn-full" onclick="confirmLogout()">Sí, salir</button><button class="btn-ghost btn-full" onclick="cancelLogout()">No, quedarme</button></div></div></div></div>
 
@@ -566,22 +587,124 @@
         let unlockedUnmarked = {};
         let pendingUnmarked = null;
         let unmarkTarget = null;
+        let sessionOrigin = null;
+        let lastRouteList = [];
+        let locTarget = null;
+
+        // ============ UTILIDADES DE COORDENADAS ============
+        function parseCoords(str) {
+            if (!str) return null;
+            const m = String(str).match(/(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)/);
+            if (!m) return null;
+            const lat = parseFloat(m[1]), lng = parseFloat(m[2]);
+            if (isNaN(lat) || isNaN(lng)) return null;
+            if (Math.abs(lat) > 90 || Math.abs(lng) > 180) return null;
+            return { lat: lat, lng: lng };
+        }
+        function getCoords(p) {
+            if (p.lat != null && p.lng != null && !isNaN(p.lat) && !isNaN(p.lng)) return { lat: +p.lat, lng: +p.lng };
+            return parseCoords(p.client_address);
+        }
+        function hasCoords(p) { return !!getCoords(p); }
+        function hv(a, b, c, d) {
+            var R = 6371, dL = (c - a) * Math.PI / 180, dG = (d - b) * Math.PI / 180;
+            var x = Math.sin(dL / 2) * Math.sin(dL / 2) + Math.cos(a * Math.PI / 180) * Math.cos(c * Math.PI / 180) * Math.sin(dG / 2) * Math.sin(dG / 2);
+            return R * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
+        }
+        function optimizeOrder(items, origin) {
+            var pts = [];
+            items.forEach(function(p) { var c = getCoords(p); if (c) pts.push({ p: p, lat: c.lat, lng: c.lng }); });
+            if (pts.length < 3) return items.slice();
+            var seq = [pts[0]]; var rest = pts.slice(1); var cur = pts[0];
+            while (rest.length) {
+                var bi = 0, bm = Infinity;
+                for (var j = 0; j < rest.length; j++) { var d = hv(cur.lat, cur.lng, rest[j].lat, rest[j].lng); if (d < bm) { bm = d; bi = j; } }
+                var n = rest.splice(bi, 1)[0]; seq.push(n); cur = n;
+            }
+            function dd(a, b) { return hv(a.lat, a.lng, b.lat, b.lng); }
+            var start = origin || seq[0];
+            var improved = true, guard = 0;
+            while (improved && guard < 30) {
+                improved = false; guard++;
+                for (var i = (origin ? 0 : 1); i < seq.length - 1; i++) {
+                    for (var k = i + 1; k < seq.length; k++) {
+                        var a = (i === 0) ? start : seq[i - 1];
+                        var b = seq[i], c = seq[k];
+                        var d2 = (k + 1 < seq.length) ? seq[k + 1] : null;
+                        var before = dd(a, b) + (d2 ? dd(c, d2) : 0);
+                        var after = dd(a, c) + (d2 ? dd(b, d2) : 0);
+                        if (after < before - 1e-9) {
+                            var rev = seq.slice(i, k + 1).reverse();
+                            for (var r = 0; r < rev.length; r++) seq[i + r] = rev[r];
+                            improved = true;
+                        }
+                    }
+                }
+            }
+            return seq.map(function(s) { return s.p; });
+        }
+        function drawRouteMap(items) {
+            var wrap = document.getElementById('mapWrapRoute'); var cv = document.getElementById('mcRoute');
+            var pts = [];
+            items.forEach(function(p) { var c = getCoords(p); if (c) pts.push({ lat: c.lat, lng: c.lng }); });
+            if (!pts.length) { wrap.style.display = 'none'; return; }
+            wrap.style.display = 'block';
+            var origin = sessionOrigin;
+            var all = (origin ? [origin] : []).concat(pts);
+            var mn = { lat: Infinity, lng: Infinity }, mx = { lat: -Infinity, lng: -Infinity };
+            all.forEach(function(q) { mn.lat = Math.min(mn.lat, q.lat); mx.lat = Math.max(mx.lat, q.lat); mn.lng = Math.min(mn.lng, q.lng); mx.lng = Math.max(mx.lng, q.lng); });
+            var ls = (mx.lat - mn.lat) || 0.01, gs = (mx.lng - mn.lng) || 0.01;
+            mn.lat -= ls * .15; mx.lat += ls * .15; mn.lng -= gs * .15; mx.lng += gs * .15;
+            var W = wrap.offsetWidth || 340, H = Math.round(W * 0.58);
+            cv.width = W * 2; cv.height = H * 2; cv.style.height = H + 'px';
+            var ctx = cv.getContext('2d'); ctx.setTransform(2, 0, 0, 2, 0, 0);
+            var sx = function(l) { return (l - mn.lng) / (mx.lng - mn.lng) * W; }, sy = function(l) { return H - (l - mn.lat) / (mx.lat - mn.lat) * H; };
+            ctx.fillStyle = '#eef2f7'; ctx.fillRect(0, 0, W, H);
+            ctx.strokeStyle = '#dde3ec'; ctx.lineWidth = .6;
+            for (var i = 1; i <= 4; i++) { var gx = W * i / 5, gy = H * i / 5; ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, H); ctx.stroke(); ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(W, gy); ctx.stroke(); }
+            function path() {
+                ctx.beginPath();
+                if (origin) ctx.moveTo(sx(origin.lng), sy(origin.lat)); else ctx.moveTo(sx(pts[0].lng), sy(pts[0].lat));
+                pts.forEach(function(q) { ctx.lineTo(sx(q.lng), sy(q.lat)); });
+            }
+            ctx.strokeStyle = 'rgba(37,99,235,.18)'; ctx.lineWidth = 7; ctx.lineJoin = 'round'; path(); ctx.stroke();
+            ctx.strokeStyle = '#2563eb'; ctx.lineWidth = 2.8; path(); ctx.stroke();
+            if (origin) {
+                ctx.fillStyle = 'rgba(22,163,74,.2)'; ctx.beginPath(); ctx.arc(sx(origin.lng), sy(origin.lat), 10, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#16a34a'; ctx.beginPath(); ctx.arc(sx(origin.lng), sy(origin.lat), 5, 0, Math.PI * 2); ctx.fill();
+            }
+            pts.forEach(function(q, idx) {
+                var x = sx(q.lng), y = sy(q.lat);
+                ctx.fillStyle = 'rgba(0,0,0,.13)'; ctx.beginPath(); ctx.arc(x + 1, y + 1.5, 12, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#2563eb'; ctx.beginPath(); ctx.arc(x, y, 12, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x, y, 12, 0, Math.PI * 2); ctx.stroke();
+                ctx.fillStyle = '#fff'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(idx + 1, x, y);
+            });
+            var td = 0, seq = (origin ? [origin] : []).concat(pts);
+            for (var k = 0; k < seq.length - 1; k++) td += hv(seq[k].lat, seq[k].lng, seq[k + 1].lat, seq[k + 1].lng);
+            document.getElementById('miRoute').textContent = pts.length + ' paradas · ~' + td.toFixed(1) + ' km';
+        }
+        function openMapsRoute() {
+            var pts = [];
+            lastRouteList.forEach(function(p) { var c = getCoords(p); if (c) pts.push(c); });
+            if (!pts.length) { notify('Sin coordenadas en RUTAS', 'warning'); return; }
+            var dest = pts[pts.length - 1];
+            var wp = pts.slice(0, -1).slice(0, 8).map(function(c) { return c.lat + ',' + c.lng; }).join('|');
+            window.open('https://www.google.com/maps/dir/?api=1&destination=' + dest.lat + ',' + dest.lng + (wp ? '&waypoints=' + encodeURIComponent(wp) : '') + '&travelmode=driving', '_blank');
+        }
 
         async function checkSession() {
             const { data: { session } } = await sb.auth.getSession();
             if (session && session.user) {
                 currentUserEmail = session.user.email;
-                if (currentUserEmail === 'xtobyx001@gmail.com') {
-                    userMode = 'admin'; deleteAccessGranted = true; currentUserName = 'Dueño';
-                } else {
+                if (currentUserEmail === 'xtobyx001@gmail.com') { userMode = 'admin'; deleteAccessGranted = true; currentUserName = 'Dueño'; }
+                else {
                     const { data: tm } = await sb.from('team').select('*').eq('email', currentUserEmail).maybeSingle();
                     if (tm) { userMode = 'driver'; currentUserName = tm.name; }
                     else { userMode = 'viewer'; currentUserName = 'Visualizador'; }
                 }
                 enterApp();
-            } else {
-                document.getElementById('loginScreen').classList.remove('hidden');
-            }
+            } else { document.getElementById('loginScreen').classList.remove('hidden'); }
         }
 
         document.getElementById('btnAdmin').addEventListener('click', function() {
@@ -678,14 +801,14 @@
                 } else if (p.status === 'cancelled') {
                     if (p.saved_date) {
                         let grp = cancelledGroups.find(g => g.saved_date === p.saved_date);
-                        if (!grp) { grp = { id: 'g'+Date.now(), saved_date: p.saved_date, created_at: p.created_at, items: [] }; cancelledGroups.push(grp); }
+                        if (!grp) { grp = { id: 'g' + Date.now(), saved_date: p.saved_date, created_at: p.created_at, items: [] }; cancelledGroups.push(grp); }
                         grp.items.push(p);
                     } else { cancelledDraft.push(p); }
                 }
             });
         }
 
-        function localDateKey(d) { const m = d.getMonth()+1, day = d.getDate(); return d.getFullYear()+'-'+(m<10?'0'+m:m)+'-'+(day<10?'0'+day:day); }
+        function localDateKey(d) { const m = d.getMonth() + 1, day = d.getDate(); return d.getFullYear() + '-' + (m < 10 ? '0' + m : m) + '-' + (day < 10 ? '0' + day : day); }
 
         function notify(msg, type) {
             type = type || 'success';
@@ -862,7 +985,6 @@
             document.getElementById('badgeUnmarked').textContent = um;
             document.getElementById('unmarkedCount').textContent = um;
             document.getElementById('badgeRoute').textContent = route;
-            document.getElementById('routeCnt').textContent = route;
             document.getElementById('draftCount').textContent = cancelledDraft.length;
         }
 
@@ -973,8 +1095,8 @@
             } else {
                 data = packages.filter(p => p.assigned_to === currentUserEmail);
             }
-            if (currentRouteTab === 'pendientes') return data.filter(p => p.status === 'pending' || p.status === 'in_process' || p.status === 'in_transit');
-            if (currentRouteTab === 'sin_ubicacion') return data.filter(p => (p.status === 'pending' || p.status === 'in_process') && !p.client_address);
+            if (currentRouteTab === 'pendientes') return data.filter(p => (p.status === 'pending' || p.status === 'in_process' || p.status === 'in_transit') && hasCoords(p));
+            if (currentRouteTab === 'sin_ubicacion') return data.filter(p => (p.status === 'pending' || p.status === 'in_process' || p.status === 'in_transit') && !hasCoords(p));
             if (currentRouteTab === 'completados') return data.filter(p => p.status === 'no_answer' || p.status === 'returned');
             if (currentRouteTab === 'exportar') return data.filter(p => p.status === 'delivered');
             return [];
@@ -985,24 +1107,35 @@
             const q = (document.getElementById('bqRoute').value || '').toLowerCase().trim();
             let data = getRouteData();
             if (q) data = data.filter(p => (p.client_name || '').toLowerCase().includes(q) || (p.client_phone || '').includes(q) || (p.tracking_code || p.code || '').toLowerCase().includes(q) || (p.product_info || '').toLowerCase().includes(q));
+            if (currentRouteTab === 'pendientes') {
+                const anyOrder = data.some(p => p.route_order != null);
+                if (anyOrder) data = data.slice().sort((a, b) => ((a.route_order == null ? 999999 : a.route_order) - (b.route_order == null ? 999999 : b.route_order)));
+                else data = optimizeOrder(data, null);
+                lastRouteList = data;
+            } else { lastRouteList = []; }
             document.getElementById('routeCnt').textContent = data.length;
             const list = document.getElementById('listRoute');
-            if (!data.length) { list.innerHTML = '<div class="empty-state"><div class="icon">🚚</div><p>No hay entregas aquí</p></div>'; return; }
+            if (!data.length) {
+                list.innerHTML = '<div class="empty-state"><div class="icon">🚚</div><p>' + (currentRouteTab === 'pendientes' ? 'No hay fichas con coordenadas. Agrégalas desde 📍 Ubicación en la pestaña SIN GPS.' : 'No hay fichas aquí') + '</p></div>';
+                document.getElementById('mapWrapRoute').style.display = 'none';
+                return;
+            }
             const drivers = teamUsers.filter(u => u.role === 'driver');
             list.innerHTML = data.map((p, i) => {
                 const cv = parseFloat(p.price || 0);
                 const ph = String(p.client_phone || '').replace(/\D/g, '');
                 const done = p.status === 'delivered' || p.status === 'no_answer' || p.status === 'returned';
-                const su = !p.client_address;
+                const su = !hasCoords(p);
                 const pkgCode = p.tracking_code || p.code || p.id;
                 return '<div class="route-card' + (su ? ' nogps' : '') + '">'
                     + '<div style="display:flex;gap:8px;"><div style="flex:1;min-width:0;">'
-                    + '<div style="font-size:1rem;font-weight:800;color:var(--navy);">#' + (i + 1) + ' · ' + (p.client_name || 'Sin nombre') + '</div>'
+                    + '<div style="font-size:1rem;font-weight:800;color:var(--navy);">#' + (i + 1) + ' · ' + (p.client_name || 'Sin nombre') + (su ? ' <span style="font-size:.6rem;font-weight:800;padding:3px 8px;border-radius:20px;background:#fef3c7;color:#92400e;">SIN GPS</span>' : '') + '</div>'
                     + '<div style="font-size:.8rem;color:var(--gray-500);margin-top:3px;">📞 ' + (p.client_phone || '—') + (cv ? ' · RD$ ' + cv.toLocaleString() : '') + '</div>'
                     + '<div style="font-size:.8rem;color:var(--gray-500);">📦 Código: ' + pkgCode + '</div>'
                     + '</div></div>'
                     + (p.product_info ? '<div style="margin:8px 0;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:12px;padding:9px 11px;font-size:.8rem;color:var(--gray-700);">📝 ' + p.product_info + '</div>' : '')
                     + '<div class="route-actions">'
+                    + '<button class="abtn-route abtn-loc" onclick="openLocRoute(\'' + p.id + '\')">📍 Ubicación</button>'
                     + (p.client_address ? '<a class="abtn-route abtn-map" href="https://www.google.com/maps/search/' + encodeURIComponent(p.client_address) + '" target="_blank">🗺️ Mapa</a>' : '')
                     + (ph ? '<button class="abtn-route abtn-wa" onclick="openWARoute(\'' + p.id + '\')">💬 Mensaje</button>' : '')
                     + (ph ? '<a class="abtn-route abtn-exp" href="https://wa.me/' + ph + '" target="_blank">📱 WhatsApp</a>' : '')
@@ -1013,6 +1146,8 @@
                     + (isAdmin() ? '<select class="assign-select" style="width:100%;" onchange="assignDriverTo(\'' + p.id + '\', this.value)"><option value="">-- 🚚 Asignar chofer --</option>' + drivers.map(u => '<option value="' + u.email + '"' + ((p.assigned_to || '') === u.email ? ' selected' : '') + '>' + u.name + '</option>').join('') + '</select>' : '')
                     + '</div>';
             }).join('');
+            if (currentRouteTab === 'pendientes') drawRouteMap(data);
+            else document.getElementById('mapWrapRoute').style.display = 'none';
         }
 
         async function revertRoute(id) {
@@ -1037,6 +1172,48 @@
             if (ok) notify('🚚 Asignado correctamente');
         }
 
+        async function sortNearestRoute() {
+            if (!isAdmin() && !isDriver()) { notify('🔒 No tienes permisos', 'error'); return; }
+            var base = packages.filter(function(p) {
+                return (p.status === 'pending' || p.status === 'in_process' || p.status === 'in_transit') && hasCoords(p)
+                    && (isAdmin() ? (routeAdminFilter === '' ? true : (routeAdminFilter === 'unassigned' ? !p.assigned_to : p.assigned_to === routeAdminFilter)) : p.assigned_to === currentUserEmail);
+            });
+            if (base.length < 2) { notify('Necesitas al menos 2 fichas con coordenadas en RUTAS', 'warning'); return; }
+            var apply = async function(origin) {
+                var ord = optimizeOrder(base, origin);
+                for (var i = 0; i < ord.length; i++) { await sb.from('packages').update({ route_order: i + 1 }).eq('id', ord[i].id); }
+                await sb.from('activity').insert({ texto: '⚡ Ruta optimizada (' + ord.length + ' paradas)', usuario: currentUserName || currentUserEmail.split('@')[0] });
+                notify('⚡ Ruta optimizada y guardada');
+                await loadDataFromSupabase();
+            };
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(pos) { sessionOrigin = { lat: pos.coords.latitude, lng: pos.coords.longitude }; apply(sessionOrigin); }, function() { apply(null); }, { timeout: 8000 });
+            } else apply(null);
+        }
+
+        // ============ EDITAR UBICACIÓN ============
+        function openLocRoute(id) {
+            var p = packages.find(x => x.id === id); if (!p) return;
+            locTarget = id;
+            var c = getCoords(p);
+            document.getElementById('locCoords').value = c ? (c.lat + ', ' + c.lng) : '';
+            document.getElementById('locAddress').value = p.client_address || '';
+            document.getElementById('locError').classList.remove('show');
+            document.getElementById('mLocRoute').classList.add('show');
+        }
+        function closeLocRoute() { document.getElementById('mLocRoute').classList.remove('show'); locTarget = null; }
+        document.getElementById('mLocRoute').addEventListener('click', function(e) { if (e.target.id === 'mLocRoute') closeLocRoute(); });
+        async function saveLocRoute() {
+            var p = packages.find(x => x.id === locTarget); if (!p) return;
+            var c = parseCoords(document.getElementById('locCoords').value);
+            var err = document.getElementById('locError');
+            if (!c) { err.textContent = '❌ Coordenadas inválidas. Usa el formato: 19.2917, -70.2558'; err.classList.add('show'); return; }
+            var addr = document.getElementById('locAddress').value.trim() || p.client_address || '';
+            var ok = await syncPackageUpdate(p.id, { lat: c.lat, lng: c.lng, client_address: addr }, '📍 Ubicación agregada #' + (p.tracking_code || p.code));
+            if (ok) { closeLocRoute(); notify('📍 Ubicación guardada. La ficha ya está en RUTAS.'); }
+        }
+
+        // ============ WHATSAPP RUTA ============
         const waStatesRoute = [
             {key:'pendiente',icon:'📦',label:'Pendiente',cls:'st-pendiente',msg:function(n,p,f,cd){return '[LLEGA YA] Hola '+n+'! Estamos listos para entregar tu pedido '+p+'.'+(f?' Fecha estimada: '+f:'')+'\nPor favor comparte tu ubicación.';}},
             {key:'transito',icon:'🚚',label:'En tránsito',cls:'st-transito',msg:function(n,p,f,cd){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' está en camino.'+(f?' Fecha estimada: '+f:'');}},
@@ -1047,8 +1224,6 @@
         function openWARoute(id) {
             const pkg = packages.find(p => p.id === id); if (!pkg) return;
             wUidRoute = id; wStRoute = null;
-            const nombre = (pkg.client_name || '').split(' ')[0];
-            const prod = pkg.product_info || pkg.client_name || 'tu pedido';
             document.getElementById('waNRoute').textContent = pkg.client_name || 'Sin nombre';
             document.getElementById('waTRoute').textContent = '+' + (pkg.client_phone || '');
             document.getElementById('waERoute').innerHTML = waStatesRoute.map(function(s) {
@@ -1098,7 +1273,6 @@
 
         function loadXLRoute(e) { notify('Importación Excel - Usa la vista Sin Clasificar', 'info'); e.target.value = ''; }
         function loadJSONRoute(e) { notify('Importación JSON - Usa la vista Sin Clasificar', 'info'); e.target.value = ''; }
-        function sortNearestRoute() { notify('Optimización de ruta - En desarrollo', 'info'); }
         function openScannerRoute() { notify('Escáner - En desarrollo', 'info'); }
 
         // ============ ENTREGADOS SIN MARCAR ============
@@ -1268,7 +1442,7 @@
             document.getElementById('modalTitle').innerHTML = '📋 Ficha · #' + (pkg.tracking_code || pkg.code);
             let actionButtons = '';
             if ((isAdmin() || isDriver()) && (context === 'unclassified' || context === 'postponed' || context === 'route')) {
-                actionButtons = '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:15px;"><button class="btn-deliver" style="flex:1;" onclick="markDelivered(\'' + pkg.id + '\');closeModal();">✓ Entregar</button><button class="btn-secondary" style="flex:1;" onclick="markDeliveredUnmarked(\'' + pkg.id + '\');closeModal();">✅ Sin marcar</button><a href="tel:' + pkg.client_phone + '" class="btn-secondary" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">📞 Llamar</a>' + (pkg.client_address ? '<a href="https://www.google.com/maps/search/' + encodeURIComponent(pkg.client_address) + '" target="_blank" class="btn-cancel" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">🗺️ Mapa</a>' : '') + '</div>';
+                actionButtons = '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:15px;"><button class="btn-deliver" style="flex:1;" onclick="markDelivered(\'' + pkg.id + '\');closeModal();">✓ Entregar</button><button class="btn-secondary" style="flex:1;" onclick="markDeliveredUnmarked(\'' + pkg.id + '\');closeModal();">✅ Sin marcar</button><button class="btn-ghost" style="flex:1;" onclick="closeModal();openLocRoute(\'' + pkg.id + '\')">📍 Ubicación</button><a href="tel:' + pkg.client_phone + '" class="btn-secondary" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">📞 Llamar</a>' + (pkg.client_address ? '<a href="https://www.google.com/maps/search/' + encodeURIComponent(pkg.client_address) + '" target="_blank" class="btn-cancel" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">🗺️ Mapa</a>' : '') + '</div>';
             } else if (context === 'unclassified' || context === 'postponed' || context === 'route') {
                 actionButtons = '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:15px;"><a href="tel:' + pkg.client_phone + '" class="btn-secondary" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">📞 Llamar</a>' + (pkg.client_address ? '<a href="https://www.google.com/maps/search/' + encodeURIComponent(pkg.client_address) + '" target="_blank" class="btn-ghost" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">🗺️ Ver Mapa</a>' : '') + '</div>';
             } else if (context === 'delivered') {

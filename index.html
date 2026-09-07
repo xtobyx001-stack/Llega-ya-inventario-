@@ -290,7 +290,7 @@
             <button class="nav-btn admin-only" onclick="switchView('backup', event)"><span class="nav-icon">💾</span><span class="nav-text"><span class="nav-title">Respaldo</span><span class="nav-subtitle">Importar / Exportar datos</span></span></button>
             <button class="nav-btn danger admin-only" onclick="requestDeleteAccess(event)"><span class="nav-icon">🗑️</span><span class="nav-text"><span class="nav-title">Borrar Datos</span><span class="nav-subtitle">Requiere contraseña</span></span><span class="nav-badge" style="background:var(--red);color:white;">🔒</span></button>
         </nav>
-        <div class="sidebar-footer">🏍️ Llega Ya © 2026<br><span style="font-size:0.9em;opacity:0.7;">v5.5 (Rutas GPS)</span><button class="logout-btn" onclick="askLogout()">🚪 Salir</button></div>
+        <div class="sidebar-footer">🏍️ Llega Ya © 2026<br><span style="font-size:0.9em;opacity:0.7;">v5.6 (Ubicación fix)</span><button class="logout-btn" onclick="askLogout()">🚪 Salir</button></div>
     </aside>
 
     <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
@@ -606,6 +606,11 @@
             return parseCoords(p.client_address);
         }
         function hasCoords(p) { return !!getCoords(p); }
+        function mapLink(p) {
+            var c = getCoords(p);
+            if (c) return 'https://www.google.com/maps/search/?api=1&query=' + c.lat + ',' + c.lng;
+            return 'https://www.google.com/maps/search/' + encodeURIComponent(p.client_address || '');
+        }
         function hv(a, b, c, d) {
             var R = 6371, dL = (c - a) * Math.PI / 180, dG = (d - b) * Math.PI / 180;
             var x = Math.sin(dL / 2) * Math.sin(dL / 2) + Math.cos(a * Math.PI / 180) * Math.cos(c * Math.PI / 180) * Math.sin(dG / 2) * Math.sin(dG / 2);
@@ -1136,7 +1141,7 @@
                     + (p.product_info ? '<div style="margin:8px 0;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:12px;padding:9px 11px;font-size:.8rem;color:var(--gray-700);">📝 ' + p.product_info + '</div>' : '')
                     + '<div class="route-actions">'
                     + '<button class="abtn-route abtn-loc" onclick="openLocRoute(\'' + p.id + '\')">📍 Ubicación</button>'
-                    + (p.client_address ? '<a class="abtn-route abtn-map" href="https://www.google.com/maps/search/' + encodeURIComponent(p.client_address) + '" target="_blank">🗺️ Mapa</a>' : '')
+                    + ((p.client_address || hasCoords(p)) ? '<a class="abtn-route abtn-map" href="' + mapLink(p) + '" target="_blank">🗺️ Mapa</a>' : '')
                     + (ph ? '<button class="abtn-route abtn-wa" onclick="openWARoute(\'' + p.id + '\')">💬 Mensaje</button>' : '')
                     + (ph ? '<a class="abtn-route abtn-exp" href="https://wa.me/' + ph + '" target="_blank">📱 WhatsApp</a>' : '')
                     + (done ? '<button class="abtn-route abtn-exp" onclick="revertRoute(\'' + p.id + '\')">↩️ Volver</button>' : '<button class="abtn-route abtn-ok" onclick="markDelivered(\'' + p.id + '\')">✅ Entregado</button>')
@@ -1191,7 +1196,7 @@
             } else apply(null);
         }
 
-        // ============ EDITAR UBICACIÓN ============
+        // ============ EDITAR UBICACIÓN (CORREGIDO) ============
         function openLocRoute(id) {
             var p = packages.find(x => x.id === id); if (!p) return;
             locTarget = id;
@@ -1209,8 +1214,19 @@
             var err = document.getElementById('locError');
             if (!c) { err.textContent = '❌ Coordenadas inválidas. Usa el formato: 19.2917, -70.2558'; err.classList.add('show'); return; }
             var addr = document.getElementById('locAddress').value.trim() || p.client_address || '';
-            var ok = await syncPackageUpdate(p.id, { lat: c.lat, lng: c.lng, client_address: addr }, '📍 Ubicación agregada #' + (p.tracking_code || p.code));
-            if (ok) { closeLocRoute(); notify('📍 Ubicación guardada. La ficha ya está en RUTAS.'); }
+            var coordStr = c.lat + ', ' + c.lng;
+            var ok = false;
+            var r1 = await sb.from('packages').update({ lat: c.lat, lng: c.lng, client_address: addr || coordStr }).eq('id', p.id);
+            if (!r1.error) { ok = true; }
+            else {
+                var r2 = await sb.from('packages').update({ client_address: coordStr + (addr ? ' | ' + addr : '') }).eq('id', p.id);
+                ok = !r2.error;
+                if (!ok) { notify('Error al guardar: ' + r2.error.message, 'error'); return; }
+            }
+            if (currentUserEmail) await sb.from('activity').insert({ texto: '📍 Ubicación agregada #' + (p.tracking_code || p.code), usuario: currentUserName || currentUserEmail.split('@')[0] });
+            closeLocRoute();
+            notify('📍 Ubicación guardada. La ficha ya está en RUTAS.');
+            await loadDataFromSupabase();
         }
 
         // ============ WHATSAPP RUTA ============
@@ -1442,9 +1458,9 @@
             document.getElementById('modalTitle').innerHTML = '📋 Ficha · #' + (pkg.tracking_code || pkg.code);
             let actionButtons = '';
             if ((isAdmin() || isDriver()) && (context === 'unclassified' || context === 'postponed' || context === 'route')) {
-                actionButtons = '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:15px;"><button class="btn-deliver" style="flex:1;" onclick="markDelivered(\'' + pkg.id + '\');closeModal();">✓ Entregar</button><button class="btn-secondary" style="flex:1;" onclick="markDeliveredUnmarked(\'' + pkg.id + '\');closeModal();">✅ Sin marcar</button><button class="btn-ghost" style="flex:1;" onclick="closeModal();openLocRoute(\'' + pkg.id + '\')">📍 Ubicación</button><a href="tel:' + pkg.client_phone + '" class="btn-secondary" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">📞 Llamar</a>' + (pkg.client_address ? '<a href="https://www.google.com/maps/search/' + encodeURIComponent(pkg.client_address) + '" target="_blank" class="btn-cancel" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">🗺️ Mapa</a>' : '') + '</div>';
+                actionButtons = '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:15px;"><button class="btn-deliver" style="flex:1;" onclick="markDelivered(\'' + pkg.id + '\');closeModal();">✓ Entregar</button><button class="btn-secondary" style="flex:1;" onclick="markDeliveredUnmarked(\'' + pkg.id + '\');closeModal();">✅ Sin marcar</button><button class="btn-ghost" style="flex:1;" onclick="closeModal();openLocRoute(\'' + pkg.id + '\')">📍 Ubicación</button><a href="tel:' + pkg.client_phone + '" class="btn-secondary" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">📞 Llamar</a>' + ((pkg.client_address || hasCoords(pkg)) ? '<a href="' + mapLink(pkg) + '" target="_blank" class="btn-cancel" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">🗺️ Mapa</a>' : '') + '</div>';
             } else if (context === 'unclassified' || context === 'postponed' || context === 'route') {
-                actionButtons = '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:15px;"><a href="tel:' + pkg.client_phone + '" class="btn-secondary" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">📞 Llamar</a>' + (pkg.client_address ? '<a href="https://www.google.com/maps/search/' + encodeURIComponent(pkg.client_address) + '" target="_blank" class="btn-ghost" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">🗺️ Ver Mapa</a>' : '') + '</div>';
+                actionButtons = '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:15px;"><a href="tel:' + pkg.client_phone + '" class="btn-secondary" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">📞 Llamar</a>' + ((pkg.client_address || hasCoords(pkg)) ? '<a href="' + mapLink(pkg) + '" target="_blank" class="btn-ghost" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">🗺️ Ver Mapa</a>' : '') + '</div>';
             } else if (context === 'delivered') {
                 if (isAdmin() || isDriver()) {
                     actionButtons = '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:15px;">'

@@ -278,7 +278,7 @@ button{background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 100
 <button class="nav-btn admin-only" onclick="switchView('backup', event)"><span class="nav-icon">💾</span><span class="nav-text"><span class="nav-title">Respaldo</span><span class="nav-subtitle">Importar / Exportar datos</span></span></button>
 <button class="nav-btn danger admin-only" onclick="requestDeleteAccess(event)"><span class="nav-icon">🗑️</span><span class="nav-text"><span class="nav-title">Borrar Datos</span><span class="nav-subtitle">Requiere contraseña</span></span><span class="nav-badge" style="background:var(--red);color:white;">🔒</span></button>
 </nav>
-<div class="sidebar-footer">🏍️ Llega Ya © 2026 · v5.8<button class="logout-btn" onclick="askLogout()">🚪 Salir</button></div>
+<div class="sidebar-footer">🏍️ Llega Ya © 2026 · v5.9<button class="logout-btn" onclick="askLogout()">🚪 Salir</button></div>
 </aside>
 
 <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
@@ -858,11 +858,11 @@ function requestDeleteAccess(event) {
     document.getElementById('passwordAccessModal').classList.add('show');
     setTimeout(function() { document.getElementById('accessPassword').focus(); }, 150);
 }
-async function syncPackageUpdate(id, updates, activityMsg) {
+async function syncPackageUpdate(id, updates, activityMsg, actor) {
     const { error } = await sb.from('packages').update(updates).eq('id', id);
     if (error) { notify('Error al guardar: ' + error.message, 'error'); return false; }
     if (activityMsg && currentUserEmail) {
-        await sb.from('activity').insert({ texto: activityMsg, usuario: currentUserName || currentUserEmail.split('@')[0] });
+        await sb.from('activity').insert({ texto: activityMsg, usuario: actor || currentUserName || currentUserEmail.split('@')[0] });
     }
     await loadDataFromSupabase();
     return true;
@@ -871,14 +871,14 @@ async function markDelivered(id) {
     if (!isAdmin() && !isDriver()) { notify('🔒 No tienes permisos', 'error'); return; }
     const pkg = packages.find(p => p.id === id); if (!pkg) return;
     const now = new Date();
-    const ok = await syncPackageUpdate(id, { status: 'delivered', delivery_date: localDateKey(now), delivery_time: now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) }, '✅ Entregado #' + (pkg.tracking_code || pkg.code));
+    const ok = await syncPackageUpdate(id, { status: 'delivered', delivery_date: localDateKey(now), delivery_time: now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }), delivered_by: currentUserName || currentUserEmail.split('@')[0] }, '✅ Entregado #' + (pkg.tracking_code || pkg.code));
     if (ok) notify('✓ Paquete #' + (pkg.tracking_code || pkg.code) + ' entregado');
 }
 async function markDeliveredUnmarked(id) {
     if (!isAdmin() && !isDriver()) { notify('🔒 No tienes permisos', 'error'); return; }
     const pkg = packages.find(p => p.id === id); if (!pkg) return;
     const now = new Date();
-    const ok = await syncPackageUpdate(id, { status: 'delivered_unmarked', delivery_date: localDateKey(now), delivery_time: now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) }, '📋 Entregado SIN marcar #' + (pkg.tracking_code || pkg.code));
+    const ok = await syncPackageUpdate(id, { status: 'delivered_unmarked', delivery_date: localDateKey(now), delivery_time: now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }), delivered_by: currentUserName || currentUserEmail.split('@')[0] }, '📋 Entregado SIN marcar #' + (pkg.tracking_code || pkg.code));
     if (ok) notify('📋 Registrado en Entregados Sin Marcar');
 }
 async function markPostponed(id) {
@@ -890,7 +890,7 @@ async function markPostponed(id) {
 async function moveToUnclassified(id) {
     if (!isAdmin() && !isDriver()) { notify('🔒 No tienes permisos', 'error'); return; }
     const pkg = packages.find(p => p.id === id); if (!pkg) return;
-    const ok = await syncPackageUpdate(id, { status: 'pending', delivery_date: null, saved_date: null }, '↩ Reactivado #' + (pkg.tracking_code || pkg.code));
+    const ok = await syncPackageUpdate(id, { status: 'pending', delivery_date: null, saved_date: null, delivered_by: null }, '↩ Reactivado #' + (pkg.tracking_code || pkg.code));
     if (ok) notify('📦 Paquete reactivado');
 }
 async function markCancelled(id) {
@@ -1104,7 +1104,7 @@ function renderRouteView() {
 }
 async function revertRoute(id) {
     const pkg = packages.find(p => p.id === id); if (!pkg) return;
-    await syncPackageUpdate(id, { status: 'pending', delivery_date: null, saved_date: null }, '↩️ Reactivado #' + (pkg.tracking_code || pkg.code));
+    await syncPackageUpdate(id, { status: 'pending', delivery_date: null, saved_date: null, delivered_by: null }, '↩️ Reactivado #' + (pkg.tracking_code || pkg.code));
     notify('Reactivado', 'info');
 }
 async function deletePackageRoute(id) {
@@ -1301,9 +1301,9 @@ function confirmUnmarkUnlock() {
 async function markUnmarkedAsDelivered(id) {
     const pkg = packages.find(p => p.id === id); if (!pkg) return;
     const now = new Date();
-    const who = unmarkSession ? unmarkSession.name : (currentUserName || '');
-    const ok = await syncPackageUpdate(id, { status: 'delivered', delivery_date: localDateKey(now), delivery_time: now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) }, '✅ Marcado en app externa #' + (pkg.tracking_code || pkg.code) + ' por ' + who);
-    if (ok) { if (pendingUnmarked === id) pendingUnmarked = null; notify('✅ Paquete movido a Entregados'); }
+    const who = unmarkSession ? unmarkSession.name : (currentUserName || currentUserEmail.split('@')[0]);
+    const ok = await syncPackageUpdate(id, { status: 'delivered', delivery_date: localDateKey(now), delivery_time: now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }), delivered_by: who }, '✅ Marcado en app externa #' + (pkg.tracking_code || pkg.code) + ' por ' + who, who);
+    if (ok) { if (pendingUnmarked === id) pendingUnmarked = null; notify('✅ Paquete movido a Entregados (por ' + who + ')'); }
 }
 
 // ===== ENTREGADOS / DEVOLUCIONES =====
@@ -1321,7 +1321,7 @@ function renderDelivered() {
         const formatted = new Date(date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         const total = items.reduce((s, i) => s + (parseFloat(i.price) || 0), 0);
         html += '<div class="date-group" id="dg-' + date + '"><div class="date-group-header" onclick="toggleGroup(\'dg-' + date + '\')"><h3><span>📅 ' + formatted + '</span><span class="count-pill">' + items.length + ' paquetes</span><span class="count-pill">💵 $' + total.toLocaleString('es-DO') + '</span></h3><div style="display:flex;gap:8px;align-items:center;"><button class="group-edit-btn" onclick="event.stopPropagation();openGroupDateEdit(\'' + date + '\')">✏️ Fecha</button><span class="chevron">▼</span></div></div><div class="date-group-body"><div class="date-group-content">' +
-            items.map(p => '<div class="delivered-item" onclick="showDetails(\'' + p.id + '\',\'delivered\')"><div class="pkg-header"><span class="pkg-code">#' + (p.tracking_code || p.code) + '</span>' + (p.store ? '<span class="pkg-store">' + p.store + '</span>' : '') + '</div><div class="pkg-info"><strong>👤</strong> ' + p.client_name + ' · <strong>📞</strong> ' + p.client_phone + '<br><strong>📦</strong> ' + (p.product_info || '-') + (p.price ? '<br><strong>💵</strong> $' + parseFloat(p.price).toLocaleString('es-DO') : '') + '</div><span class="badge badge-delivered">✓ Entregado · ' + (p.delivery_time || '') + '</span></div>').join('') +
+            items.map(p => '<div class="delivered-item" onclick="showDetails(\'' + p.id + '\',\'delivered\')"><div class="pkg-header"><span class="pkg-code">#' + (p.tracking_code || p.code) + '</span>' + (p.store ? '<span class="pkg-store">' + p.store + '</span>' : '') + '</div><div class="pkg-info"><strong>👤</strong> ' + p.client_name + ' · <strong>📞</strong> ' + p.client_phone + '<br><strong>📦</strong> ' + (p.product_info || '-') + (p.price ? '<br><strong>💵</strong> $' + parseFloat(p.price).toLocaleString('es-DO') : '') + '</div><span class="badge badge-delivered">✓ Entregado · ' + (p.delivery_time || '') + (p.delivered_by ? ' · por ' + p.delivered_by : '') + '</span></div>').join('') +
             '</div></div></div>';
     });
     container.innerHTML = html || '<div class="empty-state"><div class="icon">🔍</div><p>Sin resultados</p></div>';
@@ -1408,7 +1408,7 @@ function openDetailsModal(pkg, context) {
             actionButtons = '<div style="display:flex;gap:10px;margin-top:15px;"><button class="btn-secondary" style="flex:1;" onclick="openSingleDateEdit(\'' + pkg.id + '\')">📅 Cambiar Fecha</button></div>';
         }
     }
-    document.getElementById('modalBody').innerHTML = '<div style="background:linear-gradient(135deg,#FFF5EB 0%,#FFE8D6 100%);padding:18px;border-radius:12px;margin-bottom:12px;"><h3 style="color:var(--navy);margin-bottom:10px;">👤 ' + pkg.client_name + '</h3><div class="detail-row"><span class="detail-label">📞 Teléfono:</span><span class="detail-value"><a href="tel:' + pkg.client_phone + '">' + pkg.client_phone + '</a></span></div><div class="detail-row"><span class="detail-label">📦 Código:</span><span class="detail-value"><strong>' + (pkg.tracking_code || pkg.code) + '</strong></span></div><div class="detail-row"><span class="detail-label">🛍️ Producto:</span><span class="detail-value">' + (pkg.product_info || '-') + '</span></div>' + (pkg.store ? '<div class="detail-row"><span class="detail-label">🏪 Tienda:</span><span class="detail-value">' + pkg.store + '</span></div>' : '') + (pkg.zone ? '<div class="detail-row"><span class="detail-label">📍 Zona:</span><span class="detail-value">' + pkg.zone + '</span></div>' : '') + (pkg.client_address ? '<div class="detail-row"><span class="detail-label">🏠 Dirección:</span><span class="detail-value">' + pkg.client_address + '</span></div>' : '') + (pkg.price ? '<div class="detail-row"><span class="detail-label">💵 COD:</span><span class="detail-value"><span class="cod-badge">$' + parseFloat(pkg.price).toLocaleString('es-DO', { minimumFractionDigits: 2 }) + '</span></span></div>' : '') + (pkg.assigned_to ? '<div class="detail-row"><span class="detail-label">🚚 Chofer:</span><span class="detail-value">' + pkg.assigned_to + '</span></div>' : '') + (pkg.delivery_date ? '<div class="detail-row"><span class="detail-label">📅 Fecha:</span><span class="detail-value">' + new Date(pkg.delivery_date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + ' · ' + (pkg.delivery_time || '') + '</span></div>' : '') + '</div>' + actionButtons;
+    document.getElementById('modalBody').innerHTML = '<div style="background:linear-gradient(135deg,#FFF5EB 0%,#FFE8D6 100%);padding:18px;border-radius:12px;margin-bottom:12px;"><h3 style="color:var(--navy);margin-bottom:10px;">👤 ' + pkg.client_name + '</h3><div class="detail-row"><span class="detail-label">📞 Teléfono:</span><span class="detail-value"><a href="tel:' + pkg.client_phone + '">' + pkg.client_phone + '</a></span></div><div class="detail-row"><span class="detail-label">📦 Código:</span><span class="detail-value"><strong>' + (pkg.tracking_code || pkg.code) + '</strong></span></div><div class="detail-row"><span class="detail-label">🛍️ Producto:</span><span class="detail-value">' + (pkg.product_info || '-') + '</span></div>' + (pkg.store ? '<div class="detail-row"><span class="detail-label">🏪 Tienda:</span><span class="detail-value">' + pkg.store + '</span></div>' : '') + (pkg.zone ? '<div class="detail-row"><span class="detail-label">📍 Zona:</span><span class="detail-value">' + pkg.zone + '</span></div>' : '') + (pkg.client_address ? '<div class="detail-row"><span class="detail-label">🏠 Dirección:</span><span class="detail-value">' + pkg.client_address + '</span></div>' : '') + (pkg.price ? '<div class="detail-row"><span class="detail-label">💵 COD:</span><span class="detail-value"><span class="cod-badge">$' + parseFloat(pkg.price).toLocaleString('es-DO', { minimumFractionDigits: 2 }) + '</span></span></div>' : '') + (pkg.assigned_to ? '<div class="detail-row"><span class="detail-label">🚚 Chofer:</span><span class="detail-value">' + pkg.assigned_to + '</span></div>' : '') + (pkg.delivery_date ? '<div class="detail-row"><span class="detail-label">📅 Fecha:</span><span class="detail-value">' + new Date(pkg.delivery_date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + ' · ' + (pkg.delivery_time || '') + '</span></div>' : '') + (pkg.delivered_by ? '<div class="detail-row"><span class="detail-label">✍️ Marcado por:</span><span class="detail-value"><strong>' + pkg.delivered_by + '</strong></span></div>' : '') + '</div>' + actionButtons;
     document.getElementById('clientModal').classList.add('show');
 }
 function closeModal() { document.getElementById('clientModal').classList.remove('show'); }

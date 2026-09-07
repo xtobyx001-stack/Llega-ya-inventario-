@@ -278,7 +278,7 @@ button{background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 100
 <button class="nav-btn admin-only" onclick="switchView('backup', event)"><span class="nav-icon">💾</span><span class="nav-text"><span class="nav-title">Respaldo</span><span class="nav-subtitle">Importar / Exportar datos</span></span></button>
 <button class="nav-btn danger admin-only" onclick="requestDeleteAccess(event)"><span class="nav-icon">🗑️</span><span class="nav-text"><span class="nav-title">Borrar Datos</span><span class="nav-subtitle">Requiere contraseña</span></span><span class="nav-badge" style="background:var(--red);color:white;">🔒</span></button>
 </nav>
-<div class="sidebar-footer">🏍️ Llega Ya © 2026 · v5.9<button class="logout-btn" onclick="askLogout()">🚪 Salir</button></div>
+<div class="sidebar-footer">🏍️ Llega Ya © 2026 · v6.0<button class="logout-btn" onclick="askLogout()">🚪 Salir</button></div>
 </aside>
 
 <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
@@ -523,6 +523,19 @@ button{background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 100
 </div>
 </div>
 </div>
+<div class="modal-overlay" id="mReturnRoute">
+<div class="modal" style="max-width:420px;">
+<div class="modal-header" style="background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 100%);"><h2>↩️ Devolver ficha</h2><button class="modal-close" onclick="closeReturnModal()">✕</button></div>
+<div class="modal-body">
+<p style="color:var(--gray-500);font-size:0.85em;margin-bottom:15px;">¿A dónde quieres devolver esta ficha de NO CONTESTA?</p>
+<div style="display:flex;flex-direction:column;gap:10px;">
+<button class="btn-deliver btn-full" onclick="returnTo('route')">🚚 Enviar a RUTAS (con coordenadas)</button>
+<button class="btn-postpone btn-full" onclick="returnTo('singps')">📍 Enviar a SIN GPS</button>
+<button class="btn-ghost btn-full" onclick="closeReturnModal()">Cancelar</button>
+</div>
+</div>
+</div>
+</div>
 <div class="modal-overlay" id="confirmDeleteModal"><div class="modal"><div class="modal-header" style="background:linear-gradient(135deg,var(--red) 0%,var(--red-dark) 100%);"><h2>⚠️ Confirmar</h2><button class="modal-close" onclick="closeConfirmDeleteModal()">✕</button></div><div class="modal-body"><p style="color:var(--red);font-weight:700;text-align:center;margin-bottom:10px;">¿Estás completamente seguro?</p><div class="delete-summary" style="display:block;"><ul id="confirmDeleteList"></ul></div><div style="display:flex;gap:10px;margin-top:15px;"><button class="btn-danger btn-full" onclick="executeDelete()">🗑️ SÍ, ELIMINAR</button><button class="btn-ghost btn-full" onclick="closeConfirmDeleteModal()">Cancelar</button></div></div></div></div>
 <div class="modal-overlay" id="logoutModal"><div class="modal"><div class="modal-header" style="background:linear-gradient(135deg,var(--red) 0%,var(--red-dark) 100%);"><h2>🚪 Salir</h2><button class="modal-close" onclick="cancelLogout()">✕</button></div><div class="modal-body"><p style="text-align:center;color:var(--gray-700);font-weight:600;margin-bottom:15px;">¿Quieres salir de la sesión actual?</p><div style="display:flex;gap:10px;"><button class="btn-danger btn-full" onclick="confirmLogout()">Sí, salir</button><button class="btn-ghost btn-full" onclick="cancelLogout()">No, quedarme</button></div></div></div></div>
 <div class="modal-overlay" id="mWARoute" onclick="if(event.target===this)closeMRoute('mWARoute')">
@@ -552,7 +565,7 @@ const UNMARK_PASSWORD = 'Aurel';
 let userMode = null, currentUserEmail = null, currentUserName = null, deleteAccessGranted = false;
 let packages = [], deliveredGroups = {}, cancelledDraft = [], cancelledGroups = [], recentActivity = [], teamUsers = [];
 let routeAdminFilter = '', pendingUnmarked = null, unmarkTarget = null, unmarkSession = null;
-let sessionOrigin = null, lastRouteList = [], locTarget = null;
+let sessionOrigin = null, lastRouteList = [], locTarget = null, returnTarget = null;
 
 // ===== COORDENADAS Y CÓDIGOS PLUS =====
 var OLC_ALPH = '23456789CFGHJMPQRVWX';
@@ -610,7 +623,7 @@ function getCoords(p) {
     if (c) return c;
     return parsePlusCode(p.client_address);
 }
-function hasCoords(p) { return !!getCoords(p); }
+function hasCoords(p) { if (p.force_sin_gps) return false; return !!getCoords(p); }
 function mapLink(p) {
     var c = getCoords(p);
     if (c) return 'https://www.google.com/maps/search/?api=1&query=' + c.lat + ',' + c.lng;
@@ -874,6 +887,12 @@ async function markDelivered(id) {
     const ok = await syncPackageUpdate(id, { status: 'delivered', delivery_date: localDateKey(now), delivery_time: now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }), delivered_by: currentUserName || currentUserEmail.split('@')[0] }, '✅ Entregado #' + (pkg.tracking_code || pkg.code));
     if (ok) notify('✓ Paquete #' + (pkg.tracking_code || pkg.code) + ' entregado');
 }
+async function markNoAnswer(id) {
+    if (!isAdmin() && !isDriver()) { notify('🔒 No tienes permisos', 'error'); return; }
+    const pkg = packages.find(p => p.id === id); if (!pkg) return;
+    const ok = await syncPackageUpdate(id, { status: 'no_answer' }, '😴 No contesta #' + (pkg.tracking_code || pkg.code));
+    if (ok) notify('😴 Ficha movida a NO CONTESTA');
+}
 async function markDeliveredUnmarked(id) {
     if (!isAdmin() && !isDriver()) { notify('🔒 No tienes permisos', 'error'); return; }
     const pkg = packages.find(p => p.id === id); if (!pkg) return;
@@ -897,7 +916,7 @@ async function markCancelled(id) {
     if (!isAdmin() && !isDriver()) { notify('🔒 No tienes permisos', 'error'); return; }
     const pkg = packages.find(p => p.id === id); if (!pkg) return;
     const ok = await syncPackageUpdate(id, { status: 'cancelled' }, '↩ Devolución #' + (pkg.tracking_code || pkg.code));
-    if (ok) notify('↩ Paquete #' + (pkg.tracking_code || pkg.code) + ' a devoluciones', 'warning');
+    if (ok) notify('↩ Paquete #' + (pkg.tracking_code || pkg.code) + ' enviado a Devoluciones', 'warning');
 }
 function renderTeam() {
     const list = document.getElementById('teamList');
@@ -1077,12 +1096,13 @@ function renderRouteView() {
     list.innerHTML = data.map((p, i) => {
         const cv = parseFloat(p.price || 0);
         const ph = String(p.client_phone || '').replace(/\D/g, '');
-        const done = p.status === 'delivered' || p.status === 'no_answer' || p.status === 'returned';
+        const isDelivered = p.status === 'delivered';
+        const isNoAnswer = p.status === 'no_answer' || p.status === 'returned';
         const su = !hasCoords(p);
         const pkgCode = p.tracking_code || p.code || p.id;
         return '<div class="route-card' + (su ? ' nogps' : '') + '">'
             + '<div style="display:flex;gap:8px;"><div style="flex:1;min-width:0;">'
-            + '<div style="font-size:1rem;font-weight:800;color:var(--navy);">#' + (i + 1) + ' · ' + (p.client_name || 'Sin nombre') + (su ? ' <span style="font-size:.6rem;font-weight:800;padding:3px 8px;border-radius:20px;background:#fef3c7;color:#92400e;">SIN GPS</span>' : '') + '</div>'
+            + '<div style="font-size:1rem;font-weight:800;color:var(--navy);">#' + (i + 1) + ' · ' + (p.client_name || 'Sin nombre') + (su ? ' <span style="font-size:.6rem;font-weight:800;padding:3px 8px;border-radius:20px;background:#fef3c7;color:#92400e;">SIN GPS</span>' : '') + (isNoAnswer ? ' <span style="font-size:.6rem;font-weight:800;padding:3px 8px;border-radius:20px;background:#fff3e0;color:#e65100;">NO CONTESTA</span>' : '') + '</div>'
             + '<div style="font-size:.8rem;color:var(--gray-500);margin-top:3px;">📞 ' + (p.client_phone || '—') + (cv ? ' · RD$ ' + cv.toLocaleString() : '') + '</div>'
             + '<div style="font-size:.8rem;color:var(--gray-500);">📦 Código: ' + pkgCode + '</div>'
             + '</div></div>'
@@ -1092,8 +1112,11 @@ function renderRouteView() {
             + ((p.client_address || hasCoords(p)) ? '<a class="abtn-route abtn-map" href="' + mapLink(p) + '" target="_blank">🗺️ Mapa</a>' : '')
             + (ph ? '<button class="abtn-route abtn-wa" onclick="openWARoute(\'' + p.id + '\')">💬 Mensaje</button>' : '')
             + (ph ? '<a class="abtn-route abtn-exp" href="https://wa.me/' + ph + '" target="_blank">📱 WhatsApp</a>' : '')
-            + (done ? '<button class="abtn-route abtn-exp" onclick="revertRoute(\'' + p.id + '\')">↩️ Volver</button>' : '<button class="abtn-route abtn-ok" onclick="markDelivered(\'' + p.id + '\')">✅ Entregado</button>')
-            + (done ? '' : '<button class="abtn-route abtn-no" onclick="markCancelled(\'' + p.id + '\')">😴 No contesta</button>')
+            + (isDelivered
+                ? '<button class="abtn-route abtn-exp" onclick="revertRoute(\'' + p.id + '\')" style="grid-column:span 2;">↩️ Volver a pendientes</button>'
+                : (isNoAnswer
+                    ? '<button class="abtn-route abtn-ok" onclick="markDelivered(\'' + p.id + '\')">✅ Entregado</button><button class="abtn-route abtn-no" onclick="openReturnModal(\'' + p.id + '\')">↩️ Devolver</button><button class="abtn-route abtn-del" onclick="markCancelled(\'' + p.id + '\')" style="grid-column:span 2;">↩️ Devolución final</button>'
+                    : '<button class="abtn-route abtn-ok" onclick="markDelivered(\'' + p.id + '\')">✅ Entregado</button><button class="abtn-route abtn-no" onclick="markNoAnswer(\'' + p.id + '\')">😴 No contesta</button><button class="abtn-route abtn-del" onclick="markCancelled(\'' + p.id + '\')" style="grid-column:span 2;">↩️ Devolución</button>'))
             + (isAdmin() ? '<button class="abtn-route abtn-del" onclick="deletePackageRoute(\'' + p.id + '\')" style="grid-column:span 2;">🗑️ Eliminar</button>' : '')
             + '</div>'
             + (isAdmin() ? '<select class="assign-select" style="width:100%;" onchange="assignDriverTo(\'' + p.id + '\', this.value)"><option value="">-- 🚚 Asignar chofer --</option>' + drivers.map(u => '<option value="' + u.email + '"' + ((p.assigned_to || '') === u.email ? ' selected' : '') + '>' + u.name + '</option>').join('') + '</select>' : '')
@@ -1106,6 +1129,28 @@ async function revertRoute(id) {
     const pkg = packages.find(p => p.id === id); if (!pkg) return;
     await syncPackageUpdate(id, { status: 'pending', delivery_date: null, saved_date: null, delivered_by: null }, '↩️ Reactivado #' + (pkg.tracking_code || pkg.code));
     notify('Reactivado', 'info');
+}
+function openReturnModal(id) { returnTarget = id; document.getElementById('mReturnRoute').classList.add('show'); }
+function closeReturnModal() { document.getElementById('mReturnRoute').classList.remove('show'); returnTarget = null; }
+document.getElementById('mReturnRoute').addEventListener('click', function(e) { if (e.target.id === 'mReturnRoute') closeReturnModal(); });
+async function returnTo(dest) {
+    const id = returnTarget;
+    const pkg = packages.find(p => p.id === id); if (!pkg) return;
+    const code = pkg.tracking_code || pkg.code;
+    closeReturnModal();
+    let r = await sb.from('packages').update({ status: 'pending', force_sin_gps: (dest === 'singps'), route_order: null }).eq('id', id);
+    if (r.error) { r = await sb.from('packages').update({ status: 'pending', route_order: null }).eq('id', id); }
+    if (r.error) { notify('Error al devolver: ' + r.error.message, 'error'); return; }
+    await sb.from('activity').insert({ texto: (dest === 'route' ? '🚚 Devuelta a RUTAS #' : '📍 Devuelta a SIN GPS #') + code, usuario: currentUserName || currentUserEmail.split('@')[0] });
+    if (dest === 'route') {
+        notify('🚚 Ficha devuelta a RUTAS');
+        await loadDataFromSupabase();
+        const np = packages.find(p => p.id === id);
+        if (np && !hasCoords(np)) { openLocRoute(id); notify('📍 Agrégale coordenadas para verla en el mapa', 'warning'); }
+    } else {
+        notify('📍 Ficha devuelta a SIN GPS');
+        await loadDataFromSupabase();
+    }
 }
 async function deletePackageRoute(id) {
     if (!isAdmin()) { notify('🔒 Solo el administrador', 'error'); return; }
@@ -1158,7 +1203,7 @@ async function saveLocRoute() {
     var addr = document.getElementById('locAddress').value.trim() || p.client_address || '';
     var coordStr = c.lat + ', ' + c.lng;
     var ok = false;
-    var r1 = await sb.from('packages').update({ lat: c.lat, lng: c.lng, client_address: addr || coordStr }).eq('id', p.id);
+    var r1 = await sb.from('packages').update({ lat: c.lat, lng: c.lng, client_address: addr || coordStr, force_sin_gps: false }).eq('id', p.id);
     if (!r1.error) { ok = true; }
     else {
         var r2 = await sb.from('packages').update({ client_address: coordStr + (addr ? ' | ' + addr : '') }).eq('id', p.id);
@@ -1227,7 +1272,7 @@ function loadXLRoute(e) { notify('Importación Excel - Usa la vista Sin Clasific
 function loadJSONRoute(e) { notify('Importación JSON - Usa la vista Sin Clasificar', 'info'); e.target.value = ''; }
 function openScannerRoute() { notify('Escáner - En desarrollo', 'info'); }
 
-// ===== ENTREGADOS SIN MARCAR (contraseña 1 vez por sesión) =====
+// ===== ENTREGADOS SIN MARCAR =====
 function copyText(t) {
     if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t); }
     else { const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }

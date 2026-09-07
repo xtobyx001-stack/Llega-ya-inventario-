@@ -278,7 +278,7 @@ button{background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 100
 <button class="nav-btn admin-only" onclick="switchView('backup', event)"><span class="nav-icon">💾</span><span class="nav-text"><span class="nav-title">Respaldo</span><span class="nav-subtitle">Importar / Exportar datos</span></span></button>
 <button class="nav-btn danger admin-only" onclick="requestDeleteAccess(event)"><span class="nav-icon">🗑️</span><span class="nav-text"><span class="nav-title">Borrar Datos</span><span class="nav-subtitle">Requiere contraseña</span></span><span class="nav-badge" style="background:var(--red);color:white;">🔒</span></button>
 </nav>
-<div class="sidebar-footer">🏍️ Llega Ya © 2026 · v6.0<button class="logout-btn" onclick="askLogout()">🚪 Salir</button></div>
+<div class="sidebar-footer">🏍️ Llega Ya © 2026 · v6.1<button class="logout-btn" onclick="askLogout()">🚪 Salir</button></div>
 </aside>
 
 <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
@@ -566,6 +566,16 @@ let userMode = null, currentUserEmail = null, currentUserName = null, deleteAcce
 let packages = [], deliveredGroups = {}, cancelledDraft = [], cancelledGroups = [], recentActivity = [], teamUsers = [];
 let routeAdminFilter = '', pendingUnmarked = null, unmarkTarget = null, unmarkSession = null;
 let sessionOrigin = null, lastRouteList = [], locTarget = null, returnTarget = null;
+
+// ===== NORMALIZACIÓN DE TELÉFONOS (+1) =====
+function normalizePhone(raw) {
+    var d = String(raw || '').replace(/\D/g, '');
+    if (!d) return '';
+    if (d.length === 10) d = '1' + d;
+    return '+' + d;
+}
+function waLink(raw) { return 'https://wa.me/' + normalizePhone(raw).replace('+', ''); }
+function telLink(raw) { return 'tel:' + normalizePhone(raw); }
 
 // ===== COORDENADAS Y CÓDIGOS PLUS =====
 var OLC_ALPH = '23456789CFGHJMPQRVWX';
@@ -997,10 +1007,11 @@ function matchesSearch(pkg, term) {
     const store = (pkg.store || '').toLowerCase();
     const product = (pkg.product_info || '').toLowerCase();
     if (code.indexOf(t) !== -1 || phone.indexOf(t) !== -1 || name.indexOf(t) !== -1 || store.indexOf(t) !== -1 || product.indexOf(t) !== -1) return true;
-    if (t.length <= 4 && /^\d+$/.test(t)) {
-        if (code.replace(/\D/g, '').slice(-4).indexOf(t) !== -1) return true;
-        if (phone.replace(/\D/g, '').slice(-4).indexOf(t) !== -1) return true;
-    }
+    const tD = t.replace(/\D/g, '');
+    const pD = (pkg.client_phone || '').replace(/\D/g, '');
+    if (tD.length >= 3 && pD.indexOf(tD) !== -1) return true;
+    const cD = (pkg.tracking_code || pkg.code || '').replace(/\D/g, '');
+    if (tD.length >= 3 && cD.indexOf(tD) !== -1) return true;
     return false;
 }
 function renderRecentActivity() {
@@ -1027,7 +1038,7 @@ function renderPackageCard(pkg, context) {
             actions.push('<button class="btn-cancel" onclick="markCancelled(\'' + pkg.id + '\')">↩ Devolución</button>');
         }
     }
-    return '<div class="package-item ' + context + '"><div class="pkg-header"><span class="pkg-code">#' + (pkg.tracking_code || pkg.code) + '</span>' + (pkg.store ? '<span class="pkg-store">' + pkg.store + '</span>' : '') + '</div><div class="pkg-info"><strong>👤</strong> ' + pkg.client_name + '<br><strong>📞</strong> ' + pkg.client_phone + '<br><strong>📦</strong> ' + (pkg.product_info || '-') + (pkg.price ? '<br><strong>💵</strong> $' + parseFloat(pkg.price).toLocaleString('es-DO') : '') + (pkg.zone ? '<br><strong>📍</strong> ' + pkg.zone : '') + '</div><div class="pkg-actions"><button class="btn-ghost" onclick="showDetails(\'' + pkg.id + '\',\'' + context + '\')">📋 Ficha</button>' + actions.join('') + '</div></div>';
+    return '<div class="package-item ' + context + '"><div class="pkg-header"><span class="pkg-code">#' + (pkg.tracking_code || pkg.code) + '</span>' + (pkg.store ? '<span class="pkg-store">' + pkg.store + '</span>' : '') + '</div><div class="pkg-info"><strong>👤</strong> ' + pkg.client_name + '<br><strong>📞</strong> ' + (pkg.client_phone ? normalizePhone(pkg.client_phone) : '-') + '<br><strong>📦</strong> ' + (pkg.product_info || '-') + (pkg.price ? '<br><strong>💵</strong> $' + parseFloat(pkg.price).toLocaleString('es-DO') : '') + (pkg.zone ? '<br><strong>📍</strong> ' + pkg.zone : '') + '</div><div class="pkg-actions"><button class="btn-ghost" onclick="showDetails(\'' + pkg.id + '\',\'' + context + '\')">📋 Ficha</button>' + actions.join('') + '</div></div>';
 }
 function renderUnclassified() {
     const term = document.getElementById('searchUnclassified').value;
@@ -1095,7 +1106,7 @@ function renderRouteView() {
     const drivers = teamUsers.filter(u => u.role === 'driver');
     list.innerHTML = data.map((p, i) => {
         const cv = parseFloat(p.price || 0);
-        const ph = String(p.client_phone || '').replace(/\D/g, '');
+        const phN = normalizePhone(p.client_phone);
         const isDelivered = p.status === 'delivered';
         const isNoAnswer = p.status === 'no_answer' || p.status === 'returned';
         const su = !hasCoords(p);
@@ -1103,15 +1114,15 @@ function renderRouteView() {
         return '<div class="route-card' + (su ? ' nogps' : '') + '">'
             + '<div style="display:flex;gap:8px;"><div style="flex:1;min-width:0;">'
             + '<div style="font-size:1rem;font-weight:800;color:var(--navy);">#' + (i + 1) + ' · ' + (p.client_name || 'Sin nombre') + (su ? ' <span style="font-size:.6rem;font-weight:800;padding:3px 8px;border-radius:20px;background:#fef3c7;color:#92400e;">SIN GPS</span>' : '') + (isNoAnswer ? ' <span style="font-size:.6rem;font-weight:800;padding:3px 8px;border-radius:20px;background:#fff3e0;color:#e65100;">NO CONTESTA</span>' : '') + '</div>'
-            + '<div style="font-size:.8rem;color:var(--gray-500);margin-top:3px;">📞 ' + (p.client_phone || '—') + (cv ? ' · RD$ ' + cv.toLocaleString() : '') + '</div>'
+            + '<div style="font-size:.8rem;color:var(--gray-500);margin-top:3px;">📞 ' + (phN || '—') + (cv ? ' · RD$ ' + cv.toLocaleString() : '') + '</div>'
             + '<div style="font-size:.8rem;color:var(--gray-500);">📦 Código: ' + pkgCode + '</div>'
             + '</div></div>'
             + (p.product_info ? '<div style="margin:8px 0;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:12px;padding:9px 11px;font-size:.8rem;color:var(--gray-700);">📝 ' + p.product_info + '</div>' : '')
             + '<div class="route-actions">'
             + '<button class="abtn-route abtn-loc" onclick="openLocRoute(\'' + p.id + '\')">📍 Ubicación</button>'
             + ((p.client_address || hasCoords(p)) ? '<a class="abtn-route abtn-map" href="' + mapLink(p) + '" target="_blank">🗺️ Mapa</a>' : '')
-            + (ph ? '<button class="abtn-route abtn-wa" onclick="openWARoute(\'' + p.id + '\')">💬 Mensaje</button>' : '')
-            + (ph ? '<a class="abtn-route abtn-exp" href="https://wa.me/' + ph + '" target="_blank">📱 WhatsApp</a>' : '')
+            + (phN ? '<button class="abtn-route abtn-wa" onclick="openWARoute(\'' + p.id + '\')">💬 Mensaje</button>' : '')
+            + (phN ? '<a class="abtn-route abtn-exp" href="' + waLink(p.client_phone) + '" target="_blank">📱 WhatsApp</a>' : '')
             + (isDelivered
                 ? '<button class="abtn-route abtn-exp" onclick="revertRoute(\'' + p.id + '\')" style="grid-column:span 2;">↩️ Volver a pendientes</button>'
                 : (isNoAnswer
@@ -1227,7 +1238,7 @@ function openWARoute(id) {
     const pkg = packages.find(p => p.id === id); if (!pkg) return;
     wUidRoute = id; wStRoute = null;
     document.getElementById('waNRoute').textContent = pkg.client_name || 'Sin nombre';
-    document.getElementById('waTRoute').textContent = '+' + (pkg.client_phone || '');
+    document.getElementById('waTRoute').textContent = normalizePhone(pkg.client_phone) || 'Sin teléfono';
     document.getElementById('waERoute').innerHTML = waStatesRoute.map(function(s) {
         return '<button class="wa-btn-route ' + s.cls + '" id="wbr-' + s.key + '" onclick="selWARoute(\'' + s.key + '\')"><span style="font-size:1.1rem;width:24px;text-align:center">' + s.icon + '</span>' + s.label + '</button>';
     }).join('');
@@ -1252,7 +1263,7 @@ function refreshMsgRoute() {
     const p = pkg.product_info || pkg.client_name || 'tu pedido';
     const f = document.getElementById('waFechaRoute').value;
     let msg = s.msg(n, p, f, pkg.tracking_code || pkg.code || pkg.id);
-    if (pkg.client_phone) msg += '\nTel: +' + pkg.client_phone;
+    if (pkg.client_phone) msg += '\nTel: ' + normalizePhone(pkg.client_phone);
     document.getElementById('waMRoute').value = msg;
     document.getElementById('waCCRoute').textContent = msg.length + ' chars';
 }
@@ -1260,7 +1271,7 @@ async function sendWARoute() {
     if (!wStRoute) return notify('Selecciona un estado', 'error');
     const pkg = packages.find(p => p.id === wUidRoute);
     if (!pkg || !pkg.client_phone) return notify('Sin teléfono', 'error');
-    const tel = pkg.client_phone.replace(/\D/g, '');
+    const tel = normalizePhone(pkg.client_phone).replace('+', '');
     const msg = document.getElementById('waMRoute').value;
     window.open('https://wa.me/' + tel + '?text=' + encodeURIComponent(msg), '_blank');
     const statusMap = { 'pendiente': 'pending', 'transito': 'in_transit', 'entregado': 'delivered', 'devuelto': 'cancelled' };
@@ -1292,7 +1303,7 @@ function renderUnmarked() {
         const isPending = pendingUnmarked === p.id;
         return '<div class="package-item" style="border-left-color:var(--green);background:#F2FBF9;">'
             + '<div class="pkg-header"><span class="pkg-code" style="font-size:1.15em;">#' + code + '</span>' + (p.store ? '<span class="pkg-store">' + p.store + '</span>' : '') + '</div>'
-            + '<div class="pkg-info"><strong>👤</strong> ' + p.client_name + ' · <strong>📞</strong> ' + p.client_phone + '<br><strong>📦</strong> ' + (p.product_info || '-') + (p.price ? '<br><strong>💵</strong> $' + parseFloat(p.price).toLocaleString('es-DO') : '') + (p.delivery_date ? '<br><strong>📅</strong> ' + p.delivery_date + ' ' + (p.delivery_time || '') : '') + '</div>'
+            + '<div class="pkg-info"><strong>👤</strong> ' + p.client_name + ' · <strong>📞</strong> ' + (p.client_phone ? normalizePhone(p.client_phone) : '-') + '<br><strong>📦</strong> ' + (p.product_info || '-') + (p.price ? '<br><strong>💵</strong> $' + parseFloat(p.price).toLocaleString('es-DO') : '') + (p.delivery_date ? '<br><strong>📅</strong> ' + p.delivery_date + ' ' + (p.delivery_time || '') : '') + '</div>'
             + (isPending ? '<div style="background:#FFF8E1;border:1px solid var(--yellow);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:0.8em;color:#8a6d00;font-weight:700;">⚠️ Código copiado. Marca esta ficha como entregada para poder copiar la siguiente.</div>' : '')
             + '<div class="pkg-actions">'
             + (isPending
@@ -1366,7 +1377,7 @@ function renderDelivered() {
         const formatted = new Date(date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         const total = items.reduce((s, i) => s + (parseFloat(i.price) || 0), 0);
         html += '<div class="date-group" id="dg-' + date + '"><div class="date-group-header" onclick="toggleGroup(\'dg-' + date + '\')"><h3><span>📅 ' + formatted + '</span><span class="count-pill">' + items.length + ' paquetes</span><span class="count-pill">💵 $' + total.toLocaleString('es-DO') + '</span></h3><div style="display:flex;gap:8px;align-items:center;"><button class="group-edit-btn" onclick="event.stopPropagation();openGroupDateEdit(\'' + date + '\')">✏️ Fecha</button><span class="chevron">▼</span></div></div><div class="date-group-body"><div class="date-group-content">' +
-            items.map(p => '<div class="delivered-item" onclick="showDetails(\'' + p.id + '\',\'delivered\')"><div class="pkg-header"><span class="pkg-code">#' + (p.tracking_code || p.code) + '</span>' + (p.store ? '<span class="pkg-store">' + p.store + '</span>' : '') + '</div><div class="pkg-info"><strong>👤</strong> ' + p.client_name + ' · <strong>📞</strong> ' + p.client_phone + '<br><strong>📦</strong> ' + (p.product_info || '-') + (p.price ? '<br><strong>💵</strong> $' + parseFloat(p.price).toLocaleString('es-DO') : '') + '</div><span class="badge badge-delivered">✓ Entregado · ' + (p.delivery_time || '') + (p.delivered_by ? ' · por ' + p.delivered_by : '') + '</span></div>').join('') +
+            items.map(p => '<div class="delivered-item" onclick="showDetails(\'' + p.id + '\',\'delivered\')"><div class="pkg-header"><span class="pkg-code">#' + (p.tracking_code || p.code) + '</span>' + (p.store ? '<span class="pkg-store">' + p.store + '</span>' : '') + '</div><div class="pkg-info"><strong>👤</strong> ' + p.client_name + ' · <strong>📞</strong> ' + (p.client_phone ? normalizePhone(p.client_phone) : '-') + '<br><strong>📦</strong> ' + (p.product_info || '-') + (p.price ? '<br><strong>💵</strong> $' + parseFloat(p.price).toLocaleString('es-DO') : '') + '</div><span class="badge badge-delivered">✓ Entregado · ' + (p.delivery_time || '') + (p.delivered_by ? ' · por ' + p.delivered_by : '') + '</span></div>').join('') +
             '</div></div></div>';
     });
     container.innerHTML = html || '<div class="empty-state"><div class="icon">🔍</div><p>Sin resultados</p></div>';
@@ -1375,7 +1386,7 @@ function toggleGroup(id) { document.getElementById(id).classList.toggle('open');
 function renderDraft() {
     const list = document.getElementById('draftList');
     if (cancelledDraft.length === 0) { list.innerHTML = '<p style="color:var(--gray-500);font-style:italic;text-align:center;padding:15px;">No hay devoluciones en el borrador</p>'; return; }
-    list.innerHTML = cancelledDraft.map((p, idx) => '<div class="package-item" style="border-left-color:var(--red);background:#FFF5F5;"><div class="pkg-header"><span class="pkg-code" style="color:var(--red);">#' + (p.tracking_code || p.code) + '</span>' + (p.store ? '<span class="pkg-store">' + p.store + '</span>' : '') + '</div><div class="pkg-info"><strong>👤</strong> ' + p.client_name + ' · <strong>📞</strong> ' + p.client_phone + '<br><strong>📦</strong> ' + (p.product_info || '-') + '</div><div class="pkg-actions"><button class="btn-ghost" onclick="showDetails(\'' + p.id + '\',\'draft\')">📋 Ficha</button><button class="btn-cancel" onclick="removeFromDraft(' + idx + ')">🗑 Quitar</button></div></div>').join('');
+    list.innerHTML = cancelledDraft.map((p, idx) => '<div class="package-item" style="border-left-color:var(--red);background:#FFF5F5;"><div class="pkg-header"><span class="pkg-code" style="color:var(--red);">#' + (p.tracking_code || p.code) + '</span>' + (p.store ? '<span class="pkg-store">' + p.store + '</span>' : '') + '</div><div class="pkg-info"><strong>👤</strong> ' + p.client_name + ' · <strong>📞</strong> ' + (p.client_phone ? normalizePhone(p.client_phone) : '-') + '<br><strong>📦</strong> ' + (p.product_info || '-') + '</div><div class="pkg-actions"><button class="btn-ghost" onclick="showDetails(\'' + p.id + '\',\'draft\')">📋 Ficha</button><button class="btn-cancel" onclick="removeFromDraft(' + idx + ')">🗑 Quitar</button></div></div>').join('');
 }
 async function removeFromDraft(idx) {
     if (!isAdmin() && !isDriver()) { notify('🔒 No tienes permisos', 'error'); return; }
@@ -1421,7 +1432,7 @@ function renderCancelledGroups() {
         const formatted = new Date(group.saved_date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         const editBtn = isAdmin() ? '<button class="group-edit-btn" onclick="event.stopPropagation();openEditGroup(' + gIdx + ')">✏️ Editar</button>' : '';
         html += '<div class="date-group cancelled" id="cg-' + group.id + '"><div class="date-group-header" onclick="toggleGroup(\'cg-' + group.id + '\')"><h3><span>↩️ ' + formatted + '</span><span class="count-pill">' + group.items.length + ' devoluciones</span><span class="saved-date-label">Guardado: ' + new Date(group.created_at).toLocaleDateString('es-ES') + '</span></h3><div style="display:flex;gap:8px;align-items:center;">' + editBtn + '<span class="chevron">▼</span></div></div><div class="date-group-body"><div class="date-group-content">' +
-            items.map(p => '<div class="delivered-item cancelled-item" onclick="showDetails(\'' + p.id + '\',\'cancelled\')"><div class="pkg-header"><span class="pkg-code" style="color:var(--red);">#' + (p.tracking_code || p.code) + '</span>' + (p.store ? '<span class="pkg-store">' + p.store + '</span>' : '') + '</div><div class="pkg-info"><strong>👤</strong> ' + p.client_name + ' · <strong>📞</strong> ' + p.client_phone + '<br><strong>📦</strong> ' + (p.product_info || '-') + '</div><span class="badge badge-cancelled">↩️ Devolución</span></div>').join('') +
+            items.map(p => '<div class="delivered-item cancelled-item" onclick="showDetails(\'' + p.id + '\',\'cancelled\')"><div class="pkg-header"><span class="pkg-code" style="color:var(--red);">#' + (p.tracking_code || p.code) + '</span>' + (p.store ? '<span class="pkg-store">' + p.store + '</span>' : '') + '</div><div class="pkg-info"><strong>👤</strong> ' + p.client_name + ' · <strong>📞</strong> ' + (p.client_phone ? normalizePhone(p.client_phone) : '-') + '<br><strong>📦</strong> ' + (p.product_info || '-') + '</div><span class="badge badge-cancelled">↩️ Devolución</span></div>').join('') +
             '</div></div></div>';
     });
     container.innerHTML = html || '<div class="empty-state"><div class="icon">🔍</div><p>Sin resultados</p></div>';
@@ -1438,9 +1449,9 @@ function openDetailsModal(pkg, context) {
     document.getElementById('modalTitle').innerHTML = '📋 Ficha · #' + (pkg.tracking_code || pkg.code);
     let actionButtons = '';
     if ((isAdmin() || isDriver()) && (context === 'unclassified' || context === 'postponed' || context === 'route')) {
-        actionButtons = '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:15px;"><button class="btn-deliver" style="flex:1;" onclick="markDelivered(\'' + pkg.id + '\');closeModal();">✓ Entregar</button><button class="btn-secondary" style="flex:1;" onclick="markDeliveredUnmarked(\'' + pkg.id + '\');closeModal();">✅ Sin marcar</button><button class="btn-ghost" style="flex:1;" onclick="closeModal();openLocRoute(\'' + pkg.id + '\')">📍 Ubicación</button><a href="tel:' + pkg.client_phone + '" class="btn-secondary" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">📞 Llamar</a>' + ((pkg.client_address || hasCoords(pkg)) ? '<a href="' + mapLink(pkg) + '" target="_blank" class="btn-cancel" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">🗺️ Mapa</a>' : '') + '</div>';
+        actionButtons = '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:15px;"><button class="btn-deliver" style="flex:1;" onclick="markDelivered(\'' + pkg.id + '\');closeModal();">✓ Entregar</button><button class="btn-secondary" style="flex:1;" onclick="markDeliveredUnmarked(\'' + pkg.id + '\');closeModal();">✅ Sin marcar</button><button class="btn-ghost" style="flex:1;" onclick="closeModal();openLocRoute(\'' + pkg.id + '\')">📍 Ubicación</button><a href="' + telLink(pkg.client_phone) + '" class="btn-secondary" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">📞 Llamar</a>' + ((pkg.client_address || hasCoords(pkg)) ? '<a href="' + mapLink(pkg) + '" target="_blank" class="btn-cancel" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">🗺️ Mapa</a>' : '') + '</div>';
     } else if (context === 'unclassified' || context === 'postponed' || context === 'route') {
-        actionButtons = '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:15px;"><a href="tel:' + pkg.client_phone + '" class="btn-secondary" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">📞 Llamar</a>' + ((pkg.client_address || hasCoords(pkg)) ? '<a href="' + mapLink(pkg) + '" target="_blank" class="btn-ghost" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">🗺️ Ver Mapa</a>' : '') + '</div>';
+        actionButtons = '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:15px;"><a href="' + telLink(pkg.client_phone) + '" class="btn-secondary" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">📞 Llamar</a>' + ((pkg.client_address || hasCoords(pkg)) ? '<a href="' + mapLink(pkg) + '" target="_blank" class="btn-ghost" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">🗺️ Ver Mapa</a>' : '') + '</div>';
     } else if (context === 'delivered') {
         if (isAdmin() || isDriver()) {
             actionButtons = '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:15px;">'
@@ -1453,7 +1464,7 @@ function openDetailsModal(pkg, context) {
             actionButtons = '<div style="display:flex;gap:10px;margin-top:15px;"><button class="btn-secondary" style="flex:1;" onclick="openSingleDateEdit(\'' + pkg.id + '\')">📅 Cambiar Fecha</button></div>';
         }
     }
-    document.getElementById('modalBody').innerHTML = '<div style="background:linear-gradient(135deg,#FFF5EB 0%,#FFE8D6 100%);padding:18px;border-radius:12px;margin-bottom:12px;"><h3 style="color:var(--navy);margin-bottom:10px;">👤 ' + pkg.client_name + '</h3><div class="detail-row"><span class="detail-label">📞 Teléfono:</span><span class="detail-value"><a href="tel:' + pkg.client_phone + '">' + pkg.client_phone + '</a></span></div><div class="detail-row"><span class="detail-label">📦 Código:</span><span class="detail-value"><strong>' + (pkg.tracking_code || pkg.code) + '</strong></span></div><div class="detail-row"><span class="detail-label">🛍️ Producto:</span><span class="detail-value">' + (pkg.product_info || '-') + '</span></div>' + (pkg.store ? '<div class="detail-row"><span class="detail-label">🏪 Tienda:</span><span class="detail-value">' + pkg.store + '</span></div>' : '') + (pkg.zone ? '<div class="detail-row"><span class="detail-label">📍 Zona:</span><span class="detail-value">' + pkg.zone + '</span></div>' : '') + (pkg.client_address ? '<div class="detail-row"><span class="detail-label">🏠 Dirección:</span><span class="detail-value">' + pkg.client_address + '</span></div>' : '') + (pkg.price ? '<div class="detail-row"><span class="detail-label">💵 COD:</span><span class="detail-value"><span class="cod-badge">$' + parseFloat(pkg.price).toLocaleString('es-DO', { minimumFractionDigits: 2 }) + '</span></span></div>' : '') + (pkg.assigned_to ? '<div class="detail-row"><span class="detail-label">🚚 Chofer:</span><span class="detail-value">' + pkg.assigned_to + '</span></div>' : '') + (pkg.delivery_date ? '<div class="detail-row"><span class="detail-label">📅 Fecha:</span><span class="detail-value">' + new Date(pkg.delivery_date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + ' · ' + (pkg.delivery_time || '') + '</span></div>' : '') + (pkg.delivered_by ? '<div class="detail-row"><span class="detail-label">✍️ Marcado por:</span><span class="detail-value"><strong>' + pkg.delivered_by + '</strong></span></div>' : '') + '</div>' + actionButtons;
+    document.getElementById('modalBody').innerHTML = '<div style="background:linear-gradient(135deg,#FFF5EB 0%,#FFE8D6 100%);padding:18px;border-radius:12px;margin-bottom:12px;"><h3 style="color:var(--navy);margin-bottom:10px;">👤 ' + pkg.client_name + '</h3><div class="detail-row"><span class="detail-label">📞 Teléfono:</span><span class="detail-value"><a href="' + telLink(pkg.client_phone) + '">' + (pkg.client_phone ? normalizePhone(pkg.client_phone) : '-') + '</a></span></div><div class="detail-row"><span class="detail-label">📦 Código:</span><span class="detail-value"><strong>' + (pkg.tracking_code || pkg.code) + '</strong></span></div><div class="detail-row"><span class="detail-label">🛍️ Producto:</span><span class="detail-value">' + (pkg.product_info || '-') + '</span></div>' + (pkg.store ? '<div class="detail-row"><span class="detail-label">🏪 Tienda:</span><span class="detail-value">' + pkg.store + '</span></div>' : '') + (pkg.zone ? '<div class="detail-row"><span class="detail-label">📍 Zona:</span><span class="detail-value">' + pkg.zone + '</span></div>' : '') + (pkg.client_address ? '<div class="detail-row"><span class="detail-label">🏠 Dirección:</span><span class="detail-value">' + pkg.client_address + '</span></div>' : '') + (pkg.price ? '<div class="detail-row"><span class="detail-label">💵 COD:</span><span class="detail-value"><span class="cod-badge">$' + parseFloat(pkg.price).toLocaleString('es-DO', { minimumFractionDigits: 2 }) + '</span></span></div>' : '') + (pkg.assigned_to ? '<div class="detail-row"><span class="detail-label">🚚 Chofer:</span><span class="detail-value">' + pkg.assigned_to + '</span></div>' : '') + (pkg.delivery_date ? '<div class="detail-row"><span class="detail-label">📅 Fecha:</span><span class="detail-value">' + new Date(pkg.delivery_date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + ' · ' + (pkg.delivery_time || '') + '</span></div>' : '') + (pkg.delivered_by ? '<div class="detail-row"><span class="detail-label">✍️ Marcado por:</span><span class="detail-value"><strong>' + pkg.delivered_by + '</strong></span></div>' : '') + '</div>' + actionButtons;
     document.getElementById('clientModal').classList.add('show');
 }
 function closeModal() { document.getElementById('clientModal').classList.remove('show'); }
@@ -1553,7 +1564,7 @@ async function importData() {
         const code = String(row[ci] || '').trim(), name = String(row[ni] || '').trim(), phone = String(row[pi] || '').trim(), product = String(row[pri] || '').trim();
         if (!code || !name || !phone || !product) return;
         if (packages.some(p => (p.tracking_code || p.code) === code)) return;
-        inserts.push({ tracking_code: code, client_name: name, client_phone: phone.replace(/\D/g, ''), product_info: product, store: si ? String(row[si] || '').trim() : '', client_address: ai ? String(row[ai] || '').trim() : '', price: coi ? String(row[coi] || '').trim() : '', zone: zi ? String(row[zi] || '').trim() : '', status: 'pending', created_at: new Date().toISOString() });
+        inserts.push({ tracking_code: code, client_name: name, client_phone: normalizePhone(phone), product_info: product, store: si ? String(row[si] || '').trim() : '', client_address: ai ? String(row[ai] || '').trim() : '', price: coi ? String(row[coi] || '').trim() : '', zone: zi ? String(row[zi] || '').trim() : '', status: 'pending', created_at: new Date().toISOString() });
         imported++;
     });
     if (imported > 0) {

@@ -1234,6 +1234,7 @@ function refreshAll() { renderUnclassified(); renderPostponed(); renderRouteView
 document.getElementById('dateInfo').textContent = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 updateGreeting();
 checkSession();
+if ('serviceWorker' in navigator) { window.addEventListener('load', function() { navigator.serviceWorker.register('./sw.js').catch(function() {}); }); }
 </script>
 </body>
 </html>

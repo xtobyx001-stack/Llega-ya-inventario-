@@ -108,6 +108,7 @@ button { background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 1
 .pkg-store { background:var(--orange); color:var(--white); padding:2px 10px; border-radius:15px; font-size:0.72em; font-weight:700; }
 .pkg-info { font-size:0.88em; color:var(--gray-500); line-height:1.7; margin-bottom:14px; word-break:break-word; }
 .pkg-info strong { color:var(--gray-700); }
+.pkg-location { background:#FFF5EB; border:1px solid #FED7AA; border-radius:10px; padding:8px 12px; margin:0 0 10px; font-size:0.82em; color:#9A3412; white-space:pre-line; }
 .pkg-actions { display:flex; gap:10px; flex-wrap:wrap; }
 .pkg-actions button { padding:12px 12px; font-size:0.85em; flex:1; min-width:95px; }
 .date-group { background:var(--white); border-radius:12px; margin-bottom:12px; box-shadow:0 2px 10px rgba(13,27,74,0.08); overflow:hidden; border:2px solid var(--gray-200); }
@@ -221,6 +222,7 @@ button { background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 1
 #mcRoute { width:100%; display:block; }
 .route-card { background:#fff; border-radius:20px; margin-bottom:14px; border:1px solid #e8edf4; box-shadow:0 2px 10px rgba(15,23,42,.06); padding:16px; position:relative; }
 .route-card.nogps { border-color:#fde68a!important; }
+.route-card-loc { background:#FFF5EB; border:1px solid #FED7AA; border-radius:10px; padding:8px 12px; margin:8px 0; font-size:0.82rem; color:#9A3412; white-space:pre-line; }
 .route-actions { display:grid; grid-template-columns:repeat(2,1fr); gap:9px; margin-top:12px; }
 .abtn-route { padding:12px 6px; border-radius:16px; font-weight:700; font-size:.78rem; cursor:pointer; border:1.5px solid; text-align:center; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:4px; }
 .abtn-map { background:#e3f0ff; border-color:#90bbf5; color:#1a56c4; }
@@ -249,7 +251,6 @@ button { background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 1
 <p style="color:var(--gray-500);font-size:0.72em;margin-top:14px">Acceso solo con cuenta autorizada por el administrador.</p>
 </div>
 </div>
-
 <aside class="sidebar" id="sidebar">
 <div class="sidebar-header">
 <img src="https://image.qwenlm.ai/public_source/4a79ba76-7aca-46f1-ae9f-35cf48a90006/1927b28b2-443b-456c-9d01-b5f4ed5a3572.png" alt="Llega Ya Logo" class="logo">
@@ -271,11 +272,9 @@ button { background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 1
 <button class="nav-btn admin-only" data-view="backup" onclick="switchView('backup', event)"><span class="nav-icon">💾</span><span class="nav-text"><span class="nav-title">Respaldo</span><span class="nav-subtitle">Importar / Exportar</span></span></button>
 <button class="nav-btn danger admin-only" data-view="delete" onclick="requestDeleteAccess(event)"><span class="nav-icon">🗑️</span><span class="nav-text"><span class="nav-title">Borrar Datos</span><span class="nav-subtitle">Requiere reconfirmación</span></span><span class="nav-badge" style="background:var(--red);color:white;">🔒</span></button>
 </nav>
-<div class="sidebar-footer">🏍️ Llega Ya © 2026 · v6.5<button class="logout-btn" onclick="askLogout()">🚪 Salir</button></div>
+<div class="sidebar-footer">🏍️ Llega Ya © 2026 · v6.6<button class="logout-btn" onclick="askLogout()">🚪 Salir</button></div>
 </aside>
-
 <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
-
 <main class="main-content">
 <div class="topbar">
 <div style="display:flex;align-items:center;gap:12px;">
@@ -287,7 +286,6 @@ button { background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 1
 <span class="vb-icon">👁️</span>
 <div class="vb-text"><div class="vb-title">Modo Visualizador</div><div class="vb-desc">Cuenta de solo lectura autorizada. Copia códigos en "Entregados Sin Marcar" con la contraseña interna.</div></div>
 </div>
-
 <div id="view-home" class="view active">
 <div class="welcome-banner"><div class="greeting" id="greetingText">Buenos días</div><h2>¡Bienvenido a Llega Ya! 🏍️</h2><p>Aquí tienes un resumen de tus entregas de hoy. ¡A trabajar!</p></div>
 <div class="stats-grid">
@@ -307,7 +305,6 @@ button { background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 1
 </div>
 <div class="card"><h3>🕐 Actividad Reciente</h3><div class="recent-list" id="recentList"></div></div>
 </div>
-
 <div id="view-unclassified" class="view">
 <div class="import-section admin-only">
 <h3>📥 Importar desde Excel</h3>
@@ -334,14 +331,12 @@ button { background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 1
 <div class="package-list" id="unclassList"></div>
 </div>
 </div>
-
 <div id="view-postponed" class="view">
 <div class="card"><h3>⏸️ Paquetes Pospuestos <span id="postponedCount" style="background:var(--yellow);color:var(--navy);padding:2px 10px;border-radius:12px;font-size:0.8em;margin-left:auto;">0</span></h3>
 <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="searchPostponed" placeholder="Buscar..." oninput="renderPostponed()"></div>
 <div class="package-list" id="postponedList"></div>
 </div>
 </div>
-
 <div id="view-route" class="view">
 <div class="route-header">
 <div style="display:flex;align-items:center;gap:10px;">
@@ -383,16 +378,14 @@ button { background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 1
 </div>
 <div id="listRoute" style="padding:14px 0;"></div>
 </div>
-
 <div id="view-delivered" class="view">
 <div class="card"><h3>✅ Entregados por Fecha</h3>
 <div style="margin-bottom:12px;"><select id="deliveredFilterSel" onchange="deliveredFilter=this.value;renderDelivered()"></select></div>
 <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="searchDelivered" placeholder="Buscar por código, teléfono o últimos 4 dígitos..." oninput="renderDelivered()"></div>
-<div class="search-hint">💡 Toca ️ Fecha en un grupo para cambiarle el día · Toca una entrega para corregirla (Sin marcar / Pospner / Devolución)</div>
+<div class="search-hint">💡 Toca ✏️ Fecha en un grupo para cambiarle el día · Toca una entrega para corregirla (Sin marcar / Pospner / Devolución)</div>
 <div id="deliveredGroups"></div>
 </div>
 </div>
-
 <div id="view-unmarked" class="view">
 <div class="card">
 <h3>📋 Entregados Sin Marcar <span id="unmarkedCount" style="background:var(--green);color:var(--white);padding:2px 10px;border-radius:12px;font-size:0.8em;margin-left:auto;">0</span></h3>
@@ -402,7 +395,6 @@ button { background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 1
 <div id="unmarkedList"></div>
 </div>
 </div>
-
 <div id="view-cancelled" class="view">
 <div class="card">
 <h3>↩️ Devoluciones</h3>
@@ -417,7 +409,6 @@ button { background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 1
 <div id="cancelledGroups"></div>
 </div>
 </div>
-
 <div id="view-team" class="view admin-only">
 <div class="card">
 <h3>👥 Gestión de Equipo</h3>
@@ -439,7 +430,6 @@ button { background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 1
 </div>
 </div>
 </div>
-
 <div id="view-backup" class="view admin-only">
 <div class="card">
 <h3>💾 Respaldo de Datos</h3>
@@ -459,7 +449,6 @@ button { background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 1
 <p style="color:var(--gray-500);font-size:0.8em;margin-top:8px;">⚠️ Esto reemplazará todos los datos actuales con los del archivo.</p>
 </div>
 </div>
-
 <div id="view-delete" class="view admin-only">
 <div class="delete-warning"><div class="warn-icon">⚠️</div><div><h3>Zona de Peligro</h3><p>Estas acciones eliminan datos y son irreversibles. Se requiere reconfirmar tu sesión.</p></div></div>
 <div class="card">
@@ -479,7 +468,6 @@ button { background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 1
 </div>
 </div>
 </main>
-
 <div class="modal-overlay" id="clientModal"><div class="modal"><div class="modal-header"><h2 id="modalTitle">📋 Ficha</h2><button class="modal-close" onclick="closeModal()">✕</button></div><div class="modal-body" id="modalBody"></div></div></div>
 <div class="modal-overlay" id="editDateModal"><div class="modal"><div class="modal-header"><h2>📅 Cambiar Fecha</h2><button class="modal-close" onclick="closeEditDateModal()">✕</button></div><div class="modal-body"><p id="editDateDesc" style="color:var(--gray-500);margin-bottom:12px;"></p><div class="form-group"><label>Nueva fecha *</label><input type="date" id="editDateInput"></div><div style="display:flex;gap:10px;"><button class="btn-deliver btn-full" onclick="confirmDateChange()">✓ Guardar</button><button class="btn-ghost btn-full" onclick="closeEditDateModal()">Cancelar</button></div></div></div></div>
 <div class="modal-overlay" id="saveGroupModal"><div class="modal"><div class="modal-header" style="background:linear-gradient(135deg,var(--red) 0%,var(--red-dark) 100%);"><h2>💾 Guardar Grupo</h2><button class="modal-close" onclick="closeSaveGroupModal()">✕</button></div><div class="modal-body"><div class="form-group"><label>Fecha *</label><input type="date" id="groupDate"></div><p style="color:var(--gray-500);font-size:0.85em;margin-bottom:12px;">Se guardarán <strong id="groupCountPreview">0</strong> paquetes.</p><div style="display:flex;gap:10px;"><button class="btn-deliver btn-full" onclick="confirmSaveGroup()">✓ Confirmar</button><button class="btn-ghost btn-full" onclick="closeSaveGroupModal()">Cancelar</button></div></div></div></div>
@@ -506,12 +494,15 @@ button { background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 1
 </div>
 </div>
 <div class="modal-overlay" id="mLocRoute">
-<div class="modal" style="max-width:420px;">
+<div class="modal" style="max-width:480px;">
 <div class="modal-header" style="background:linear-gradient(135deg,#2563eb 0%,#1a56c4 100%);"><h2>📍 Editar ubicación</h2><button class="modal-close" onclick="closeLocRoute()">✕</button></div>
 <div class="modal-body">
-<p style="color:var(--gray-500);font-size:0.85em;margin-bottom:12px;">Pega las coordenadas del cliente (lat, lng). Al guardar, la ficha pasa a la pestaña RUTAS y entra en el mapa y en la optimización de ruta.</p>
+<p style="color:var(--gray-500);font-size:0.85em;margin-bottom:12px;">Pega las coordenadas y describe las calles. La app aprenderá esta ubicación para sugerirla en fichas cercanas.</p>
 <div class="form-group"><label>Coordenadas *</label><input type="text" id="locCoords" placeholder="Ej: 19.2917, -70.2558"></div>
-<div class="form-group"><label>Dirección de referencia (opcional)</label><textarea id="locAddress" placeholder="Calle, sector, punto de referencia..."></textarea></div>
+<div class="form-group"><label>Calle principal *</label><input type="text" id="locMain" placeholder="Ej: Emilio Prud Homme"></div>
+<div class="form-group"><label>Entre calle lateral 1 *</label><input type="text" id="locSide1" placeholder="Ej: Cristino Zeno"></div>
+<div class="form-group"><label>Y calle lateral 2 *</label><input type="text" id="locSide2" placeholder="Ej: Calle 3"></div>
+<div class="form-group"><label>Punto de referencia (opcional)</label><textarea id="locRef" placeholder="Ej: Frente al colmado mercedes"></textarea></div>
 <div class="password-error" id="locError"></div>
 <div style="display:flex;gap:10px;margin-top:15px;"><button class="btn-deliver btn-full" onclick="saveLocRoute()">💾 Guardar ubicación</button><button class="btn-ghost btn-full" onclick="closeLocRoute()">Cancelar</button></div>
 </div>
@@ -549,9 +540,7 @@ button { background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 1
 </div>
 </div>
 <div class="notification" id="notification"></div>
-
-<!-- ===== AQUÍ TERMINA LA PARTE 1/2 ===== -->
-<!-- PEGA LA PARTE 2/2 JUSTO DEBAJO DE ESTA LÍNEA (sin borrar nada) -->
+<!-- ===== FIN PARTE 1/2 ===== -->
 <script>
 const SUPABASE_URL = 'https://dapvmekijnbwpqxbnbbl.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhcHZtZWtpam5id3BxeGJuYmJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyOTYzMDAsImV4cCI6MjEwMzg3MjMwMH0.FvnPbz8iwMwOOJFQzELScHw4UB7q5PyruPXHxYqwv4A';
@@ -559,24 +548,20 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const UNMARK_PASSWORD = 'Aurel';
 const OWNER_EMAIL = 'xtobyx001@gmail.com';
 const LS_VIEW = 'ly_view', LS_RTAB = 'ly_rtab';
-
 let userMode = null, currentUserEmail = null, currentUserName = null, deleteAccessGranted = false;
-let packages = [], deliveredGroups = {}, cancelledDraft = [], cancelledGroups = [], recentActivity = [], teamUsers = [];
+let packages = [], deliveredGroups = {}, cancelledDraft = [], cancelledGroups = [], recentActivity = [], teamUsers = [], locationHints = [];
 let routeAdminFilter = '', pendingUnmarked = null, unmarkTarget = null, unmarkSession = null;
 let sessionOrigin = null, lastRouteList = [], locTarget = null, returnTarget = null, deliveredFilter = '';
 let reauthCallback = null;
-
 // ===== ESCAPE DE HTML (evita que nombres con comillas/< rompan la web) =====
 function esc(s) {
     if (s === null || s === undefined) return '';
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
-
 // ===== TELÉFONOS (+1) =====
 function normalizePhone(raw) { var d = String(raw || '').replace(/\D/g, ''); if (!d) return ''; if (d.length === 10) d = '1' + d; return '+' + d; }
 function waLink(raw) { return 'https://wa.me/' + normalizePhone(raw).replace('+', ''); }
 function telLink(raw) { return 'tel:' + normalizePhone(raw); }
-
 // ===== COORDENADAS Y CÓDIGOS PLUS =====
 var OLC_ALPH = '23456789CFGHJMPQRVWX', OLC_RES = [20, 1, 0.05, 0.0025, 0.000125];
 function olcEnc(lat, lng, pairs) { var d = '', la = lat + 90, lo = lng + 180; for (var i = 0; i < pairs; i++) { var r = OLC_RES[i]; var li = Math.floor(la / r); if (li > 19) li = 19; if (li < 0) li = 0; var oi = Math.floor(lo / r); if (oi > 19) oi = 19; if (oi < 0) oi = 0; d += OLC_ALPH.charAt(li) + OLC_ALPH.charAt(oi); la -= li * r; lo -= oi * r; } return d; }
@@ -588,6 +573,7 @@ function getCoords(p) { if (p.lat != null && p.lng != null && !isNaN(p.lat) && !
 function hasCoords(p) { if (p.force_sin_gps) return false; return !!getCoords(p); }
 function mapLink(p) { var c = getCoords(p); if (c) return 'https://www.google.com/maps/search/?api=1&query=' + c.lat + ',' + c.lng; return 'https://www.google.com/maps/search/' + encodeURIComponent(p.client_address || ''); }
 function hv(a, b, c, d) { var R = 6371, dL = (c - a) * Math.PI / 180, dG = (d - b) * Math.PI / 180; var x = Math.sin(dL / 2) * Math.sin(dL / 2) + Math.cos(a * Math.PI / 180) * Math.cos(c * Math.PI / 180) * Math.sin(dG / 2) * Math.sin(dG / 2); return R * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x)); }
+function distMeters(a, b) { return hv(a.lat, a.lng, b.lat, b.lng) * 1000; }
 function optimizeOrder(items, origin) {
     var pts = []; items.forEach(function(p) { var c = getCoords(p); if (c) pts.push({ p: p, lat: c.lat, lng: c.lng }); });
     if (pts.length < 3) return items.slice();
@@ -624,7 +610,11 @@ function drawRouteMap(items) {
     document.getElementById('miRoute').textContent = pts.length + ' paradas · ~' + td.toFixed(1) + ' km';
 }
 function openMapsRoute() { var pts = []; lastRouteList.forEach(function(p) { var c = getCoords(p); if (c) pts.push(c); }); if (!pts.length) { notify('Sin coordenadas en RUTAS', 'warning'); return; } var dest = pts[pts.length - 1]; var wp = pts.slice(0, -1).slice(0, 8).map(function(c) { return c.lat + ',' + c.lng; }).join('|'); window.open('https://www.google.com/maps/dir/?api=1&destination=' + dest.lat + ',' + dest.lng + (wp ? '&waypoints=' + encodeURIComponent(wp) : '') + '&travelmode=driving', '_blank'); }
-
+// ===== APRENDIZAJE DE UBICACIONES =====
+async function loadLocationHints() { const { data } = await sb.from('location_hints').select('*'); if (data) locationHints = data; }
+function findNearbyHint(lat, lng, radius) { radius = radius || 50; for (var i = 0; i < locationHints.length; i++) { var h = locationHints[i]; if (distMeters({ lat: lat, lng: lng }, { lat: h.lat, lng: h.lng }) <= (h.radius_meters || radius)) return h; } return null; }
+function buildLocationDesc(p) { if (!p) return ''; var parts = []; if (p.street_main) parts.push('Calle ' + p.street_main); if (p.street_side1 && p.street_side2) parts.push('entre ' + p.street_side1 + ' y ' + p.street_side2); var desc = parts.join(' '); if (p.location_ref) desc += (desc ? '\n' : '') + p.location_ref; return desc; }
+function saveLocationHint(lat, lng, main, side1, side2, ref) { var existing = findNearbyHint(lat, lng, 50); if (existing) { sb.from('location_hints').update({ street_main: main, street_side1: side1, street_side2: side2, street_ref: ref || null }).eq('id', existing.id); } else { sb.from('location_hints').insert({ lat: lat, lng: lng, street_main: main, street_side1: side1, street_side2: side2, street_ref: ref || null, created_by: currentUserEmail }); } loadLocationHints(); }
 // ===== SESIÓN / ROLES (verificados en el servidor) =====
 async function assignRole(email) {
     if (email === OWNER_EMAIL) { userMode = 'admin'; deleteAccessGranted = true; currentUserName = 'Dueño'; return true; }
@@ -685,6 +675,7 @@ async function loadDataFromSupabase() {
     const { data: pkgData } = await sb.from('packages').select('*').order('created_at', { ascending: false }); if (pkgData) packages = pkgData;
     const { data: actData } = await sb.from('activity').select('*').order('created_at', { ascending: false }).limit(20); if (actData) recentActivity = actData;
     const { data: teamData } = await sb.from('team').select('*').order('created_at', { ascending: false }); if (teamData) teamUsers = teamData;
+    await loadLocationHints();
     rebuildLocalGroups(); refreshAll(); populateRouteAdminSelect();
 }
 function rebuildLocalGroups() {
@@ -733,7 +724,6 @@ function switchView(view, event) {
     if (view === 'delete') { if (!deleteAccessGranted) { requestDeleteAccess(event); return; } updateDeleteCounts(); }
     if (window.innerWidth <= 768) { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
 }
-
 // ===== DOBLE CANDADO: reconfirmar contraseña para secciones sensibles =====
 function requestDeleteAccess(event) {
     reauthCallback = function() { deleteAccessGranted = true; switchView('delete', event); };
@@ -756,7 +746,6 @@ document.getElementById('btnReauth').addEventListener('click', async function() 
     const cb = reauthCallback; closeReauthModal();
     if (cb) cb();
 });
-
 async function syncPackageUpdate(id, updates, activityMsg, actor) {
     const { error } = await sb.from('packages').update(updates).eq('id', id);
     if (error) { notify('Error al guardar: ' + error.message, 'error'); return false; }
@@ -770,7 +759,6 @@ async function markDeliveredUnmarked(id) { if (!isAdmin() && !isDriver()) { noti
 async function markPostponed(id) { if (!isAdmin() && !isDriver()) { notify('🔒 No tienes permisos', 'error'); return; } const pkg = packages.find(p => p.id === id); if (!pkg) return; const ok = await syncPackageUpdate(id, { status: 'postponed' }, '⏸ Pospuesto #' + (pkg.tracking_code || pkg.code)); if (ok) notify('⏸ Paquete #' + (pkg.tracking_code || pkg.code) + ' pospuesto', 'warning'); }
 async function moveToUnclassified(id) { if (!isAdmin() && !isDriver()) { notify('🔒 No tienes permisos', 'error'); return; } const pkg = packages.find(p => p.id === id); if (!pkg) return; const ok = await syncPackageUpdate(id, { status: 'pending', delivery_date: null, saved_date: null, delivered_by: null }, '↩ Reactivado #' + (pkg.tracking_code || pkg.code)); if (ok) notify('📦 Paquete reactivado'); }
 async function markCancelled(id) { if (!isAdmin() && !isDriver()) { notify('🔒 No tienes permisos', 'error'); return; } const pkg = packages.find(p => p.id === id); if (!pkg) return; const ok = await syncPackageUpdate(id, { status: 'cancelled' }, '↩ Devolución #' + (pkg.tracking_code || pkg.code)); if (ok) notify('↩ Paquete #' + (pkg.tracking_code || pkg.code) + ' enviado a Devoluciones', 'warning'); }
-
 function renderTeam() {
     const list = document.getElementById('teamList');
     if (teamUsers.length === 0) { list.innerHTML = '<p style="color:var(--gray-500);text-align:center;padding:18px;font-size:.85em">No hay usuarios registrados.</p>'; return; }
@@ -843,11 +831,12 @@ function renderPackageCard(pkg, context) {
             actions.push('<button class="btn-cancel" onclick="markCancelled(\'' + pkg.id + '\')">↩ Devolución</button>');
         }
     }
-    return '<div class="package-item ' + context + '"><div class="pkg-header"><span class="pkg-code">#' + esc(pkg.tracking_code || pkg.code) + '</span>' + (pkg.store ? '<span class="pkg-store">' + esc(pkg.store) + '</span>' : '') + '</div><div class="pkg-info"><strong>👤</strong> ' + esc(pkg.client_name) + '<br><strong>📞</strong> ' + (pkg.client_phone ? esc(normalizePhone(pkg.client_phone)) : '-') + '<br><strong>📦</strong> ' + esc(pkg.product_info || '-') + (pkg.price ? '<br><strong>💵</strong> $' + parseFloat(pkg.price).toLocaleString('es-DO') : '') + (pkg.zone ? '<br><strong>📍</strong> ' + esc(pkg.zone) : '') + '</div><div class="pkg-actions"><button class="btn-ghost" onclick="showDetails(\'' + pkg.id + '\',\'' + context + '\')">📋 Ficha</button>' + actions.join('') + '</div></div>';
+    var locDesc = buildLocationDesc(pkg);
+    var locHtml = locDesc ? '<div class="pkg-location">📍 ' + esc(locDesc) + '</div>' : '';
+    return '<div class="package-item ' + context + '"><div class="pkg-header"><span class="pkg-code">#' + esc(pkg.tracking_code || pkg.code) + '</span>' + (pkg.store ? '<span class="pkg-store">' + esc(pkg.store) + '</span>' : '') + '</div><div class="pkg-info"><strong>👤</strong> ' + esc(pkg.client_name) + '<br><strong>📞</strong> ' + (pkg.client_phone ? esc(normalizePhone(pkg.client_phone)) : '-') + '<br><strong>📦</strong> ' + esc(pkg.product_info || '-') + (pkg.price ? '<br><strong>💵</strong> $' + parseFloat(pkg.price).toLocaleString('es-DO') : '') + (pkg.zone ? '<br><strong>📍</strong> ' + esc(pkg.zone) : '') + '</div>' + locHtml + '<div class="pkg-actions"><button class="btn-ghost" onclick="showDetails(\'' + pkg.id + '\',\'' + context + '\')">📋 Ficha</button>' + actions.join('') + '</div></div>';
 }
 function renderUnclassified() { const term = document.getElementById('searchUnclassified').value; let items = packages.filter(p => p.status === 'pending' || !p.status); if (!isAdmin()) items = items.filter(p => p.assigned_to === currentUserEmail); items = items.filter(p => matchesSearch(p, term)); const list = document.getElementById('unclassList'); if (items.length === 0) { list.innerHTML = '<div class="empty-state"><div class="icon">📥</div><p>' + (packages.filter(p => !p.status || p.status === 'pending').length === 0 ? 'No hay paquetes.' : 'Sin resultados') + '</p></div>'; return; } list.innerHTML = items.map(p => renderPackageCard(p, 'unclassified')).join(''); }
 function renderPostponed() { const term = document.getElementById('searchPostponed').value; let items = packages.filter(p => p.status === 'postponed'); if (!isAdmin()) items = items.filter(p => p.assigned_to === currentUserEmail); items = items.filter(p => matchesSearch(p, term)); const list = document.getElementById('postponedList'); if (items.length === 0) { list.innerHTML = '<div class="empty-state"><div class="icon">⏸️</div><p>No hay paquetes pospuestos</p></div>'; return; } list.innerHTML = items.map(p => renderPackageCard(p, 'postponed')).join(''); }
-
 // ===== VISTA EN RUTA =====
 let currentRouteTab = localStorage.getItem(LS_RTAB) || 'pendientes';
 let wUidRoute = null, wStRoute = null;
@@ -878,6 +867,8 @@ function renderRouteView() {
         const cv = parseFloat(p.price || 0); const phN = normalizePhone(p.client_phone);
         const isDelivered = p.status === 'delivered'; const isNoAnswer = p.status === 'no_answer' || p.status === 'returned'; const su = !hasCoords(p);
         const pkgCode = p.tracking_code || p.code || p.id;
+        var locDesc = buildLocationDesc(p);
+        var locHtml = locDesc ? '<div class="route-card-loc">📍 ' + esc(locDesc) + '</div>' : '';
         return '<div class="route-card' + (su ? ' nogps' : '') + '">'
             + '<div style="display:flex;gap:8px;"><div style="flex:1;min-width:0;">'
             + '<div style="font-size:1rem;font-weight:800;color:var(--navy);">#' + (i + 1) + ' · ' + esc(p.client_name || 'Sin nombre') + (su ? ' <span style="font-size:.6rem;font-weight:800;padding:3px 8px;border-radius:20px;background:#fef3c7;color:#92400e;">SIN GPS</span>' : '') + (isNoAnswer ? ' <span style="font-size:.6rem;font-weight:800;padding:3px 8px;border-radius:20px;background:#fff3e0;color:#e65100;">NO CONTESTA</span>' : '') + '</div>'
@@ -885,6 +876,7 @@ function renderRouteView() {
             + '<div style="font-size:.8rem;color:var(--gray-500);">📦 Código: ' + esc(pkgCode) + '</div>'
             + '</div></div>'
             + (p.product_info ? '<div style="margin:8px 0;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:12px;padding:9px 11px;font-size:.8rem;color:var(--gray-700);">📝 ' + esc(p.product_info) + '</div>' : '')
+            + locHtml
             + '<div class="route-actions">'
             + '<button class="abtn-route abtn-loc" onclick="openLocRoute(\'' + p.id + '\')">📍 Ubicación</button>'
             + ((p.client_address || hasCoords(p)) ? '<a class="abtn-route abtn-map" href="' + mapLink(p) + '" target="_blank">🗺️ Mapa</a>' : '')
@@ -920,19 +912,21 @@ async function sortNearestRoute() {
     var apply = async function(origin) { var ord = optimizeOrder(base, origin); for (var i = 0; i < ord.length; i++) { await sb.from('packages').update({ route_order: i + 1 }).eq('id', ord[i].id); } await sb.from('activity').insert({ texto: '⚡ Ruta optimizada (' + ord.length + ' paradas)', usuario: currentUserName || currentUserEmail.split('@')[0] }); notify('⚡ Ruta optimizada y guardada (' + ord.length + ' paradas)'); await loadDataFromSupabase(); };
     if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(function(pos) { sessionOrigin = { lat: pos.coords.latitude, lng: pos.coords.longitude }; apply(sessionOrigin); }, function() { apply(null); }, { timeout: 8000 }); } else apply(null);
 }
-function openLocRoute(id) { var p = packages.find(x => x.id === id); if (!p) return; locTarget = id; var c = getCoords(p); document.getElementById('locCoords').value = c ? (c.lat + ', ' + c.lng) : ''; document.getElementById('locAddress').value = p.client_address || ''; document.getElementById('locError').classList.remove('show'); document.getElementById('mLocRoute').classList.add('show'); }
+function openLocRoute(id) { var p = packages.find(x => x.id === id); if (!p) return; locTarget = id; var c = getCoords(p); document.getElementById('locCoords').value = c ? (c.lat + ', ' + c.lng) : ''; document.getElementById('locMain').value = p.street_main || ''; document.getElementById('locSide1').value = p.street_side1 || ''; document.getElementById('locSide2').value = p.street_side2 || ''; document.getElementById('locRef').value = p.location_ref || ''; document.getElementById('locError').classList.remove('show'); if (c && !p.street_main) { var hint = findNearbyHint(c.lat, c.lng, 50); if (hint) { document.getElementById('locMain').value = hint.street_main; document.getElementById('locSide1').value = hint.street_side1; document.getElementById('locSide2').value = hint.street_side2; document.getElementById('locRef').value = hint.street_ref || ''; notify('🧠 Ubicación conocida sugerida: Calle ' + hint.street_main + ' entre ' + hint.street_side1 + ' y ' + hint.street_side2, 'warning'); } } document.getElementById('mLocRoute').classList.add('show'); }
 function closeLocRoute() { document.getElementById('mLocRoute').classList.remove('show'); locTarget = null; }
 document.getElementById('mLocRoute').addEventListener('click', function(e) { if (e.target.id === 'mLocRoute') closeLocRoute(); });
 async function saveLocRoute() {
     var p = packages.find(x => x.id === locTarget); if (!p) return; var c = parseCoords(document.getElementById('locCoords').value); var err = document.getElementById('locError');
+    var main = document.getElementById('locMain').value.trim(); var side1 = document.getElementById('locSide1').value.trim(); var side2 = document.getElementById('locSide2').value.trim(); var ref = document.getElementById('locRef').value.trim();
     if (!c) { err.textContent = '❌ Coordenadas inválidas. Usa el formato: 19.2917, -70.2558'; err.classList.add('show'); return; }
-    var addr = document.getElementById('locAddress').value.trim() || p.client_address || ''; var coordStr = c.lat + ', ' + c.lng; var ok = false;
-    var r1 = await sb.from('packages').update({ lat: c.lat, lng: c.lng, client_address: addr || coordStr, force_sin_gps: false }).eq('id', p.id);
-    if (!r1.error) { ok = true; } else { var r2 = await sb.from('packages').update({ client_address: coordStr + (addr ? ' | ' + addr : '') }).eq('id', p.id); ok = !r2.error; if (!ok) { notify('Error al guardar: ' + r2.error.message, 'error'); return; } }
+    if (!main || !side1 || !side2) { err.textContent = '❌ Completa la calle principal y las 2 calles laterales'; err.classList.add('show'); return; }
+    var addr = p.client_address || ''; var coordStr = c.lat + ', ' + c.lng; var desc = 'Calle ' + main + ' entre ' + side1 + ' y ' + side2 + (ref ? '\n' + ref : ''); var ok = false;
+    var r1 = await sb.from('packages').update({ lat: c.lat, lng: c.lng, client_address: addr || coordStr, force_sin_gps: false, street_main: main, street_side1: side1, street_side2: side2, location_ref: ref || null, location_desc: desc }).eq('id', p.id);
+    if (!r1.error) { ok = true; } else { var r2 = await sb.from('packages').update({ client_address: coordStr + (addr ? ' | ' + addr : ''), street_main: main, street_side1: side1, street_side2: side2, location_ref: ref || null, location_desc: desc }).eq('id', p.id); ok = !r2.error; if (!ok) { notify('Error al guardar: ' + r2.error.message, 'error'); return; } }
+    saveLocationHint(c.lat, c.lng, main, side1, side2, ref);
     if (currentUserEmail) await sb.from('activity').insert({ texto: '📍 Ubicación agregada #' + (p.tracking_code || p.code), usuario: currentUserName || currentUserEmail.split('@')[0] });
-    closeLocRoute(); notify('📍 Ubicación guardada. La ficha ya está en RUTAS.'); await loadDataFromSupabase();
+    closeLocRoute(); notify('📍 Ubicación guardada. La app la recordará para fichas cercanas.'); await loadDataFromSupabase();
 }
-
 // ===== WHATSAPP RUTA =====
 const waStatesRoute = [
     { key: 'pendiente', icon: '📦', label: 'Pendiente', cls: 'st-pendiente', msg: function(n, p, f, cd) { return '[LLEGA YA] Hola ' + n + '! Estamos listos para entregar tu pedido ' + p + '.' + (f ? ' Fecha estimada: ' + f : '') + '\nPor favor comparte tu ubicación.'; } },
@@ -948,7 +942,6 @@ async function sendWARoute() { if (!wStRoute) return notify('Selecciona un estad
 function loadXLRoute(e) { notify('Importación Excel - Usa la vista Sin Clasificar', 'info'); e.target.value = ''; }
 function loadJSONRoute(e) { notify('Importación JSON - Usa la vista Sin Clasificar', 'info'); e.target.value = ''; }
 function openScannerRoute() { notify('Escáner - En desarrollo', 'info'); }
-
 // ===== ENTREGADOS SIN MARCAR =====
 function copyText(t) { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t); } else { const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); } }
 function renderUnmarked() {
@@ -967,7 +960,6 @@ function closeUnmarkModal() { document.getElementById('unmarkModal').classList.r
 document.getElementById('unmarkModal').addEventListener('click', function(e) { if (e.target.id === 'unmarkModal') closeUnmarkModal(); });
 function confirmUnmarkUnlock() { const pass = document.getElementById('unmarkPass').value; const name = document.getElementById('unmarkName').value.trim(); const err = document.getElementById('unmarkError'); if (pass !== UNMARK_PASSWORD) { err.textContent = '❌ Contraseña incorrecta'; err.classList.add('show'); return; } if (!name) { err.textContent = '❌ Escribe tu nombre para registrar quién manipula los códigos'; err.classList.add('show'); return; } unmarkSession = { name: name }; sb.from('activity').insert({ texto: '🔓 ' + name + ' desbloqueó el copiado de códigos', usuario: name }); const id = unmarkTarget; closeUnmarkModal(); notify('🔓 Desbloqueado. Bienvenido, ' + esc(name)); if (id) doCopyUnmarked(id); else renderUnmarked(); }
 async function markUnmarkedAsDelivered(id) { const pkg = packages.find(p => p.id === id); if (!pkg) return; const now = new Date(); const who = unmarkSession ? unmarkSession.name : (currentUserName || currentUserEmail.split('@')[0]); const ok = await syncPackageUpdate(id, { status: 'delivered', delivery_date: localDateKey(now), delivery_time: now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }), delivered_by: who }, '✅ Marcado en app externa #' + (pkg.tracking_code || pkg.code) + ' por ' + who, who); if (ok) { if (pendingUnmarked === id) pendingUnmarked = null; notify('✅ Paquete movido a Entregados (por ' + esc(who) + ')'); } }
-
 // ===== ENTREGADOS / DEVOLUCIONES =====
 function renderDelivered() {
     const container = document.getElementById('deliveredGroups'); const term = document.getElementById('searchDelivered').value;
@@ -1001,7 +993,8 @@ function openDetailsModal(pkg, context) {
     if ((isAdmin() || isDriver()) && (context === 'unclassified' || context === 'postponed' || context === 'route')) { actionButtons = '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:15px;"><button class="btn-deliver" style="flex:1;" onclick="markDelivered(\'' + pkg.id + '\');closeModal();">✓ Entregar</button><button class="btn-secondary" style="flex:1;" onclick="markDeliveredUnmarked(\'' + pkg.id + '\');closeModal();">✅ Sin marcar</button><button class="btn-ghost" style="flex:1;" onclick="closeModal();openLocRoute(\'' + pkg.id + '\')">📍 Ubicación</button><a href="' + telLink(pkg.client_phone) + '" class="btn-secondary" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">📞 Llamar</a>' + ((pkg.client_address || hasCoords(pkg)) ? '<a href="' + mapLink(pkg) + '" target="_blank" class="btn-cancel" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">🗺️ Mapa</a>' : '') + '</div>'; }
     else if (context === 'unclassified' || context === 'postponed' || context === 'route') { actionButtons = '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:15px;"><a href="' + telLink(pkg.client_phone) + '" class="btn-secondary" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">📞 Llamar</a>' + ((pkg.client_address || hasCoords(pkg)) ? '<a href="' + mapLink(pkg) + '" target="_blank" class="btn-ghost" style="flex:1;text-align:center;text-decoration:none;display:block;padding:10px 18px;border-radius:8px;">🗺️ Ver Mapa</a>' : '') + '</div>'; }
     else if (context === 'delivered') { if (isAdmin() || isDriver()) { actionButtons = '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:15px;"><button class="btn-secondary" style="flex:1;min-width:140px;" onclick="openSingleDateEdit(\'' + pkg.id + '\')">📅 Cambiar Fecha</button><button class="btn-ghost" style="flex:1;min-width:140px;" onclick="moveToUnclassified(\'' + pkg.id + '\');closeModal();">↩️ Sin marcar</button><button class="btn-postpone" style="flex:1;min-width:140px;" onclick="markPostponed(\'' + pkg.id + '\');closeModal();">⏸️ Pospner</button><button class="btn-cancel" style="flex:1;min-width:140px;" onclick="markCancelled(\'' + pkg.id + '\');closeModal();">↩️ Devolución</button></div>'; } else { actionButtons = '<div style="display:flex;gap:10px;margin-top:15px;"><button class="btn-secondary" style="flex:1;" onclick="openSingleDateEdit(\'' + pkg.id + '\')">📅 Cambiar Fecha</button></div>'; } }
-    document.getElementById('modalBody').innerHTML = '<div style="background:linear-gradient(135deg,#FFF5EB 0%,#FFE8D6 100%);padding:18px;border-radius:12px;margin-bottom:12px;"><h3 style="color:var(--navy);margin-bottom:10px;">👤 ' + esc(pkg.client_name) + '</h3><div class="detail-row"><span class="detail-label">📞 Teléfono:</span><span class="detail-value"><a href="' + telLink(pkg.client_phone) + '">' + (pkg.client_phone ? esc(normalizePhone(pkg.client_phone)) : '-') + '</a></span></div><div class="detail-row"><span class="detail-label">📦 Código:</span><span class="detail-value"><strong>' + esc(pkg.tracking_code || pkg.code) + '</strong></span></div><div class="detail-row"><span class="detail-label">🛍️ Producto:</span><span class="detail-value">' + esc(pkg.product_info || '-') + '</span></div>' + (pkg.store ? '<div class="detail-row"><span class="detail-label">🏪 Tienda:</span><span class="detail-value">' + esc(pkg.store) + '</span></div>' : '') + (pkg.zone ? '<div class="detail-row"><span class="detail-label">📍 Zona:</span><span class="detail-value">' + esc(pkg.zone) + '</span></div>' : '') + (pkg.client_address ? '<div class="detail-row"><span class="detail-label">🏠 Dirección:</span><span class="detail-value">' + esc(pkg.client_address) + '</span></div>' : '') + (pkg.price ? '<div class="detail-row"><span class="detail-label">💵 COD:</span><span class="detail-value"><span class="cod-badge">$' + parseFloat(pkg.price).toLocaleString('es-DO', { minimumFractionDigits: 2 }) + '</span></span></div>' : '') + (pkg.assigned_to ? '<div class="detail-row"><span class="detail-label">🚚 Chofer:</span><span class="detail-value">' + esc(pkg.assigned_to) + '</span></div>' : '') + (pkg.delivery_date ? '<div class="detail-row"><span class="detail-label">📅 Fecha:</span><span class="detail-value">' + new Date(pkg.delivery_date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + ' · ' + esc(pkg.delivery_time || '') + '</span></div>' : '') + (pkg.delivered_by ? '<div class="detail-row"><span class="detail-label">✍️ Marcado por:</span><span class="detail-value"><strong>' + esc(pkg.delivered_by) + '</strong></span></div>' : '') + '</div>' + actionButtons;
+    var locDesc = buildLocationDesc(pkg);
+    document.getElementById('modalBody').innerHTML = '<div style="background:linear-gradient(135deg,#FFF5EB 0%,#FFE8D6 100%);padding:18px;border-radius:12px;margin-bottom:12px;"><h3 style="color:var(--navy);margin-bottom:10px;">👤 ' + esc(pkg.client_name) + '</h3><div class="detail-row"><span class="detail-label">📞 Teléfono:</span><span class="detail-value"><a href="' + telLink(pkg.client_phone) + '">' + (pkg.client_phone ? esc(normalizePhone(pkg.client_phone)) : '-') + '</a></span></div><div class="detail-row"><span class="detail-label">📦 Código:</span><span class="detail-value"><strong>' + esc(pkg.tracking_code || pkg.code) + '</strong></span></div><div class="detail-row"><span class="detail-label">🛍️ Producto:</span><span class="detail-value">' + esc(pkg.product_info || '-') + '</span></div>' + (pkg.store ? '<div class="detail-row"><span class="detail-label">🏪 Tienda:</span><span class="detail-value">' + esc(pkg.store) + '</span></div>' : '') + (pkg.zone ? '<div class="detail-row"><span class="detail-label">📍 Zona:</span><span class="detail-value">' + esc(pkg.zone) + '</span></div>' : '') + (pkg.client_address ? '<div class="detail-row"><span class="detail-label">🏠 Dirección:</span><span class="detail-value">' + esc(pkg.client_address) + '</span></div>' : '') + (locDesc ? '<div class="detail-row"><span class="detail-label">📍 Ubicación:</span><span class="detail-value" style="white-space:pre-line;">' + esc(locDesc) + '</span></div>' : '') + (pkg.price ? '<div class="detail-row"><span class="detail-label">💵 COD:</span><span class="detail-value"><span class="cod-badge">$' + parseFloat(pkg.price).toLocaleString('es-DO', { minimumFractionDigits: 2 }) + '</span></span></div>' : '') + (pkg.assigned_to ? '<div class="detail-row"><span class="detail-label">🚚 Chofer:</span><span class="detail-value">' + esc(pkg.assigned_to) + '</span></div>' : '') + (pkg.delivery_date ? '<div class="detail-row"><span class="detail-label">📅 Fecha:</span><span class="detail-value">' + new Date(pkg.delivery_date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + ' · ' + esc(pkg.delivery_time || '') + '</span></div>' : '') + (pkg.delivered_by ? '<div class="detail-row"><span class="detail-label">✍️ Marcado por:</span><span class="detail-value"><strong>' + esc(pkg.delivered_by) + '</strong></span></div>' : '') + '</div>' + actionButtons;
     document.getElementById('clientModal').classList.add('show');
 }
 function closeModal() { document.getElementById('clientModal').classList.remove('show'); }
@@ -1011,15 +1004,13 @@ function openGroupDateEdit(key) { editDateMode = 'group'; editDateTarget = key; 
 function openSingleDateEdit(id) { editDateMode = 'single'; editDateTarget = id; let cur = ''; for (let key in deliveredGroups) { let f = deliveredGroups[key].find(p => p.id === id); if (f) { cur = key; break; } } document.getElementById('editDateInput').value = cur; document.getElementById('editDateDesc').textContent = 'Cambiar la fecha de esta entrega individual.'; closeModal(); document.getElementById('editDateModal').classList.add('show'); }
 function closeEditDateModal() { document.getElementById('editDateModal').classList.remove('show'); editDateMode = null; editDateTarget = null; }
 async function confirmDateChange() { const newDate = document.getElementById('editDateInput').value; if (!newDate) { notify('Selecciona una fecha', 'error'); return; } if (editDateMode === 'group') { const oldKey = editDateTarget; if (newDate !== oldKey) { const items = deliveredGroups[oldKey] || []; for (const p of items) { await sb.from('packages').update({ delivery_date: newDate }).eq('id', p.id); } } } else if (editDateMode === 'single') { await sb.from('packages').update({ delivery_date: newDate }).eq('id', editDateTarget); } closeEditDateModal(); notify('📅 Fecha actualizada'); loadDataFromSupabase(); }
-
 // ===== IMPORTAR EXCEL =====
 let excelData = [], excelHeaders = [];
-document.getElementById('excelFile').addEventListener('change', function(e) { if (!isAdmin()) { notify('🔒 Solo el administrador', 'error'); return; } const file = e.target.files[0]; if (!file) return; document.getElementById('fileName').textContent = file.name; const reader = new FileReader(); reader.onload = function(e) { try { const data = new Uint8Array(e.target.result); const workbook = XLSX.read(data, { type: 'array' }); const firstSheet = workbook.Sheets[workbook.SheetNames[0]]; const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: '' }); let headerRowIndex = -1; for (let i = 0; i < Math.min(20, jsonData.length); i++) { const row = jsonData[i]; if (row && row.some(cell => { const v = String(cell).toLowerCase().trim(); return v === 'code' || v === 'customer name' || v === 'dropoff contact'; })) { headerRowIndex = i; break; } } if (headerRowIndex === -1) { notify('No se detectaron encabezados', 'error'); return; } excelHeaders = jsonData[headerRowIndex].map(h => String(h || '').trim()); excelData = jsonData.slice(headerRowIndex + 1).filter(row => { const codeIdx = excelHeaders.findIndex(h => h.toLowerCase() === 'code'); return codeIdx !== -1 && row[codeIdx] && String(row[codeIdx]).trim() !== ''; }); if (excelData.length === 0) { notify('Sin datos válidos', 'error'); return; } populateMappingSelects(); showPreview(); document.getElementById('mappingSection').style.display = 'block'; notify('✓ ' + excelData.length + ' paquetes detectados'); } catch (err) { notify('Error: ' + err.message, 'error'); } }; reader.readAsArrayBuffer(file); });
-function populateMappingSelects() { const fields = [{ id: 'mapCode', keywords: ['code', 'código', 'tracking'] }, { id: 'mapName', keywords: ['dropoff contact name', 'contact name', 'nombre', 'cliente'] }, { id: 'mapPhone', keywords: ['dropoff contact', 'phone', 'teléfono', 'telefono'] }, { id: 'mapProduct', keywords: ['note', 'producto', 'product', 'descripcion'] }, { id: 'mapStore', keywords: ['customer name', 'store', 'tienda'] }, { id: 'mapAddress', keywords: ['drop off address', 'dropoff address', 'address', 'direccion'] }, { id: 'mapCOD', keywords: ['cod', 'monto', 'precio', 'price'] }, { id: 'mapZone', keywords: ['zone', 'zona'] }]; const headersLower = excelHeaders.map(h => h.toLowerCase()); fields.forEach(f => { const sel = document.getElementById(f.id); sel.innerHTML = '<option value="">-- No asignar --</option>'; excelHeaders.forEach((h, i) => { const o = document.createElement('option'); o.value = i; o.textContent = h || ('Col ' + (i + 1)); sel.appendChild(o); }); for (let k = 0; k < f.keywords.length; k++) { const idx = headersLower.findIndex(h => h === f.keywords[k] || h.indexOf(f.keywords[k]) !== -1); if (idx !== -1) { sel.value = idx; break; } } }); }
+document.getElementById('excelFile').addEventListener('change', function(e) { if (!isAdmin()) { notify('🔒 Solo el administrador', 'error'); return; } const file = e.target.files[0]; if (!file) return; document.getElementById('fileName').textContent = file.name; const reader = new FileReader(); reader.onload = function(e) { try { const data = new Uint8Array(e.target.result); const workbook = XLSX.read(data, { type: 'array' }); const firstSheet = workbook.Sheets[workbook.SheetNames[0]]; const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: '' }); let headerRowIndex = -1; for (let i = 0; i < Math.min(20, jsonData.length); i++) { const row = jsonData[i]; if (row && row.some(cell => { const v = String(cell).toLowerCase().trim(); return v === 'code' || v === 'tracking_code' || v === 'customer name' || v === 'dropoff contact'; })) { headerRowIndex = i; break; } } if (headerRowIndex === -1) { notify('No se detectaron encabezados', 'error'); return; } excelHeaders = jsonData[headerRowIndex].map(h => String(h || '').trim()); excelData = jsonData.slice(headerRowIndex + 1).filter(row => { const codeIdx = excelHeaders.findIndex(h => h.toLowerCase() === 'code' || h.toLowerCase() === 'tracking_code'); return codeIdx !== -1 && row[codeIdx] && String(row[codeIdx]).trim() !== ''; }); if (excelData.length === 0) { notify('Sin datos válidos', 'error'); return; } populateMappingSelects(); showPreview(); document.getElementById('mappingSection').style.display = 'block'; notify('✓ ' + excelData.length + ' paquetes detectados'); } catch (err) { notify('Error: ' + err.message, 'error'); } }; reader.readAsArrayBuffer(file); });
+function populateMappingSelects() { const fields = [{ id: 'mapCode', keywords: ['tracking_code', 'code', 'código', 'tracking'] }, { id: 'mapName', keywords: ['client_name', 'dropoff contact name', 'contact name', 'nombre', 'cliente'] }, { id: 'mapPhone', keywords: ['client_phone', 'dropoff contact', 'phone', 'teléfono', 'telefono'] }, { id: 'mapProduct', keywords: ['product_info', 'note', 'producto', 'product', 'descripcion'] }, { id: 'mapStore', keywords: ['store', 'customer name', 'tienda'] }, { id: 'mapAddress', keywords: ['client_address', 'drop off address', 'dropoff address', 'address', 'direccion'] }, { id: 'mapCOD', keywords: ['price', 'cod', 'monto', 'precio'] }, { id: 'mapZone', keywords: ['zone', 'zona'] }]; const headersLower = excelHeaders.map(h => h.toLowerCase()); fields.forEach(f => { const sel = document.getElementById(f.id); sel.innerHTML = '<option value="">-- No asignar --</option>'; excelHeaders.forEach((h, i) => { const o = document.createElement('option'); o.value = i; o.textContent = h || ('Col ' + (i + 1)); sel.appendChild(o); }); for (let k = 0; k < f.keywords.length; k++) { const idx = headersLower.findIndex(h => h === f.keywords[k] || h.indexOf(f.keywords[k]) !== -1); if (idx !== -1) { sel.value = idx; break; } } }); }
 function showPreview() { const t = document.getElementById('previewTable'); let html = '<thead><tr>' + excelHeaders.map(h => '<th>' + esc(h || '-') + '</th>').join('') + '</tr></thead><tbody>'; excelData.slice(0, 5).forEach(row => { html += '<tr>' + excelHeaders.map((_, i) => '<td>' + esc(row[i] !== undefined ? row[i] : '') + '</td>').join('') + '</tr>'; }); t.innerHTML = html + '</tbody>'; }
 async function importData() { if (!isAdmin()) { notify('🔒 Solo el administrador', 'error'); return; } const ci = document.getElementById('mapCode').value, ni = document.getElementById('mapName').value, pi = document.getElementById('mapPhone').value, pri = document.getElementById('mapProduct').value; const si = document.getElementById('mapStore').value, ai = document.getElementById('mapAddress').value, coi = document.getElementById('mapCOD').value, zi = document.getElementById('mapZone').value; if (!ci || !ni || !pi || !pri) { notify('Asigna Código, Cliente, Teléfono y Producto', 'error'); return; } let imported = 0; const inserts = []; excelData.forEach(row => { const code = String(row[ci] || '').trim(), name = String(row[ni] || '').trim(), phone = String(row[pi] || '').trim(), product = String(row[pri] || '').trim(); if (!code || !name || !phone || !product) return; if (packages.some(p => (p.tracking_code || p.code) === code)) return; inserts.push({ tracking_code: code, client_name: name, client_phone: normalizePhone(phone), product_info: product, store: si ? String(row[si] || '').trim() : '', client_address: ai ? String(row[ai] || '').trim() : '', price: coi ? String(row[coi] || '').trim() : '', zone: zi ? String(row[zi] || '').trim() : '', status: 'pending', created_at: new Date().toISOString() }); imported++; }); if (imported > 0) { const { error } = await sb.from('packages').insert(inserts); if (error) { notify('Error al importar: ' + error.message, 'error'); return; } await sb.from('activity').insert({ texto: '📥 ' + imported + ' paquetes importados desde Excel', usuario: currentUserName || currentUserEmail.split('@')[0] }); notify('✓ ' + imported + ' importados'); cancelImport(); loadDataFromSupabase(); } else { notify('No se importaron paquetes (posibles duplicados)', 'warning'); } }
 function cancelImport() { document.getElementById('excelFile').value = ''; document.getElementById('fileName').textContent = ''; document.getElementById('mappingSection').style.display = 'none'; excelData = []; excelHeaders = []; }
-
 // ===== BORRAR / RESPALDO =====
 let selectedDeleteTargets = [];
 function updateDeleteCounts() { document.getElementById('delCountUnclassified').textContent = packages.filter(p => p.status === 'pending' || !p.status).length; document.getElementById('delCountPostponed').textContent = packages.filter(p => p.status === 'postponed').length; document.getElementById('delCountDelivered').textContent = Object.values(deliveredGroups).reduce((s, a) => s + a.length, 0); document.getElementById('delCountCancelled').textContent = cancelledDraft.length + cancelledGroups.reduce((s, g) => s + g.items.length, 0); }

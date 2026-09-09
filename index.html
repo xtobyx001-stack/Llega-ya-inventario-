@@ -11,6 +11,7 @@
 <link rel="apple-touch-icon" href="https://image.qwenlm.ai/public_source/4a79ba76-7aca-46f1-ae9f-35cf48a90006/1927b28b2-443b-456c-9d01-b5f4ed5a3572.png">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/poppins@5.0.0/index.css">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -459,6 +460,31 @@ body.dark .badge-cancelled { background:#7F1D1D; color:#FECACA; }
 /* ===== BOTONES SUPERIORES DERECHA ===== */
 .top-icon-btn { width:44px; height:44px; border-radius:14px; background:#fff; border:1px solid #E8EDF4; color:#0F172A; font-size:1.15em; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 1px 2px rgba(15,23,42,.06); padding:0; }
 body.dark .top-icon-btn { background:#1E293B; border-color:#334155; color:#E2E8F0; }
+/* ===== CUADRE 2.0 ===== */
+.cq-row { border:1px solid #E8EDF4; border-radius:16px; padding:12px 14px; margin-bottom:10px; background:#fff; }
+.cq-row.cq-ok { background:#F0FDF4; border-color:#BBF7D0; }
+.cq-row.cq-bad { background:#FEF2F2; border-color:#FECACA; }
+.cq-row.cq-warn { background:#FFFBEB; border-color:#FDE68A; }
+.cq-row.cq-info { background:#EFF6FF; border-color:#BFDBFE; }
+.cq-head { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:6px; }
+.cq-num { background:#FFF1E6; color:#C2410C; border:1px solid #FED7AA; width:26px; height:26px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.78em; flex-shrink:0; }
+.cq-tag { margin-left:auto; font-size:.7em; font-weight:800; padding:3px 10px; border-radius:20px; background:#F1F5F9; color:#334155; }
+.cq-bad .cq-tag { background:#FEE2E2; color:#B91C1C; }
+.cq-ok .cq-tag { background:#DCFCE7; color:#047857; }
+.cq-warn .cq-tag { background:#FEF9C3; color:#B45309; }
+.cq-info .cq-tag { background:#DBEAFE; color:#1D4ED8; }
+.cq-body { font-size:.82em; color:#475569; line-height:1.6; word-break:break-word; }
+body.dark .cq-row { background:#111A2E; border-color:#1E293B; }
+body.dark .cq-row.cq-ok { background:#052e16; border-color:#14532d; }
+body.dark .cq-row.cq-bad { background:#450a0a; border-color:#7f1d1d; }
+body.dark .cq-row.cq-warn { background:#451a03; border-color:#78350f; }
+body.dark .cq-row.cq-info { background:#172554; border-color:#1e3a8a; }
+body.dark .cq-body { color:#CBD5E1; }
+/* ===== CUADRE: POSICIÓN CORRECTA (19.1) ===== */
+#view-cuadre { flex:1 1 100%; width:100%; padding:0 25px 40px 305px; }
+@media (max-width:768px) { #view-cuadre { padding:0 15px 30px 15px; } }
+#view-cuadre > * { max-width:860px; margin-left:auto; margin-right:auto; }
+body:has(#view-cuadre.active) .main-content { min-height:auto; padding-bottom:0; }
 </style>
 </head>
 <body>
@@ -489,6 +515,7 @@ body.dark .top-icon-btn { background:#1E293B; border-color:#334155; color:#E2E8F
 <button class="nav-btn" data-view="delivered" onclick="switchView('delivered', event)"><span class="nav-icon">✅</span><span class="nav-text"><span class="nav-title">Entregados</span><span class="nav-subtitle">Por fecha y chofer</span></span><span class="nav-badge" id="badgeDelivered">0</span></button>
 <button class="nav-btn" data-view="unmarked" onclick="switchView('unmarked', event)"><span class="nav-icon">📋</span><span class="nav-text"><span class="nav-title">Entregados Sin Marcar</span><span class="nav-subtitle">Copiar códigos</span></span><span class="nav-badge" id="badgeUnmarked">0</span></button>
 <button class="nav-btn" data-view="cancelled" onclick="switchView('cancelled', event)"><span class="nav-icon">↩️</span><span class="nav-text"><span class="nav-title">Devoluciones</span><span class="nav-subtitle">Grupos guardados</span></span><span class="nav-badge" id="badgeCancelled">0</span></button>
+<button class="nav-btn admin-only" data-view="cuadre" onclick="switchView('cuadre', event)"><span class="nav-icon">🧾</span><span class="nav-text"><span class="nav-title">Cuadre</span><span class="nav-subtitle">Comparar con entregados</span></span></button>
 <div class="nav-label admin-only">Sistema</div>
 <button class="nav-btn admin-only" data-view="team" onclick="switchView('team', event)"><span class="nav-icon">👥</span><span class="nav-text"><span class="nav-title">Gestión de Equipo</span><span class="nav-subtitle">Crear / Eliminar usuarios</span></span></button>
 <button class="nav-btn admin-only" data-view="backup" onclick="switchView('backup', event)"><span class="nav-icon">💾</span><span class="nav-text"><span class="nav-title">Respaldo</span><span class="nav-subtitle">Importar / Exportar</span></span></button>
@@ -691,6 +718,19 @@ body.dark .top-icon-btn { background:#1E293B; border-color:#334155; color:#E2E8F
 </div>
 </div>
 </main>
+<div id="view-cuadre" class="view admin-only">
+<div class="card">
+<h3>🧾 Cuadre de Chofer</h3>
+<p style="color:var(--gray-500);font-size:.85em;margin-bottom:12px;">Sube el cuadre (PDF o Excel) tal como te lo envían y compáralo con el grupo de Entregados del día que elijas. Lo que te estén cobrando y NO esté marcado como entregado exitoso se resalta en rojo.</p>
+<div class="form-group"><label>Comparar con entregados del día:</label><select id="cuadreDaySel" onchange="cuadreDay=this.value; if(cuadreRows.length) renderCuadreResults();"></select></div>
+<div class="file-input-wrapper"><input type="file" id="cuadreFile" accept=".pdf,.xlsx,.xls,.csv" onchange="loadCuadreFile(event)"><label for="cuadreFile" class="file-input-label"><div class="icon">🧾</div><div>Toca y elige el cuadre (PDF o Excel)</div><div class="file-name" id="cuadreFileName"></div></label></div>
+<div class="day-summary" id="cuadreSummary" style="margin-top:14px;"></div>
+<div style="display:flex;gap:10px;margin:10px 0 16px;"><button class="btn-deliver" onclick="saveCuadre()">💾 Guardar cuadre como ficha</button></div>
+<div id="cuadreResults"></div>
+<h3 style="margin:22px 0 10px;">📚 Cuadres guardados</h3>
+<div id="cuadreSaved"></div>
+</div>
+</div>
 <div id="view-daydetail" class="view">
 <div class="detail-topbar"><button class="back-btn" onclick="backFromDay()">←</button><select id="dayChoferSel" onchange="dayChofer=this.value;renderDayList()" style="flex:1;min-width:130px;border-radius:14px;"></select></div>
 <div style="max-width:860px;margin:0 auto 16px;"><div class="search-box" style="margin-bottom:0;"><span class="search-icon">🔍</span><input type="text" id="daySearch" placeholder="Buscar por código o teléfono..." oninput="renderDayList()"></div></div>
@@ -969,9 +1009,9 @@ async function confirmLogout() {
     if (window.innerWidth <= 768) { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
 }
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); }
-const viewTitles = { home: '🏠 Inicio', unclassified: '📥 Sin Clasificar', postponed: '⏸️ Pospuestos', route: '🚚 En Ruta', delivered: '✅ Entregados', unmarked: '📋 Entregados Sin Marcar', cancelled: '↩️ Devoluciones', team: '👥 Gestión de Equipo', backup: '💾 Respaldo', delete: '🗑️ Borrar Datos' };
+const viewTitles = { home: '🏠 Inicio', unclassified: '📥 Sin Clasificar', postponed: '⏸️ Pospuestos', route: '🚚 En Ruta', delivered: '✅ Entregados', unmarked: '📋 Entregados Sin Marcar', cancelled: '↩️ Devoluciones', team: '👥 Gestión de Equipo', backup: '💾 Respaldo', delete: '🗑️ Borrar Datos', cuadre: '🧾 Cuadre' };
 function switchView(view, event) {
-    if ((view === 'delete' || view === 'backup' || view === 'team') && !isAdmin()) { notify('🔒 Solo el administrador puede acceder', 'error'); return; }
+    if ((view === 'delete' || view === 'backup' || view === 'team' || view === 'cuadre') && !isAdmin()) { notify('🔒 Solo el administrador puede acceder', 'error'); return; }
     if (view === 'route' && !isDriver() && !isAdmin()) { notify('🔒 Solo choferes y administrador', 'error'); return; }
     document.querySelectorAll('.nav-btn[data-view]').forEach(b => b.classList.toggle('active', b.getAttribute('data-view') === view));
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -986,6 +1026,7 @@ function switchView(view, event) {
     if (view === 'unmarked') renderUnmarked();
     if (view === 'home') { renderRecentActivity(); updateDashboardStats(); }
     if (view === 'team') renderTeam();
+if (view === 'cuadre') { populateCuadreDaySel(); renderCuadreSaved(); }
     if (view === 'delete') { if (!deleteAccessGranted) { requestDeleteAccess(event); return; } updateDeleteCounts(); }
     if (window.innerWidth <= 768) { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
 }
@@ -1318,10 +1359,47 @@ function setupTopButtons() {
 }
 if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', setupTopButtons); } else { setupTopButtons(); }
 setTimeout(setupTopButtons, 500);
-function refreshAll() { renderUnclassified(); renderPostponed(); renderRouteView(); renderUnmarked(); renderDraft(); renderCancelledGroups(); renderRecentActivity(); renderDelivered(); updateCounts(); updateDashboardStats(); updateDeleteCounts(); }
+// ===== CUADRE DE CHOFER =====
+let cuadreRows = [], cuadreDay = '', cuadreMeta = {};
+function populateCuadreDaySel() { const sel = document.getElementById('cuadreDaySel'); if (!sel) return; const dates = Object.keys(deliveredGroups).sort((a,b)=>b.localeCompare(a)); sel.innerHTML = dates.map(d => '<option value="'+d+'">'+new Date(d+'T12:00:00').toLocaleDateString('es-ES',{weekday:'long',year:'numeric',month:'long',day:'numeric'})+' ('+deliveredGroups[d].length+')</option>').join('') || '<option value="">Sin grupos entregados</option>'; if (!cuadreDay || !deliveredGroups[cuadreDay]) cuadreDay = dates[0] || ''; sel.value = cuadreDay; }
+function normName(s){ return (s||'').toLowerCase().replace(/[^a-zñ]/g,''); }
+function digits(s){ return (s||'').replace(/\D/g,''); }
+async function loadCuadreFile(e) { const f = e.target.files[0]; if (!f) return; if (!isAdmin()) { notify('🔒 Solo el administrador','error'); e.target.value=''; return; }
+ let lines = [];
+ if (/\.pdf$/i.test(f.name)) { const lib = window.pdfjsLib; lib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js'; const buf = await f.arrayBuffer(); const pdf = await lib.getDocument({data: buf}).promise; for (let pn=1; pn<=pdf.numPages; pn++) { const page = await pdf.getPage(pn); const tc = await page.getTextContent(); const map = {}; tc.items.forEach(it => { const s = (it.str||'').trim(); if (!s) return; const y = Math.round(it.transform[5]/3)*3; (map[y]=map[y]||[]).push({x: it.transform[4], s}); }); Object.keys(map).map(Number).sort((a,b)=>b-a).forEach(y => lines.push(map[y].sort((a,b)=>a.x-b.x).map(c=>c.s).join(' | '))); } }
+ else { const data = new Uint8Array(await f.arrayBuffer()); const wb = XLSX.read(data,{type:'array'}); const ws = wb.Sheets[wb.SheetNames[0]]; const aoa = XLSX.utils.sheet_to_json(ws,{header:1,defval:''}); aoa.forEach(r => lines.push(r.map(c=>String(c==null?'':c).trim()).filter(Boolean).join(' | '))); }
+ cuadreMeta = { file: f.name, chofer: '' }; cuadreRows = []; let cur = null;
+ lines.forEach(ln => { if (/Fecha de entrega/i.test(ln)) return; if (/CUADRE DE CHOFER/i.test(ln)) { const m = ln.match(/CUADRE DE CHOFER\s*·\s*([^|]+)/i); if (m) cuadreMeta.chofer = m[1].trim(); return; } if (/paquetes entregados|Página \d+/i.test(ln)) return;
+  const dm = ln.match(/^(\d{2}\/\d{2}\/\d{4})/);
+  if (dm) { const cells = ln.split(' | ').map(s=>s.trim()); const codM = ln.match(/RD\$\s*([\d,\.]+)/i); const telM = ln.match(/\+\d{10,}/); const telefono = telM ? telM[0] : ''; let ci = cells.findIndex(c=>c.includes(telefono||'@@@')); let recibio='', zona=''; if (ci!==-1){ if (cells[ci]===telefono){ recibio=cells[ci-1]||''; zona=cells[ci+1]||''; } else { recibio=cells[ci].replace(telefono,'').replace(/[\s|\-]+$/,'').trim(); zona=cells[ci+1]||''; } } const codigo=(cells[1]||'').replace(/\D/g,''); const tienda=cells[2]||''; const notaEnd = ci===-1? Math.max(cells.length-2,3) : (cells[ci]===telefono? ci-1 : ci); const nota = cells.slice(3, notaEnd).join(' '); cur = { fecha: dm[1], codigo, tienda, nota, recibio, telefono, zona, cod: codM? parseFloat(codM[1].replace(/,/g,'')):0 }; cuadreRows.push(cur); }
+  else if (cur) { cur.nota += ' ' + ln.replace(/\s*RD\$.*$/,''); }
+ });
+ if (!cuadreRows.length) { notify('❌ No se detectaron filas del cuadre','error'); e.target.value=''; return; }
+ document.getElementById('cuadreFileName').textContent = f.name + ' · ' + cuadreRows.length + ' filas · chofer: ' + (cuadreMeta.chofer||'-');
+ renderCuadreResults(); e.target.value=''; }
+function cuadreMatch(row) { const day = deliveredGroups[cuadreDay] || []; let p = day.find(x => (x.tracking_code||x.code||'') === row.codigo); let via = 'código'; if (!p && row.telefono) { const d = digits(row.telefono); p = day.find(x => digits(x.client_phone).slice(-10) === d.slice(-10)); via = 'teléfono'; } if (!p) return null; return { p, via }; }
+function renderCuadreResults() { const host = document.getElementById('cuadreResults'); if (!cuadreDay) { host.innerHTML = '<div class="empty-state"><div class="icon">🧾</div><p>Elige un día de Entregados para comparar</p></div>'; return; } const day = deliveredGroups[cuadreDay] || []; const matched = new Set(); let ok=0, nomark=0, diff=0, rech=0; let html = '';
+ cuadreRows.forEach((r,i) => { const isRech = /RECHAZAD/i.test(r.nota) || r.cod === 0; const m = cuadreMatch(r); let cls='cq-bad', tag='🔴 NO MARCADO EN APP', extra='';
+  if (isRech && m) { cls='cq-warn'; tag='🟠 RECHAZADA en cuadre, MARCADA en app'; rech++; matched.add(m.p.id); extra='El cuadre la marca rechazada (COD RD$ 0.00) pero en la app figura entregada.'; }
+  else if (isRech && !m) { cls='cq-warn'; tag='🟠 Rechazada (correcto: no está en app)'; rech++; }
+  else if (m) { matched.add(m.p.id); const telOk = !r.telefono || digits(m.p.client_phone).slice(-10) === digits(r.telefono).slice(-10); const nameOk = !r.recibio || normName(m.p.client_name).indexOf(normName(r.recibio).slice(0,8)) !== -1 || normName(r.recibio).indexOf(normName(m.p.client_name).slice(0,8)) !== -1; if (telOk && nameOk) { cls='cq-ok'; tag='✅ Coincide'; ok++; } else { cls='cq-warn'; tag='🟡 Coincide con diferencias'; diff++; extra = (!telOk? 'Tel cuadre: '+r.telefono+' vs app: '+normalizePhone(m.p.client_phone)+'. ':'') + (!nameOk? 'Recibió: '+r.recibio+' vs app: '+m.p.client_name+'. ':''); } }
+  else { nomark++; }
+  html += '<div class="cq-row '+cls+'"><div class="cq-head"><span class="cq-num">'+(i+1)+'</span><strong>#'+esc(r.codigo)+'</strong><span class="cq-tag">'+tag+'</span></div><div class="cq-body">👤 '+esc(r.recibio||'-')+' · 📞 '+esc(r.telefono||'-')+' · 🏪 '+esc(r.tienda||'-')+'<br>📦 '+esc((r.nota||'').slice(0,140))+'<br>💵 RD$ '+(r.cod||0).toLocaleString('es-DO')+(m? ' · 🔗 vía '+m.via : '')+(extra? '<br>⚠️ '+esc(extra):'')+'</div></div>'; });
+ const soloApp = day.filter(p => !matched.has(p.id));
+ const codCuadre = cuadreRows.reduce((s,r)=>s+(r.cod||0),0); const codApp = day.reduce((s,p)=>s+(parseFloat(p.price)||0),0);
+ document.getElementById('cuadreSummary').innerHTML = '<div class="day-chip"><small>Filas cuadre</small>'+cuadreRows.length+'</div><div class="day-chip"><small>✅ Coinciden</small>'+ok+'</div><div class="day-chip"><small>🔴 No marcados</small>'+nomark+'</div><div class="day-chip"><small>🟡 Difieren</small>'+diff+'</div><div class="day-chip"><small>🟠 Rechazadas</small>'+rech+'</div><div class="day-chip"><small>🔵 Solo en app</small>'+soloApp.length+'</div><div class="day-chip"><small>COD cuadre</small>RD$ '+codCuadre.toLocaleString('es-DO')+'</div><div class="day-chip"><small>COD app</small>RD$ '+codApp.toLocaleString('es-DO')+'</div>';
+ html += soloApp.length ? '<h3 style="margin:18px 0 10px;">🔵 Marcadas en app pero NO vienen en el cuadre</h3>' + soloApp.map(p => '<div class="cq-row cq-info"><div class="cq-head"><strong>#'+esc(p.tracking_code||p.code)+'</strong><span class="cq-tag">🔵 Solo en app</span></div><div class="cq-body">👤 '+esc(p.client_name)+' · 📞 '+esc(normalizePhone(p.client_phone))+' · 💵 RD$ '+(parseFloat(p.price)||0).toLocaleString('es-DO')+'</div></div>').join('') : '';
+ host.innerHTML = html || '<div class="empty-state"><div class="icon">🧾</div><p>Sin resultados</p></div>'; }
+async function saveCuadre() { if (!cuadreRows.length) { notify('Sube un cuadre primero','warning'); return; } const out = cuadreRows.map(r => { const m = cuadreMatch(r); return { codigo:r.codigo, recibio:r.recibio, telefono:r.telefono, cod:r.cod, nota:r.nota, estado: m ? (digits(m.p.client_phone).slice(-10)===digits(r.telefono).slice(-10)?'ok':'diff') : 'nomark', app_id: m? m.p.id : null }; }); const { error } = await sb.from('cuadres').insert({ fecha_target: cuadreDay, file_name: cuadreMeta.file||'cuadre', chofer: cuadreMeta.chofer||'', total_filas: cuadreRows.length, total_cod: cuadreRows.reduce((s,r)=>s+(r.cod||0),0), rows: out, created_by: currentUserEmail }); if (error) { notify('❌ '+error.message,'error'); return; } await sb.from('activity').insert({ texto:'🧾 Cuadre guardado '+cuadreDay+' ('+cuadreRows.length+' filas)', usuario: currentUserName||'admin' }); notify('💾 Cuadre guardado como ficha'); renderCuadreSaved(); }
+async function renderCuadreSaved() { const host = document.getElementById('cuadreSaved'); const { data } = await sb.from('cuadres').select('*').order('created_at',{ascending:false}).limit(20); if (!data || !data.length) { host.innerHTML = '<p style="color:var(--gray-500);font-size:.85em;text-align:center;">Aún no hay cuadres guardados.</p>'; return; } host.innerHTML = data.map(c => '<div class="cq-row cq-info"><div class="cq-head"><strong>📅 '+esc(c.fecha_target)+'</strong><span class="cq-tag">'+esc(c.chofer||'')+'</span></div><div class="cq-body">📄 '+esc(c.file_name)+' · '+c.total_filas+' filas · RD$ '+(c.total_cod||0).toLocaleString('es-DO')+'<br>Guardado: '+new Date(c.created_at).toLocaleString('es-ES')+' <button class="btn-ghost" style="padding:4px 10px;font-size:.72em;" onclick="viewCuadre(\''+c.id+'\')">👁 Ver</button> <button class="btn-cancel" style="padding:4px 10px;font-size:.72em;" onclick="deleteCuadre(\''+c.id+'\')">🗑</button></div></div>').join(''); }
+async function viewCuadre(id) { const { data } = await sb.from('cuadres').select('*').eq('id', id).maybeSingle(); if (!data) return; cuadreDay = data.fecha_target; const sel = document.getElementById('cuadreDaySel'); if (sel) sel.value = cuadreDay; cuadreRows = (data.rows||[]).map(r => ({ codigo:r.codigo, recibio:r.recibio, telefono:r.telefono, cod:r.cod, nota:r.nota, tienda:'', zona:'' })); renderCuadreResults(); notify('👁 Cuadre guardado cargado'); }
+async function deleteCuadre(id) { if (!confirm('¿Eliminar este cuadre guardado?')) return; await sb.from('cuadres').delete().eq('id', id); renderCuadreSaved(); }
+function refreshAll() { try { if (document.getElementById('cuadreDaySel')) populateCuadreDaySel(); } catch (e) {} renderUnclassified(); renderPostponed(); renderRouteView(); renderUnmarked(); renderDraft(); renderCancelledGroups(); renderRecentActivity(); renderDelivered(); updateCounts(); updateDashboardStats(); updateDeleteCounts(); }
 document.getElementById('dateInfo').textContent = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 updateGreeting();
 applyTheme(); checkSession();
+// ===== CUADRE FIX: SELECT DE DÍAS (20.1) =====
+function populateCuadreDaySel() { const sel = document.getElementById('cuadreDaySel'); if (!sel) return; const dates = Object.keys(deliveredGroups).sort((a,b)=>b.localeCompare(a)); const prev = sel.value; sel.innerHTML = dates.map(d => '<option value="'+d+'">'+new Date(d+'T12:00:00').toLocaleDateString('es-ES',{weekday:'long',year:'numeric',month:'long',day:'numeric'})+' ('+deliveredGroups[d].length+')</option>').join('') || '<option value="">Sin grupos entregados</option>'; if (prev && dates.indexOf(prev) !== -1) sel.value = prev; else if (dates.length) sel.value = dates[0]; try { sel.dispatchEvent(new Event('change')); } catch (e) {} }
 if ('serviceWorker' in navigator) { window.addEventListener('load', function() { navigator.serviceWorker.register('./sw.js').catch(function() {}); }); }
 </script>
 </body>

@@ -1292,7 +1292,7 @@ function toggleTheme() { var t = (localStorage.getItem('ly_theme') === 'dark') ?
 function refreshAll() { renderUnclassified(); renderPostponed(); renderRouteView(); renderUnmarked(); renderDraft(); renderCancelledGroups(); renderRecentActivity(); renderDelivered(); updateCounts(); updateDashboardStats(); updateDeleteCounts(); }
 document.getElementById('dateInfo').textContent = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 updateGreeting();
-checkSession();
+applyTheme(); checkSession();
 if ('serviceWorker' in navigator) { window.addEventListener('load', function() { navigator.serviceWorker.register('./sw.js').catch(function() {}); }); }
 </script>
 </body>

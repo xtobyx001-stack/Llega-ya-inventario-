@@ -766,6 +766,13 @@ body.dark .bb-btn.active { color:#FB923C; background:#1E293B; }
 <button onclick="closeMRoute('mWARoute')" style="width:100%;margin-top:8px;padding:13px;background:var(--gray-100);color:var(--gray-700);border:none;border-radius:16px;font-weight:700;cursor:pointer;">Cancelar</button>
 </div>
 </div>
+<nav class="bottom-bar" id="bottomBar">
+<button class="bb-btn" onclick="switchView('home', event)"><span class="bb-icon">🏠</span><span class="bb-label">Inicio</span></button>
+<button class="bb-btn route-nav" onclick="switchView('route', event)"><span class="bb-icon">🚚</span><span class="bb-label">Ruta</span></button>
+<button class="bb-btn" onclick="switchView('delivered', event)"><span class="bb-icon">✅</span><span class="bb-label">Entregados</span></button>
+<button class="bb-btn" onclick="switchView('unclassified', event)"><span class="bb-icon">📥</span><span class="bb-label">Nuevos</span></button>
+<button class="bb-btn" onclick="toggleSidebar()"><span class="bb-icon">☰</span><span class="bb-label">Más</span></button>
+</nav>
 <div class="notification" id="notification"></div>
 <!-- ===== FIN PARTE 1/2 ===== -->
 <script>

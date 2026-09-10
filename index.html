@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+m<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -428,6 +428,8 @@ body.dark #themeToggle { background:#1E293B; border-color:#334155; color:#E2E8F0
 .bottom-bar { display:none; }
 @media (max-width:768px) {
 .bottom-bar { display:flex; position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid #E8EDF4; z-index:120; padding:6px 4px calc(6px + env(safe-area-inset-bottom)); justify-content:space-around; }
+.sidebar { z-index:130; }
+.overlay { z-index:125; }
 .bb-btn { background:none; border:none; color:#64748B; font-size:.62rem; font-weight:700; display:flex; flex-direction:column; align-items:center; gap:2px; cursor:pointer; padding:4px 10px; border-radius:12px; box-shadow:none; }
 .bb-btn .bb-icon { font-size:1.3rem; }
 .bb-btn.active { color:#EA580C; background:#FFF1E6; }
@@ -485,6 +487,9 @@ body.dark .cq-body { color:#CBD5E1; }
 @media (max-width:768px) { #view-cuadre { padding:0 15px 30px 15px; } }
 #view-cuadre > * { max-width:860px; margin-left:auto; margin-right:auto; }
 body:has(#view-cuadre.active) .main-content { min-height:auto; padding-bottom:0; }
+/* ===== FIX: SALIR VISIBLE EN MÓVIL ===== */
+.sidebar { z-index:130; }
+.overlay { z-index:125; }
 </style>
 </head>
 <body>

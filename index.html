@@ -993,7 +993,7 @@ function applyModeUI() {
     document.querySelectorAll('.route-nav').forEach(el => { el.style.display = (userMode === 'viewer') ? 'none' : ''; });
 }
 async function loadDataFromSupabase() {
-    const { data: pkgData } = await sb.from('packages').select('*').order('created_at', { ascending: false }); if (pkgData) packages = pkgData;
+    const { data: pkgData } = await sb.from('packages').select('*').order('created_at', { ascending: false }).order('id', { ascending: true }); if (pkgData) packages = pkgData;
     const { data: actData } = await sb.from('activity').select('*').order('created_at', { ascending: false }).limit(20); if (actData) recentActivity = actData;
     const { data: teamData } = await sb.from('team').select('*').order('created_at', { ascending: false }); if (teamData) teamUsers = teamData;
     await loadLocationHints();
@@ -1162,6 +1162,7 @@ function renderPostponed() { const term = document.getElementById('searchPostpon
 // ===== VISTA EN RUTA =====
 let currentRouteTab = localStorage.getItem(LS_RTAB) || 'pendientes';
 let wUidRoute = null, wStRoute = null;
+let routeOrderCache = null, routeOrderSig = '';
 function setRouteView(v) { routeAdminFilter = v; document.getElementById('bqRoute').value = ''; renderRouteView(); }
 function applyRouteTabUI() { document.querySelectorAll('#view-route .tab').forEach(t => { const on = t.getAttribute('data-tab') === currentRouteTab; t.style.background = on ? '#eff6ff' : '#fff'; t.style.color = on ? '#2563eb' : 'var(--gray-500)'; t.style.borderBottom = on ? '2px solid #2563eb' : '2px solid transparent'; }); }
 function switchTabRoute(tab, event) { currentRouteTab = tab; localStorage.setItem(LS_RTAB, tab); applyRouteTabUI(); document.getElementById('bqRoute').value = ''; renderRouteView(); }
@@ -1180,7 +1181,7 @@ function renderRouteView() {
     const q = (document.getElementById('bqRoute').value || '').toLowerCase().trim();
     let data = getRouteData();
     if (q) data = data.filter(p => (p.client_name || '').toLowerCase().includes(q) || (p.client_phone || '').includes(q) || (p.tracking_code || p.code || '').toLowerCase().includes(q) || (p.product_info || '').toLowerCase().includes(q));
-    if (currentRouteTab === 'pendientes') { const anyOrder = data.some(p => p.route_order != null); if (anyOrder) data = data.slice().sort((a, b) => ((a.route_order == null ? 999999 : a.route_order) - (b.route_order == null ? 999999 : b.route_order))); else data = optimizeOrder(data, null); lastRouteList = data; } else { lastRouteList = []; }
+    if (currentRouteTab === 'pendientes') { const anyOrder = data.some(p => p.route_order != null); if (anyOrder) { data = data.slice().sort((a, b) => ((a.route_order == null ? 999999 : a.route_order) - (b.route_order == null ? 999999 : b.route_order)) || (a.id < b.id ? -1 : 1)); routeOrderCache = null; routeOrderSig = ''; } else { const sig = data.map(p => p.id).sort().join(','); if (routeOrderCache && sig === routeOrderSig) { const pos = {}; routeOrderCache.forEach((id, i) => { pos[id] = i; }); data = data.slice().sort((a, b) => ((pos[a.id] != null ? pos[a.id] : 999999) - (pos[b.id] != null ? pos[b.id] : 999999))); } else { data = optimizeOrder(data, null); routeOrderCache = data.map(p => p.id); routeOrderSig = sig; } } lastRouteList = data; } else { lastRouteList = []; }
     document.getElementById('routeCnt').textContent = data.length;
     renderExportSummary(data);
     const list = document.getElementById('listRoute');
@@ -1438,7 +1439,7 @@ notify('⚖️ Análisis: '+histPlan.crear.length+' crear, '+histPlan.mover.leng
 async function applyHist() { if (!histPlan) { notify('Pulsa ⚖️ Analizar primero','warning'); return; } const d = histPlan.date; if (!confirm('Se crearán '+histPlan.crear.length+' fichas y se moverán '+histPlan.mover.length+' a '+d+'. ¿Continuar?')) return; const by = document.getElementById('histBy').value.trim() || currentUserName || 'Cuadre'; let n = 0;
 for (const q of (histPlan.pospuestas || [])) { if (confirm('🟣 #' + (q.r.codigo || '') + ' de ' + (q.p.client_name || '') + ' está POSPUESTA en la app.\n¿Deseas INCLUIRLA como entregada el ' + d + '?')) histPlan.mover.push(q); }
 for (const m of histPlan.mover) { await sb.from('packages').update({ status: 'delivered', delivery_date: d, delivery_time: null, delivered_by: by }).eq('id', m.p.id); n++; }
-const ins = histPlan.crear.map(c => ({ tracking_code: c.r.codigo, client_name: c.r.recibio || 'Sin nombre', client_phone: normalizePhone(c.r.telefono), product_info: c.r.nota, store: c.r.tienda, zone: c.r.zona, price: String(c.r.cod || ''), status: 'delivered', delivery_date: d, delivery_time: null, delivered_by: by, created_at: new Date().toISOString() }));
+const ins = histPlan.crear.map((c, ix) => ({ tracking_code: c.r.codigo, client_name: c.r.recibio || 'Sin nombre', client_phone: normalizePhone(c.r.telefono), product_info: c.r.nota, store: c.r.tienda, zone: c.r.zona, price: String(c.r.cod || ''), status: 'delivered', delivery_date: d, delivery_time: null, delivered_by: by, created_at: new Date(Date.now() + ix).toISOString() }));
 if (ins.length) { const { error } = await sb.from('packages').insert(ins); if (error) { notify('❌ '+error.message,'error'); return; } n += ins.length; }
 await sb.from('activity').insert({ texto: '📚 Cuadre histórico convertido: '+ins.length+' creadas, '+histPlan.mover.length+' movidas a '+d+' ('+histPlan.bloquear.length+' bloqueadas)', usuario: currentUserName || 'admin' });
 await saveCuadreRecord('historico'); histPlan = null; notify('✅ '+n+' fichas entregadas en '+d); await loadDataFromSupabase(); }

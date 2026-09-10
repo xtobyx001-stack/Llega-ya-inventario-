@@ -1402,6 +1402,7 @@ async function deleteCuadre(id) { if (!confirm('¿Eliminar este cuadre guardado?
 function refreshAll() { try { if (document.getElementById('cuadreDaySel')) populateCuadreDaySel(); } catch (e) {} renderUnclassified(); renderPostponed(); renderRouteView(); renderUnmarked(); renderDraft(); renderCancelledGroups(); renderRecentActivity(); renderDelivered(); updateCounts(); updateDashboardStats(); updateDeleteCounts(); }
 document.getElementById('dateInfo').textContent = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 updateGreeting();
+Array.prototype.forEach.call(document.body.childNodes, function(n){ if (n.nodeType === 3 && n.textContent.replace(/\s/g,'') !== '') { n.parentNode.removeChild(n); } });
 applyTheme(); checkSession();
 // ===== CUADRE FIX: SELECT DE DÍAS (20.1) =====
 function populateCuadreDaySel() { const sel = document.getElementById('cuadreDaySel'); if (!sel) return; const dates = Object.keys(deliveredGroups).sort((a,b)=>b.localeCompare(a)); const prev = sel.value; sel.innerHTML = dates.map(d => '<option value="'+d+'">'+new Date(d+'T12:00:00').toLocaleDateString('es-ES',{weekday:'long',year:'numeric',month:'long',day:'numeric'})+' ('+deliveredGroups[d].length+')</option>').join('') || '<option value="">Sin grupos entregados</option>'; if (prev && dates.indexOf(prev) !== -1) sel.value = prev; else if (dates.length) sel.value = dates[0]; try { sel.dispatchEvent(new Event('change')); } catch (e) {} }

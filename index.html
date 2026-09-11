@@ -523,6 +523,7 @@ body:has(#view-cuadre.active) .main-content { min-height:auto; padding-bottom:0;
 <button class="nav-btn" data-view="unmarked" onclick="switchView('unmarked', event)"><span class="nav-icon">📋</span><span class="nav-text"><span class="nav-title">Entregados Sin Marcar</span><span class="nav-subtitle">Copiar códigos</span></span><span class="nav-badge" id="badgeUnmarked">0</span></button>
 <button class="nav-btn" data-view="cancelled" onclick="switchView('cancelled', event)"><span class="nav-icon">↩️</span><span class="nav-text"><span class="nav-title">Devoluciones</span><span class="nav-subtitle">Grupos guardados</span></span><span class="nav-badge" id="badgeCancelled">0</span></button>
 <button class="nav-btn admin-only" data-view="cuadre" onclick="switchView('cuadre', event)"><span class="nav-icon">🧾</span><span class="nav-text"><span class="nav-title">Cuadre</span><span class="nav-subtitle">Comparar con entregados</span></span></button>
+<button class="nav-btn" onclick="openInstallModal()"><span class="nav-icon">📲</span><span class="nav-text"><span class="nav-title">Descargar App</span><span class="nav-subtitle">Android / iOS en tu pantalla</span></span></button>
 <div class="nav-label admin-only">Sistema</div>
 <button class="nav-btn admin-only" data-view="team" onclick="switchView('team', event)"><span class="nav-icon">👥</span><span class="nav-text"><span class="nav-title">Gestión de Equipo</span><span class="nav-subtitle">Crear / Eliminar usuarios</span></span></button>
 <button class="nav-btn admin-only" data-view="backup" onclick="switchView('backup', event)"><span class="nav-icon">💾</span><span class="nav-text"><span class="nav-title">Respaldo</span><span class="nav-subtitle">Importar / Exportar</span></span></button>
@@ -853,6 +854,20 @@ body:has(#view-cuadre.active) .main-content { min-height:auto; padding-bottom:0;
 <button class="bb-btn" onclick="switchView('unclassified', event)"><span class="bb-icon">📥</span><span class="bb-label">Nuevos</span></button>
 <button class="bb-btn" onclick="toggleSidebar()"><span class="bb-icon">☰</span><span class="bb-label">Más</span></button>
 </nav>
+<div class="modal-overlay" id="mInstall" onclick="if(event.target===this)closeInstallModal()">
+<div class="modal" style="max-width:480px;">
+<div class="modal-header" style="background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);"><h2>📲 Descargar Llega Ya</h2><button class="modal-close" onclick="closeInstallModal()">✕</button></div>
+<div class="modal-body">
+<p style="color:var(--gray-500);font-size:.85em;margin-bottom:14px;">Instala la app en la pantalla de tu celular para entrar directo sin abrir el navegador.</p>
+<div style="display:flex;gap:10px;margin-bottom:14px;">
+<button class="btn-deliver btn-full" onclick="installAndroid()">🤖 Android</button>
+<button class="btn-secondary btn-full" onclick="installiOS()">🍎 iOS</button>
+</div>
+<div id="installSteps" style="display:none;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:14px;font-size:.85em;color:#334155;line-height:1.7;"></div>
+<div id="installStatus" style="margin-top:10px;font-size:.8em;color:#64748B;"></div>
+</div>
+</div>
+</div>
 <div class="notification" id="notification"></div>
 <!-- ===== FIN PARTE 1/2 ===== -->
 <script>window.addEventListener('error', function(e){ var n = document.getElementById('notification'); if (n) { n.textContent = '❌ JS: ' + e.message + ' (línea ' + e.lineno + ')'; n.className = 'notification show error'; setTimeout(function(){ n.className = 'notification'; }, 10000); } });</script>
@@ -1362,6 +1377,16 @@ function applyTheme() { var t = localStorage.getItem('ly_theme') || 'light'; doc
 function toggleTheme() { var t = (localStorage.getItem('ly_theme') === 'dark') ? 'light' : 'dark'; localStorage.setItem('ly_theme', t); applyTheme(); }
 // ===== BOTÓN ACTUALIZAR =====
 function forceRefresh() { notify('🔄 Actualizando...'); if (navigator.serviceWorker && navigator.serviceWorker.getRegistration) { navigator.serviceWorker.getRegistration().then(function(reg) { if (reg) reg.update(); setTimeout(function() { location.reload(); }, 300); }).catch(function() { location.reload(); }); } else { location.reload(); } }
+// ===== INSTALACIÓN PWA (DESCARGAR APP) =====
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e) { e.preventDefault(); deferredInstallPrompt = e; });
+window.addEventListener('appinstalled', function() { deferredInstallPrompt = null; notify('✅ App instalada en tu pantalla'); });
+function openInstallModal() { document.getElementById('installSteps').style.display = 'none'; document.getElementById('installSteps').innerHTML = ''; var st = document.getElementById('installStatus'); var standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true; st.innerHTML = standalone ? '✅ Ya estás usando la app instalada en este celular.' : (deferredInstallPrompt ? '🟢 Instalación rápida disponible: toca tu sistema abajo.' : 'ℹ️ Toca tu sistema y sigue los pasos que aparecen.'); document.getElementById('mInstall').classList.add('show'); }
+function closeInstallModal() { document.getElementById('mInstall').classList.remove('show'); }
+function showInstallSteps(html) { var el = document.getElementById('installSteps'); el.innerHTML = html; el.style.display = 'block'; }
+function androidStepsHtml() { return '<strong>🤖 Android (Chrome):</strong><br>1. Toca el menú <strong>⋮</strong> (tres puntos) arriba a la derecha.<br>2. Elige <strong>"Instalar app"</strong> o <strong>"Añadir a pantalla de inicio"</strong>.<br>3. Confirma con <strong>"Instalar"</strong>.<br><br><strong>🤖 Android (otros navegadores):</strong><br>1. Abre el menú del navegador.<br>2. Busca <strong>"Añadir a pantalla de inicio"</strong> o <strong>"Instalar aplicación"</strong>.<br>3. Confirma y el ícono quedará en tu pantalla.'; }
+async function installAndroid() { if (deferredInstallPrompt) { deferredInstallPrompt.prompt(); var res = await deferredInstallPrompt.userChoice; deferredInstallPrompt = null; if (res.outcome === 'accepted') { showInstallSteps('<strong>✅ ¡Listo!</strong> La app se instaló en tu pantalla de inicio.'); return; } } showInstallSteps(androidStepsHtml()); }
+function installiOS() { showInstallSteps('<strong>🍎 iPhone / iPad (Safari):</strong><br>1. Abre esta página en <strong>Safari</strong>.<br>2. Toca el botón <strong>Compartir</strong> (cuadro con flecha hacia arriba).<br>3. Baja y toca <strong>"Agregar a pantalla de inicio"</strong>.<br>4. Toca <strong>"Agregar"</strong> arriba a la derecha.<br><br>✅ El ícono de Llega Ya quedará en tu pantalla como una app.'); }
 // ===== BOTONES DERECHA AUTO-ARMABLES =====
 function setupTopButtons() {
   var topbar = document.querySelector('.topbar'); if (!topbar) return;

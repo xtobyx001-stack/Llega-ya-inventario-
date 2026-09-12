@@ -630,7 +630,7 @@ body:has(#view-cuadre.active) .main-content { min-height:auto; padding-bottom:0;
 </div>
 <div style="display:flex;background:#fff;border-bottom:2px solid var(--gray-200);border-radius:12px 12px 0 0;overflow:hidden;">
 <div class="tab" data-tab="pendientes" onclick="switchTabRoute('pendientes', event)" style="flex:1;padding:12px 4px;text-align:center;font-size:.72rem;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;background:#eff6ff;color:#2563eb;">RUTAS</div>
-<div class="tab route-admin-only" data-tab="sin_ubicacion" onclick="switchTabRoute('sin_ubicacion', event)" style="flex:1;padding:12px 4px;text-align:center;font-size:.72rem;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;color:var(--gray-500);">SIN GPS</div>
+<div class="tab" <div class="tab" data-tab="sin_ubicacion" onclick="switchTabRoute('sin_ubicacion', event)" style="flex:1;padding:12px 4px;text-align:center;font-size:.72rem;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;color:var(--gray-500);">SIN GPS</div> 
 <div class="tab" data-tab="completados" onclick="switchTabRoute('completados', event)" style="flex:1;padding:12px 4px;text-align:center;font-size:.72rem;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;color:var(--gray-500);">NO CONTESTA</div>
 <div class="tab route-admin-only" data-tab="exportar" onclick="switchTabRoute('exportar', event)" style="flex:1;padding:12px 4px;text-align:center;font-size:.72rem;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;color:var(--gray-500);"> EXPORTAR</div>
 </div>
@@ -1507,6 +1507,8 @@ histPlan.mover.forEach(m => { rep += '<div class="cq-row cq-warn"><div class="cq
 notify('⚖️ Análisis: '+histPlan.crear.length+' crear, '+histPlan.mover.length+' mover, '+histPlan.pospuestas.length+' pospuestas, '+histPlan.bloquear.length+' bloqueadas'); }
 // ===== INSTALACIÓN PWA v2 =====
 function installAndroid() { var ev = window.__bip || deferredInstallPrompt; if (ev && ev.prompt) { ev.prompt(); ev.userChoice.then(function(res){ if (res.outcome === 'accepted') { notify('✅ Instalando app en tu pantalla...'); } else { notify('ℹ️ Usa el menú ⋮ del navegador → "Instalar app"', 'warning'); } window.__bip = null; deferredInstallPrompt = null; }); } else { var tries = 0; var t = setInterval(function(){ tries++; var ev2 = window.__bip || deferredInstallPrompt; if (ev2 && ev2.prompt) { clearInterval(t); ev2.prompt(); ev2.userChoice.then(function(res){ if (res.outcome === 'accepted') notify('✅ Instalando app en tu pantalla...'); window.__bip = null; deferredInstallPrompt = null; }); } else if (tries >= 6) { clearInterval(t); notify('ℹ️ Si no aparece el banner solo: menú ⋮ → "Instalar app"', 'warning'); showInstallSteps('android'); } }, 500); } }
+// ===== FIX: CHOFERES PUEDEN USAR SIN GPS =====
+function switchTabRoute(tab, event) { if (tab === 'exportar' && !isAdmin()) { notify('🔒 Solo el administrador puede ver esta pestaña', 'error'); return; } currentRouteTab = tab; localStorage.setItem(LS_RTAB, tab); applyRouteTabUI(); document.getElementById('bqRoute').value = ''; renderRouteView(); }
 if ('serviceWorker' in navigator) { window.addEventListener('load', function() { navigator.serviceWorker.register('./sw.js').catch(function() {}); }); }
 </script>
 </body>

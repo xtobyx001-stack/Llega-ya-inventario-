@@ -1,7 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <path d="M256 24c-102 0-178 74-178 172 0 130 178 292 178 292s178-162 178-292c0-98-76-172-178-172z" fill="#0D1B4A"/>
-  <rect x="176" y="140" width="160" height="130" rx="14" fill="#FF6B00"/>
-  <rect x="176" y="140" width="160" height="34" rx="14" fill="#E55A00"/>
-  <rect x="244" y="140" width="24" height="130" fill="#FFFFFF"/>
-  <rect x="176" y="192" width="160" height="22" fill="#FFFFFF"/>
+  <!-- Pin de la marca -->
+  <path d="M256 28c-102 0-184 82-184 184 0 78 62 172 184 272 122-100 184-194 184-272 0-102-82-184-184-184z" fill="#0D1B4A"/>
+  <!-- Bandera Dominicana en el medio -->
+  <clipPath id="flagClip"><rect x="156" y="132" width="200" height="146" rx="18"/></clipPath>
+  <g clip-path="url(#flagClip)">
+    <rect x="156" y="132" width="200" height="146" fill="#FFFFFF"/>
+    <rect x="156" y="132" width="82" height="56" fill="#002D62"/>
+    <rect x="274" y="132" width="82" height="56" fill="#CE1126"/>
+    <rect x="156" y="222" width="82" height="56" fill="#CE1126"/>
+    <rect x="274" y="222" width="82" height="56" fill="#002D62"/>
+  </g>
+  <!-- Paquetico naranja (nuestro sello, va donde va el escudo) -->
+  <rect x="234" y="183" width="44" height="44" rx="9" fill="#FF6B00"/>
+  <rect x="252" y="183" width="8" height="44" fill="#FFFFFF"/>
+  <rect x="234" y="201" width="44" height="8" fill="#FFFFFF"/>
 </svg>

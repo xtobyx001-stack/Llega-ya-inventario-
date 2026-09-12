@@ -1010,11 +1010,9 @@ function applyModeUI() {
     document.querySelectorAll('.route-nav').forEach(el => { el.style.display = (userMode === 'viewer') ? 'none' : ''; });
 }
 async function loadDataFromSupabase() {
-    const { data: pkgData } = await sb.from('packages').select('*').order('created_at', { ascending: false }).order('id', { ascending: true }); if (pkgData) packages = pkgData;
-    const { data: actData } = await sb.from('activity').select('*').order('created_at', { ascending: false }).limit(20); if (actData) recentActivity = actData;
-    const { data: teamData } = await sb.from('team').select('*').order('created_at', { ascending: false }); if (teamData) teamUsers = teamData;
-    await loadLocationHints();
-    rebuildLocalGroups(); refreshAll(); populateRouteAdminSelect();
+    const res = await Promise.all([sb.from('packages').select('*').order('created_at', { ascending: false }).order('id', { ascending: true }), sb.from('activity').select('*').order('created_at', { ascending: false }).limit(20), sb.from('team').select('*').order('created_at', { ascending: false }), sb.from('location_hints').select('*')]);
+if (res[0].data) packages = res[0].data; if (res[1].data) recentActivity = res[1].data; if (res[2].data) teamUsers = res[2].data; if (res[3].data) locationHints = res[3].data;
+rebuildLocalGroups(); refreshAll(); populateRouteAdminSelect();
 }
 function rebuildLocalGroups() {
     deliveredGroups = {}; cancelledDraft = []; cancelledGroups = [];
@@ -1477,7 +1475,7 @@ else { if (!cuadreRows.length) { notify('Sube un cuadre primero','warning'); ret
 const { error } = await sb.from('cuadres').insert({ fecha_target: fecha, file_name: cuadreMeta.file || 'cuadre', chofer: cuadreMeta.chofer || '', total_filas: filas, total_cod: codSum, tipo: tipo, rows: rowsSrc, created_by: currentUserEmail });
 if (error) { notify('❌ Al guardar: '+error.message,'error'); return; }
 await sb.from('activity').insert({ texto: '💾 Cuadre guardado ('+tipo+') '+fecha, usuario: currentUserName || 'admin' }); notify('💾 Cuadre guardado como ficha'); renderCuadreSaved(); }
-function refreshAll() { try { if (document.getElementById('cuadreDaySel')) populateCuadreDaySel(); } catch (e) {} renderUnclassified(); renderPostponed(); renderRouteView(); renderUnmarked(); renderDraft(); renderCancelledGroups(); renderRecentActivity(); renderDelivered(); updateCounts(); updateDashboardStats(); updateDeleteCounts(); } 
+function refreshAll() { try { if (document.getElementById('cuadreDaySel')) populateCuadreDaySel(); } catch (e) {} updateCounts(); updateDashboardStats(); var v = document.querySelector('.view.active'); var idv = v ? v.id : ''; if (idv === 'view-unclassified') renderUnclassified(); else if (idv === 'view-postponed') renderPostponed(); else if (idv === 'view-route') renderRouteView(); else if (idv === 'view-unmarked') renderUnmarked(); else if (idv === 'view-cancelled') { renderDraft(); renderCancelledGroups(); } else if (idv === 'view-delivered') renderDelivered(); else if (idv === 'view-home') renderRecentActivity(); else if (idv === 'view-delete') updateDeleteCounts(); else if (idv === 'view-daydetail' && currentDay) renderDayList(); else if (idv === 'view-packdetail' && currentPackId) openPackDetail(currentPackId, packReturnView); }
 document.getElementById('dateInfo').textContent = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 updateGreeting();
 Array.prototype.forEach.call(document.body.childNodes, function(n){ if (n.nodeType === 3 && n.textContent.replace(/\s/g,'') !== '') { n.parentNode.removeChild(n); } });
